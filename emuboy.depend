@@ -1,0 +1,26 @@
+# depslib dependency file v1.0
+1543318652 source:/home/craig/code/emuboy/emuboy.cpp
+	"display.h"
+
+1543322913 source:/home/craig/code/emuboy/src/display.cpp
+	"display.h"
+
+1543323481 source:/home/craig/code/emuboy/src/emuboy.cpp
+	"emuboy.h"
+	"display.h"
+	"cpu.h"
+
+1543319852 /home/craig/code/emuboy/include/emboy.h
+
+1543323042 /home/craig/code/emuboy/include/display.h
+	<stdio.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+
+1543319519 source:/home/craig/code/emuboy/src/cpu.cpp
+	"cpu.h"
+
+1543320774 /home/craig/code/emuboy/include/cpu.h
+
+1543323441 /home/craig/code/emuboy/include/emuboy.h
+
