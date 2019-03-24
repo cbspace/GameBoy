@@ -1,7 +1,7 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-#include <stdio>
+//#include <stdio>
 
 /*
 The machine clock for a gameboy is 1.050 MHz and the base clock is 4.19 MHz.
@@ -29,8 +29,8 @@ Total               1254
 Screen refresh every 17,556* cycles
 */
 
-const int CLK_MAIN_DELAY              16         // Clock period for main clock (in ms), results in 62 Hz Clock
-const int CLK_CPU_CYCLES_MAIN         9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
+#define CLK_MAIN_DELAY              16         // Clock period for main clock (in ms), results in 62 Hz Clock
+#define CLK_CPU_CYCLES_MAIN         9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
 // This is the number of CPU cycles to execute between in the main timing loop
 
 class clock

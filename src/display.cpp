@@ -30,10 +30,6 @@ display::display(const char* title, const int width, const int height)
             // Fill the surface white
             SDL_FillRect( drawSurface, NULL, SDL_MapRGB ( drawSurface->format, BG_COLOUR_R, BG_COLOUR_G, BG_COLOUR_B ) );
 
-            // TEMPORARY -Display a Nintendo Logo image!!
-            logoImage = SDL_LoadBMP( "//home//craig//code//emuboy//img//nintendo.bmp");
-            SDL_BlitSurface ( logoImage, NULL, drawSurface, NULL );
-
             // Update the surface
             SDL_UpdateWindowSurface ( window );
         }
@@ -43,9 +39,6 @@ display::display(const char* title, const int width, const int height)
 // Close the SDL window and close SDL
 display::~display()
 {
-    // Temp
-    SDL_FreeSurface( logoImage );
-
     // Destroy the window and deallocate reference
 	SDL_DestroyWindow(window);
 	window = NULL;

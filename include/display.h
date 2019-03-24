@@ -6,9 +6,9 @@
 
 #include <SDL2/SDL.h>
 
-const int BG_COLOUR_R 0x92
-const int BG_COLOUR_G 0xAD
-const int BG_COLOUR_B 0x26
+#define BG_COLOUR_R 0x92
+#define BG_COLOUR_G 0xAD
+#define BG_COLOUR_B 0x26
 
 class display
 {
