@@ -14,7 +14,6 @@ class display
 {
         SDL_Window* window;
         SDL_Surface* drawSurface;
-        SDL_Surface* logoImage; // Temp
 
     public:
         display(const char* title, const int width, const int height);

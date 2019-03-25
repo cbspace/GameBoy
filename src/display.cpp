@@ -6,7 +6,6 @@ display::display(const char* title, const int width, const int height)
     // Initialise pointers
     window = NULL;
     drawSurface = NULL;
-    logoImage = NULL; // Temp
 
     // Initialise SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
