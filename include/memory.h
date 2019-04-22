@@ -1,8 +1,10 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <string>
+using namespace std;
 
-class memory
+class Memory
 {
 
     int ram[0x10000];      // 8kB RAM
@@ -102,7 +104,9 @@ class memory
     */
 
     public:
-        memory();
+        Memory();   // Constructor
+        int load_rom(string rom_path);  // Function to load a ROM file
+
 };
 
 #endif // MEMORY_H

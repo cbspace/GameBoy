@@ -1,7 +1,14 @@
 #include "memory.h"
+#include <string>
+using namespace std;
 
-memory::memory()
+Memory::Memory()
 {
-    //ctor
+
 }
 
+// Function to load a ROM file
+int Memory::load_rom(string rom_path)
+{
+    return 0;
+}

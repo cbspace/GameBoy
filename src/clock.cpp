@@ -1,6 +1,6 @@
 #include "clock.h"
 
-clock::clock()
+Clock::Clock()
 {
 
 }

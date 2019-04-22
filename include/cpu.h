@@ -2,11 +2,11 @@
 #define CPU_H
 
 
-class cpu
+class Cpu
 {
 
     public:
-        cpu();
+        Cpu();
 };
 
 #endif // CPU_H

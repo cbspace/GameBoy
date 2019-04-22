@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="&apos;/home/craig/code/emuboy/roms/Tetris.gb&apos;" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -21,6 +22,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="&apos;/home/craig/code/emuboy/roms/Tetris.gb&apos;" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="include" />
@@ -36,12 +38,14 @@
 		<Unit filename="include/clock.h" />
 		<Unit filename="include/cpu.h" />
 		<Unit filename="include/display.h" />
-		<Unit filename="include/emuboy.h" />
+		<Unit filename="include/emulator.h" />
+		<Unit filename="include/main.h" />
 		<Unit filename="include/memory.h" />
 		<Unit filename="src/clock.cpp" />
 		<Unit filename="src/cpu.cpp" />
 		<Unit filename="src/display.cpp" />
-		<Unit filename="src/emuboy.cpp" />
+		<Unit filename="src/emulator.cpp" />
+		<Unit filename="src/main.cpp" />
 		<Unit filename="src/memory.cpp" />
 		<Extensions>
 			<code_completion />
