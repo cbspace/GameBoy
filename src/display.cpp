@@ -1,21 +1,30 @@
 #include "display.h"
 
 #include <stdio.h>
+#include <string>
 #include <SDL2/SDL.h>
 
+using namespace std;
 
+// Constructor
 Display::Display()
 {
+    // Initialise pointers
+    window = NULL;
+    drawSurface = NULL;
+}
 
+// Set the window title
+void Display::set_title(string title_add)
+{
+    string window_title_const(WINDOW_TITLE);
+    string new_window_title = window_title_const + " - " + title_add;
+    SDL_SetWindowTitle(window, new_window_title.c_str());
 }
 
 // Initialise SDL and create a window
 int Display::init()
 {
-    // Initialise pointers
-    window = NULL;
-    drawSurface = NULL;
-
     // Initialise SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
     {
@@ -24,7 +33,7 @@ int Display::init()
     else
     {
         // Create a new SDL Window
-        window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+        window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
 
         if (window == NULL)
         {

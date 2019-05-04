@@ -8,8 +8,15 @@ using namespace std;
 
 class Memory
 {
+    public:
+        char ram[MEM_SIZE];      // 64kB RAM
 
-    char* ram;      // 64kB RAM
+        Memory();   // Constructor
+        int load_rom(char* rom_path);  // Function to load a ROM file
+        string get_rom_title();        // Get the current ROM title
+
+    private:
+        string rom_title;   // Title of the current game ROM file
 
     /* Memory Map
                                                _
@@ -104,10 +111,6 @@ class Memory
     014E - 014F Checksum
 
     */
-
-    public:
-        Memory();   // Constructor
-        int load_rom(char* rom_path);  // Function to load a ROM file
 
 };
 

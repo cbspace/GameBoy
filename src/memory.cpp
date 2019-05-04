@@ -4,10 +4,10 @@
 #include <string>
 using namespace std;
 
+// Constructor
 Memory::Memory()
 {
-    // Create RAM array
-    ram = new char[MEM_SIZE];
+    rom_title = "";
 }
 
 // Function to load a ROM file (currently only supporting
@@ -23,7 +23,7 @@ int Memory::load_rom(char* rom_path)
             file.seekg(0, ios::beg);
             file.read(ram, file_size);
             file.close();
-            cout << "Rom Title: " << ram + 0x134 << endl;
+            rom_title = ram + 0x134;
         } else {
             printf("ROM not supported, up to 32kb support only\n");
         }
@@ -32,4 +32,10 @@ int Memory::load_rom(char* rom_path)
     }
 
     return 0;
+}
+
+// Function to get the current ROM title
+string Memory::get_rom_title()
+{
+    return rom_title;
 }

@@ -7,7 +7,7 @@
 #include <string>
 using namespace std;
 
-static const float RELEASE_VERSION = 0.12;
+static const float RELEASE_VERSION = 0.13;
 
 class Emulator
 {
@@ -18,9 +18,9 @@ class Emulator
         void start(char* rom_path);             // Init SDL and load the ROM
         void print_error(string error_string);  // Print error to std_out
     private:
-        Display* disp;
-        Cpu* cp;
-        Memory* mem;
+        Display disp;
+        Cpu cp;
+        Memory mem;
 };
 
 #endif // EMULATOR_H

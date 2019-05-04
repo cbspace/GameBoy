@@ -2,38 +2,38 @@
 #include "display.h"
 #include "cpu.h"
 #include "memory.h"
+#include <iostream>
+#include <string>
 #include <SDL2/SDL.h>
+
+using namespace std;
 
 Emulator::Emulator()
 {
     init(); // Initialise emulator
 }
 
+// Not needed as yet
 void Emulator::init()
 {
-    // Create display
-    disp = new Display();
 
-    // Create the CPU
-    cp = new Cpu();
-
-    // Create the memory
-    mem = new Memory();
 }
 
 // Run the emulator
 void Emulator::start(char* rom_path)
 {
     // Initialise SDL
-    disp->init();
     printf("Loading Window\n");
+    disp.init();
 
     // Load the rom
-    mem->load_rom(rom_path);
+    mem.load_rom(rom_path);
+    disp.set_title(mem.get_rom_title());
+    cout << "Rom Title: " << mem.get_rom_title() << endl;
 
     // Delay temporarily
-    SDL_Delay(3000);
-    SDL_Delay(5000);
+    SDL_Delay(4000);
+
 }
 
 // Function to print error message
