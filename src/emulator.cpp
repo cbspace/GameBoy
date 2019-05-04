@@ -22,13 +22,17 @@ void Emulator::init()
 }
 
 // Run the emulator
-void Emulator::start()
+void Emulator::start(char* rom_path)
 {
     // Initialise SDL
     disp->init();
     printf("Loading Window\n");
 
+    // Load the rom
+    mem->load_rom(rom_path);
+
     // Delay temporarily
+    SDL_Delay(3000);
     SDL_Delay(5000);
 }
 

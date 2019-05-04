@@ -1,13 +1,15 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#define MEM_SIZE    0x10000
+
 #include <string>
 using namespace std;
 
 class Memory
 {
 
-    int ram[0x10000];      // 8kB RAM
+    char* ram;      // 64kB RAM
 
     /* Memory Map
                                                _
@@ -105,7 +107,7 @@ class Memory
 
     public:
         Memory();   // Constructor
-        int load_rom(string rom_path);  // Function to load a ROM file
+        int load_rom(char* rom_path);  // Function to load a ROM file
 
 };
 
