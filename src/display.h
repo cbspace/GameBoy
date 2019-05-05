@@ -24,6 +24,8 @@ class Display
         void set_title(string title_add);
         virtual ~Display();
 
+        void draw_logo(char* logo_data);        // Draw statup logo!
+
     private:
         SDL_Window* window;
         SDL_Surface* drawSurface;

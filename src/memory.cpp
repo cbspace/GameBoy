@@ -25,10 +25,10 @@ int Memory::load_rom(char* rom_path)
             file.close();
             rom_title = ram + 0x134;
         } else {
-            printf("ROM not supported, up to 32kb support only\n");
+            cout << "ROM not supported, up to 32kb support only" << endl;
         }
     } else {
-        printf("Unable to open file '%s'\n", rom_path);
+        cout << "Unable to open file '" << rom_path << "'" << endl;
     }
 
     return 0;

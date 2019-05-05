@@ -2,6 +2,18 @@
 #define MEMORY_H
 
 #define MEM_SIZE    0x10000
+#define A           0
+#define F           1
+#define B           2
+#define C           3
+#define D           4
+#define E           5
+#define H           6
+#define L           7
+#define AF          0
+#define BC          2
+#define DE          4
+#define HL          6
 
 #include <string>
 using namespace std;
@@ -9,14 +21,20 @@ using namespace std;
 class Memory
 {
     public:
-        char ram[MEM_SIZE];      // 64kB RAM
+        char ram[MEM_SIZE];             // 64kB RAM
 
         Memory();   // Constructor
-        int load_rom(char* rom_path);  // Function to load a ROM file
-        string get_rom_title();        // Get the current ROM title
+        int load_rom(char* rom_path);   // Function to load a ROM file
+        string get_rom_title();         // Get the current ROM title
 
     private:
-        string rom_title;   // Title of the current game ROM file
+        char flags;                     // Flags register
+        unsigned short reg[4];          // Registers: A/F, B/C, D/E, H/L
+        unsigned short sp, pc;          // Stack pointer and program counter - assuming 16 bit :)
+
+        string rom_title;               // Title of the current game ROM file
+
+
 
     /* Memory Map
                                                _

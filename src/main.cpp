@@ -1,5 +1,6 @@
 #include "main.h"
 #include "emulator.h"
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -11,11 +12,12 @@ int main(int argc, char* argv[])
     Emulator emuboy;
 
     // Print welcome message to console
-    printf("EmuBoy V %1.2f\n", RELEASE_VERSION);
+    cout << "EmuBoy V " << RELEASE_VERSION << endl;
 
     // Load ROM from command line argument
     if (argc == 2) {
-        printf("Loading ROM %s\n", argv[1]);
+        cout << "Loading ROM " << argv[1] << endl;
+
         emuboy.start(argv[1]);
     } else if (argc == 1) {
         emuboy.print_error("Command line argument not found, expecting path to ROM file");

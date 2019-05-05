@@ -1,6 +1,6 @@
 #include "display.h"
 
-#include <stdio.h>
+#include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
 
@@ -12,6 +12,16 @@ Display::Display()
     // Initialise pointers
     window = NULL;
     drawSurface = NULL;
+}
+
+// Let's see if we can draw the famous Nintendo logo!
+// logo_data is char* array read from the ROM (48 bytes long)
+void Display::draw_logo(char* logo_data)
+{
+    for (int i = 0 ; i < 48; i++)
+    {
+
+    }
 }
 
 // Set the window title
@@ -28,7 +38,7 @@ int Display::init()
     // Initialise SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
     {
-        printf( "SDL unable to initialise! SDL_Error: %s\n", SDL_GetError() );
+        cout << "SDL unable to initialise! SDL_Error: " << SDL_GetError() << endl;
     }
     else
     {
@@ -37,7 +47,7 @@ int Display::init()
 
         if (window == NULL)
         {
-            printf("Unable to create SDL Window! SDL_Error: %s\n", SDL_GetError() );
+            cout << "Unable to create SDL Window! SDL_Error: " << SDL_GetError() << endl;
         }
         else
         {

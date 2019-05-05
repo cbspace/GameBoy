@@ -23,13 +23,16 @@ void Emulator::init()
 void Emulator::start(char* rom_path)
 {
     // Initialise SDL
-    printf("Loading Window\n");
+    cout << "Loading Window" << endl;
     disp.init();
 
     // Load the rom
     mem.load_rom(rom_path);
     disp.set_title(mem.get_rom_title());
     cout << "Rom Title: " << mem.get_rom_title() << endl;
+
+    // Display the logo
+    disp.draw_logo(mem.ram + 0x104);    // Address of logo
 
     // Delay temporarily
     SDL_Delay(4000);
@@ -38,5 +41,5 @@ void Emulator::start(char* rom_path)
 
 // Function to print error message
 void Emulator::print_error(string error_string) {
-    printf("Error: %s\n", error_string.c_str());
+    cout << "Error: " << error_string << endl;
 }

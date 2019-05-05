@@ -7,7 +7,7 @@
 #include <string>
 using namespace std;
 
-static const float RELEASE_VERSION = 0.13;
+static const string RELEASE_VERSION = "0.14";
 
 class Emulator
 {
