@@ -14,15 +14,14 @@ Display::Display()
     drawSurface = NULL;
 }
 
-// Let's see if we can draw the famous Nintendo logo!
 // logo_data is char* array read from the ROM (48 bytes long)
-void Display::draw_logo(char* logo_data)
-{
-    for (int i = 0 ; i < 48; i++)
-    {
-
-    }
-}
+/*  Data Format:
+    Gameboy tiles are 8x8 pixels in size. An 8x8 image is
+    represented by 16 bytes. There are 4 'colours' that
+    can be shown at each pixel: eg:
+    ..1331..   ->       00111100
+                        00011000
+*/
 
 // Set the window title
 void Display::set_title(string title_add)

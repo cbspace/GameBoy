@@ -1,6 +1,8 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
+#include <stdint.h>
+
 /*
 The machine clock for a gameboy is 1.050 MHz and the base clock is 4.19 MHz.
 It is not practical to reliably clock the emulator at such high clock rates on a PC.
@@ -27,14 +29,18 @@ Total               1254
 Screen refresh every 17,556* cycles
 */
 
-#define CLK_MAIN_DELAY              16         // Clock period for main clock (in ms), results in 62 Hz Clock
-#define CLK_CPU_CYCLES_MAIN         9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
+#define CLK_FRAME_DELAY          16         // Clock period for main clock (in ms), results in 62 Hz Clock
+#define CLK_CPU_CYCLES           9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
 // This is the number of CPU cycles to execute between in the main timing loop
 
 class Clock
 {
     public:
         Clock();
+        void frame_timer_start();       // Start the frame timer
+        void frame_timer_delay();       // SDL_Delay for remaining frame time
+    private:
+        uint32_t frame_start_ticks;
 };
 
 #endif // CLOCK_H

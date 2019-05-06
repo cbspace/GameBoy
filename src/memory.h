@@ -15,6 +15,7 @@
 #define DE          4
 #define HL          6
 
+#include <stdint.h>
 #include <string>
 using namespace std;
 
@@ -22,17 +23,17 @@ class Memory
 {
     public:
         char ram[MEM_SIZE];             // 64kB RAM
+        char flags;                     // Flags register
+        uint16_t reg[4];                // Registers: A/F, B/C, D/E, H/L
+        uint16_t sp, pc;                // Stack pointer and program counter
 
-        Memory();   // Constructor
-        int load_rom(char* rom_path);   // Function to load a ROM file
-        string get_rom_title();         // Get the current ROM title
+        Memory();                               // Constructor
+        void init();                            // Initialise registers
+        uint8_t load_rom(char* rom_path);       // Function to load a ROM file
+        string get_rom_title();                 // Get the current ROM title
 
     private:
-        char flags;                     // Flags register
-        unsigned short reg[4];          // Registers: A/F, B/C, D/E, H/L
-        unsigned short sp, pc;          // Stack pointer and program counter - assuming 16 bit :)
-
-        string rom_title;               // Title of the current game ROM file
+        string rom_title;                   // Title of the current game ROM file
 
 
 

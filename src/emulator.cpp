@@ -8,13 +8,8 @@
 
 using namespace std;
 
+// Constructor
 Emulator::Emulator()
-{
-    init(); // Initialise emulator
-}
-
-// Not needed as yet
-void Emulator::init()
 {
 
 }
@@ -31,12 +26,45 @@ void Emulator::start(char* rom_path)
     disp.set_title(mem.get_rom_title());
     cout << "Rom Title: " << mem.get_rom_title() << endl;
 
-    // Display the logo
-    disp.draw_logo(mem.ram + 0x104);    // Address of logo
+    // Run the main loop
+    main_loop();
+}
 
-    // Delay temporarily
-    SDL_Delay(4000);
+// The main emulator loop
+void Emulator::main_loop()
+{
+    // Flag to signify if the user wishes to quit
+    bool quit_flag = false;
 
+    // SDL event handler
+    SDL_Event e;
+
+    // Continue to loop until the user quits
+    while (!quit_flag)
+    {
+        // Start the frame timer
+        clk.frame_timer_start();
+
+        // Handle events on the event queue
+        while ( SDL_PollEvent( &e ) != 0 )
+        {
+            // User requests to quit
+            if ( e.type == SDL_QUIT )
+            {
+                quit_flag = true;
+            }
+            else if ( e.type == SDL_KEYDOWN )
+            {
+                if ( e.key.keysym.sym == SDLK_ESCAPE )
+                {
+                    quit_flag = true;
+                }
+            }
+        }
+
+        // Delay until next frame
+        clk.frame_timer_delay();
+    }
 }
 
 // Function to print error message

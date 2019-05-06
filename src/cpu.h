@@ -6,7 +6,8 @@ class Cpu
 {
 
     public:
-        Cpu();
+        Cpu();              // Constructor
+        void cycle();       // Perform a single CPU cycle
 };
 
 #endif // CPU_H
