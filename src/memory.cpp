@@ -15,19 +15,33 @@ Memory::Memory()
 // Initialise memory
 void Memory::init()
 {
-    // Initialise registers to 0
-    sp = 0;
-    pc = 0;
+    // Initialise registers, sp and pc
+    sp = 0xfffe;    // sp initialised to fffe (gameboy default)
+    pc = 0x100;     // pc initialised to 0x100 (start address)
     flags = 0;
-    for (char i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
         reg[i] = 0;
     }
 }
 
+// Get byte pointed to by pc
+int8_t Memory::get_current_byte()
+{
+    // Return the byte
+    return ram[pc];
+}
+
+// Increment pc by amount
+void Memory::inc_pc(int8_t amount)
+{
+    // Increment the pc
+    pc += amount;
+}
+
 // Function to load a ROM file (currently only supporting
 // 16 or 32kb ROMS - cart type 0 or 1)
-uint8_t Memory::load_rom(char* rom_path)
+int8_t Memory::load_rom(char* rom_path)
 {
     streampos file_size;
 

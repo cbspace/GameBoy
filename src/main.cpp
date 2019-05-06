@@ -17,7 +17,6 @@ int main(int argc, char* argv[])
     // Load ROM from command line argument
     if (argc == 2) {
         cout << "Loading ROM " << argv[1] << endl;
-
         emuboy.start(argv[1]);
     } else if (argc == 1) {
         emuboy.print_error("Command line argument not found, expecting path to ROM file");

@@ -2,18 +2,6 @@
 #define MEMORY_H
 
 #define MEM_SIZE    0x10000
-#define A           0
-#define F           1
-#define B           2
-#define C           3
-#define D           4
-#define E           5
-#define H           6
-#define L           7
-#define AF          0
-#define BC          2
-#define DE          4
-#define HL          6
 
 #include <stdint.h>
 #include <string>
@@ -22,20 +10,35 @@ using namespace std;
 class Memory
 {
     public:
-        char ram[MEM_SIZE];             // 64kB RAM
-        char flags;                     // Flags register
-        uint16_t reg[4];                // Registers: A/F, B/C, D/E, H/L
-        uint16_t sp, pc;                // Stack pointer and program counter
+        char ram[MEM_SIZE];                 // 64kB RAM
+        char flags;                         // Flags register
+        uint16_t reg[4];                    // Registers: A/F, B/C, D/E, H/L
+        uint16_t sp, pc;                    // Stack pointer and program counter
 
-        Memory();                               // Constructor
-        void init();                            // Initialise registers
-        uint8_t load_rom(char* rom_path);       // Function to load a ROM file
-        string get_rom_title();                 // Get the current ROM title
+        Memory();                           // Constructor
+        void init();                        // Initialise registers
+        int8_t load_rom(char* rom_path);    // Function to load a ROM file
+        void inc_pc(int8_t amount);         // Increment pc by amount
+        int8_t get_current_byte();          // Get byte pointed to by pc
+        string get_rom_title();             // Get the current ROM title
 
     private:
         string rom_title;                   // Title of the current game ROM file
 
+    /* Flags register
 
+        7   6   5   4   3   2   1   0
+        Z   N   H   C   0   0   0   0
+
+        Z = Zero flag - set when result of mathematical operation is zero
+            or when results using CP compare instruction match
+        N = Subtraction flag - set when subtraction was performed in the last
+            math operation
+        H = Half carry flag - set when there is an overflow from low nibble to
+            high nible in the last math operation
+        C = Carry flag - set if a carry occured from last math operation or if
+            register A is the smaller value when executing CP instruction
+    */
 
     /* Memory Map
                                                _

@@ -2,11 +2,8 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-// Constructor
-Clock::Clock()
-{
-
-}
+// Constructor empty
+Clock::Clock() { }
 
 // Start the frame timer
 void Clock::frame_timer_start()
@@ -21,6 +18,10 @@ void Clock::frame_timer_delay()
     uint32_t frame_elap_ticks;
     frame_elap_ticks = SDL_GetTicks() - frame_start_ticks ;
 
-    // Wait for remaining time
-    SDL_Delay( CLK_FRAME_DELAY - frame_elap_ticks );
+    // Check if frame is finished early
+    if ( frame_elap_ticks < CLK_FRAME_DELAY )
+    {
+        // Wait for remaining time
+        SDL_Delay( CLK_FRAME_DELAY - frame_elap_ticks );
+    }
 }

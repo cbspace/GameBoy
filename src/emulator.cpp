@@ -11,7 +11,8 @@ using namespace std;
 // Constructor
 Emulator::Emulator()
 {
-
+    // Pass pointer to memory object to CPU
+    cp.attach_memory(&mem);
 }
 
 // Run the emulator
@@ -61,6 +62,9 @@ void Emulator::main_loop()
                 }
             }
         }
+
+        // Perform CPU cycle
+        cp.cycle();
 
         // Delay until next frame
         clk.frame_timer_delay();

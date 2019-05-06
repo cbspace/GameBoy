@@ -2,6 +2,7 @@
 #define DISPLAY_H
 
 #include <string>
+#include <stdint.h>
 #include <SDL2/SDL.h>
 
 #define SCALING_FACTOR 2        // Scale display size by this amount
@@ -20,7 +21,7 @@ class Display
 {
     public:
         Display();
-        int init();
+        int8_t init();
         void set_title(string title_add);
         virtual ~Display();
 

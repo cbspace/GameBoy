@@ -29,7 +29,7 @@ Total               1254
 Screen refresh every 17,556* cycles
 */
 
-#define CLK_FRAME_DELAY          16         // Clock period for main clock (in ms), results in 62 Hz Clock
+#define CLK_FRAME_DELAY          1000   //16      // Clock period for main clock (in ms), results in 62 Hz Clock
 #define CLK_CPU_CYCLES           9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
 // This is the number of CPU cycles to execute between in the main timing loop
 

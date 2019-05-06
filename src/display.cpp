@@ -1,6 +1,7 @@
 #include "display.h"
 
 #include <iostream>
+#include <stdint.h>
 #include <string>
 #include <SDL2/SDL.h>
 
@@ -32,7 +33,7 @@ void Display::set_title(string title_add)
 }
 
 // Initialise SDL and create a window
-int Display::init()
+int8_t Display::init()
 {
     // Initialise SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
