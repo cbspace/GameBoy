@@ -1,29 +1,34 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#define MEM_SIZE    0x10000
+#define MEM_SIZE            0x10000     // Memory size for Gameboy
+#define BYTE_ARRAY_SIZE     14          // Used in read_array and write_array
 
 #include <stdint.h>
+#include <array>
 #include <string>
 using namespace std;
 
 class Memory
 {
     public:
-        char ram[MEM_SIZE];                 // 64kB RAM
-        char flags;                         // Flags register
-        uint16_t reg[4];                    // Registers: A/F, B/C, D/E, H/L
-        uint16_t sp, pc;                    // Stack pointer and program counter
+        char ram[MEM_SIZE];                     // 64kB RAM
+        char flags;                             // Flags register
+        uint16_t reg[4];                        // Registers: A/F, B/C, D/E, H/L
+        uint16_t sp, pc;                        // Stack pointer and program counter
 
-        Memory();                           // Constructor
-        void init();                        // Initialise registers
-        int8_t load_rom(char* rom_path);    // Function to load a ROM file
-        void inc_pc(int8_t amount);         // Increment pc by amount
-        int8_t get_current_byte();          // Get byte pointed to by pc
-        string get_rom_title();             // Get the current ROM title
+        Memory();                               // Constructor
+        void init();                            // Initialise registers
+        int8_t load_rom(char* rom_path);        // Function to load a ROM file
+        uint8_t read_byte(uint16_t address);   // Read byte from RAM/ROM
+        array<uint8_t, BYTE_ARRAY_SIZE> read_array(uint16_t address, uint8_t length);   // Read array of bytes from RAM/ROM
+        void write_byte(uint16_t address, uint8_t byte);                        // Write byte to RAM/ROM
+        void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
+        void inc_pc(int8_t amount);             // Increment pc by amount
+        string get_rom_title();                 // Get the current ROM title
 
     private:
-        string rom_title;                   // Title of the current game ROM file
+        string rom_title;                       // Title of the current game ROM file
 
     /* Flags register
 

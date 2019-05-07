@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <fstream>
 #include <iostream>
+#include <array>
 #include <string>
 using namespace std;
 
@@ -25,11 +26,34 @@ void Memory::init()
     }
 }
 
-// Get byte pointed to by pc
-int8_t Memory::get_current_byte()
+// Read byte from RAM/ROM
+uint8_t Memory::read_byte(uint16_t address)
 {
-    // Return the byte
-    return ram[pc];
+    return ram[address];
+}
+
+// Read array of bytes from RAM/ROM
+// Max length is currently 14 bytes to match game title string
+array<uint8_t, BYTE_ARRAY_SIZE> Memory::read_array(uint16_t address, uint8_t length)
+{
+    // Copy bytes
+    array<uint8_t, BYTE_ARRAY_SIZE> byte_array;
+    for (uint8_t i = 0; i < length; i++)
+    {
+        byte_array[i] = ram[address + i];
+    }
+}
+
+// Write byte to RAM/ROM
+void Memory::write_byte(uint16_t address, uint8_t byte)
+{
+    ram[address] = byte;
+}
+
+// Write array of bytes to RAM/ROM
+void Memory::write_array(uint16_t address, uint8_t* bytes, uint8_t length)
+{
+
 }
 
 // Increment pc by amount

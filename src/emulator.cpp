@@ -13,6 +13,9 @@ Emulator::Emulator()
 {
     // Pass pointer to memory object to CPU
     cp.attach_memory(&mem);
+
+    // Pass pointer to clock object to CPU
+    cp.attach_clock(&clk);
 }
 
 // Run the emulator
@@ -43,8 +46,8 @@ void Emulator::main_loop()
     // Continue to loop until the user quits
     while (!quit_flag)
     {
-        // Start the frame timer
-        clk.frame_timer_start();
+        // Start the frame timer and reset clock cycles
+        clk.frame_start();
 
         // Handle events on the event queue
         while ( SDL_PollEvent( &e ) != 0 )
@@ -63,11 +66,14 @@ void Emulator::main_loop()
             }
         }
 
-        // Perform CPU cycle
-        cp.cycle();
+        while (!clk.max_cycles_reached())
+        {
+            // Perform CPU cycles
+            cp.cycle();
+        }
 
         // Delay until next frame
-        clk.frame_timer_delay();
+        clk.frame_delay();
     }
 }
 

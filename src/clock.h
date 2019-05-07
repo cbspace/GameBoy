@@ -17,30 +17,34 @@ iterations are executed. Note - this method does not result in a perfect represe
 of H-Blank as the timing would be compressed. It is not expected that this discrepency
 will be noticiable and most games don't even utilise H-Blank updates.
 
-VBLANK PERIOD: 59.73 Hz for Gameboy and 61.1 Hz for Super Gameboy
+VBLANK Frequency: 59.73 Hz for Gameboy and 61.1 Hz for Super Gameboy
+VBLANK lasts ~1.1ms or 4560 clks (from manual)
+HBLANK lasts 204 clks
+Complete screen refresh takes 70,224 clock ticks
 
-Frame Draw Timing   Machine Cycles
-Line (BG)           43
-Line (Sprites)      20
-H-Blank             51* 7,293
-V-Blank             1140*
-Total               1254
+Frame Draw Timing   Machine Cycles      Clock Cycles
+Line (BG)           43 x 144 = 172      24,768
+Line (Sprites)      20 x 144 = 2,880    11,520
+H-Blank             51 x 144 = 7,344    29,376
+V-Blank             1,140               4,560
+Total               17,556              70,224
 
-Screen refresh every 17,556* cycles
 */
 
-#define CLK_FRAME_DELAY          1000   //16      // Clock period for main clock (in ms), results in 62 Hz Clock
-#define CLK_CPU_CYCLES           9123       // ( 1,050,000 / 59.73 ) - H-Blank * 143 - VBlank
-// This is the number of CPU cycles to execute between in the main timing loop
+#define CLK_FRAME_DELAY          1000 //16   // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 
 class Clock
 {
     public:
         Clock();
-        void frame_timer_start();       // Start the frame timer
-        void frame_timer_delay();       // SDL_Delay for remaining frame time
+        void frame_start();                 // Start the frame timer and reset clock
+        void frame_delay();                 // SDL_Delay for remaining frame time
+        void add_cycles(uint8_t amount);    // Add cycles to frame_clock_cycles
+        bool max_cycles_reached();          // Indicates if max clock cycles for a single frame is reached
     private:
-        uint32_t frame_start_ticks;
+        uint32_t frame_start_ticks;         // Start time of frame
+        uint32_t frame_clock_cycles;        // Number of clk cycles in current frame
 };
 
 #endif // CLOCK_H
