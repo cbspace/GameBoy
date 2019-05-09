@@ -17,6 +17,8 @@ class Cpu
         Memory* mem;                        // Pointer to memory object
         Clock* clk;                         // Pointer to clock object
         uint8_t byte_in;                    // Current byte pointed to by sp
+
+        void process_instruction(uint8_t rom_byte); // Process a single instruction read from ROM
 };
 
 #endif // CPU_H

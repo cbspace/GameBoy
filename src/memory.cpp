@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <fstream>
 #include <iostream>
-#include <array>
 #include <string>
 using namespace std;
 
@@ -17,12 +16,65 @@ Memory::Memory()
 void Memory::init()
 {
     // Initialise registers, sp and pc
-    sp = 0xfffe;    // sp initialised to fffe (gameboy default)
-    pc = 0x100;     // pc initialised to 0x100 (start address)
+    sp = SP_INITIAL_VALUE;    // sp initialised to fffe (gameboy default)
+    pc = ROM_START_ADDRESS;   // pc initialised to 0x100 (start address)
     flags = 0;
-    for (uint8_t i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < REG_ARRAY_SIZE; i++)
     {
         reg[i] = 0;
+    }
+}
+
+// Get contents of 8 bit register
+uint8_t Memory::reg_get(uint8_t reg_id)
+{
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        return reg[reg_id];
+    }
+    else
+    {
+        return 0; // invalid register
+    }
+}
+
+// Get contents of 16 bit register
+uint16_t Memory::reg_get16(uint8_t reg_id)
+{
+    switch(reg_id)
+    {
+        case RAF:   // AF register
+            return (reg[RA] << 8) + reg[RF];
+        case RBC:   // BC register
+            return (reg[RB] << 8) + reg[RC];
+        case RDE:   // DE register
+            return (reg[RD] << 8) + reg[RE];
+        case RHL:   // HL register
+            return (reg[RH] << 8) + reg[RL];
+        default:    // Invalid register
+            return 0;
+    }
+}
+
+// Set value in 8 bit register
+void Memory::reg_set(uint8_t reg_id, uint8_t reg_value)
+{
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        reg[reg_id] = reg_value;
+    }
+    printf("register %i set to %0.2X\n", reg_id, reg_value); // Debug message
+}
+
+// Set value in 16 bit register
+void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
+{
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        // to be implemented
     }
 }
 
@@ -32,16 +84,30 @@ uint8_t Memory::read_byte(uint16_t address)
     return ram[address];
 }
 
-// Read array of bytes from RAM/ROM
-// Max length is currently 14 bytes to match game title string
-array<uint8_t, BYTE_ARRAY_SIZE> Memory::read_array(uint16_t address, uint8_t length)
+// Read byte from ROM and increment PC
+uint8_t Memory::fetch_byte()
 {
-    // Copy bytes
-    array<uint8_t, BYTE_ARRAY_SIZE> byte_array;
-    for (uint8_t i = 0; i < length; i++)
+    // Need to increment pc first then return byte
+    inc_pc(1);
+    return ram[pc-1];
+}
+
+// Read rom title and load into string
+void Memory::read_rom_title()
+{
+    char rom_title_array[BYTE_ARRAY_SIZE];
+
+    // Copy bytes (max length for title is 14 bytes)
+    for (uint8_t i = 0; i < 14; i++)
     {
-        byte_array[i] = ram[address + i];
+        rom_title_array[i] = ram[ROM_TITLE_ADDRESS + i];
     }
+
+    // Append a Null
+    rom_title_array[14] = '\0';
+
+    // Convert to a string
+    rom_title = rom_title_array;
 }
 
 // Write byte to RAM/ROM
@@ -53,7 +119,11 @@ void Memory::write_byte(uint16_t address, uint8_t byte)
 // Write array of bytes to RAM/ROM
 void Memory::write_array(uint16_t address, uint8_t* bytes, uint8_t length)
 {
-
+        // Copy bytes
+        for (uint8_t i = 0; i < length; i++)
+        {
+            ram[i] = ram[address + i];
+        }
 }
 
 // Increment pc by amount
@@ -76,7 +146,7 @@ int8_t Memory::load_rom(char* rom_path)
             file.seekg(0, ios::beg);
             file.read(ram, file_size);
             file.close();
-            rom_title = ram + 0x134;
+            read_rom_title();
         } else {
             cout << "ROM not supported, up to 32kb support only" << endl;
         }

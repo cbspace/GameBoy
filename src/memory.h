@@ -2,10 +2,29 @@
 #define MEMORY_H
 
 #define MEM_SIZE            0x10000     // Memory size for Gameboy
-#define BYTE_ARRAY_SIZE     14          // Used in read_array and write_array
+#define REG_ARRAY_SIZE      8           // Number of 8 bit registers
+#define BYTE_ARRAY_SIZE     16          // Used in read_rom_title and write_array
+
+#define ROM_START_ADDRESS   0x100       // ROM program starts at this address
+#define ROM_TITLE_ADDRESS   0x134       // Address of title
+
+#define SP_INITIAL_VALUE    0xfffe      // Initial value of the stack pointer
+
+#define RA  0   // A register
+#define RF  1   // F register
+#define RB  2   // B register
+#define RC  3   // C register
+#define RD  4   // D register
+#define RE  5   // E register
+#define RH  6   // H register
+#define RL  7   // L register
+
+#define RAF  0   // AF register
+#define RBC  2   // BC register
+#define RDE  4   // DE register
+#define RHL  6   // HL register
 
 #include <stdint.h>
-#include <array>
 #include <string>
 using namespace std;
 
@@ -14,14 +33,18 @@ class Memory
     public:
         char ram[MEM_SIZE];                     // 64kB RAM
         char flags;                             // Flags register
-        uint16_t reg[4];                        // Registers: A/F, B/C, D/E, H/L
         uint16_t sp, pc;                        // Stack pointer and program counter
 
         Memory();                               // Constructor
         void init();                            // Initialise registers
+        uint8_t reg_get(uint8_t reg_id);        // Get contents of 8 bit register
+        uint16_t reg_get16(uint8_t reg_id);     // Get contents of 16 bit register
+        void reg_set(uint8_t reg_id, uint8_t reg_value); // Set value in 8 bit register
+        void reg_set(uint8_t reg_id, uint16_t reg_value); // Set value in 16 bit register
         int8_t load_rom(char* rom_path);        // Function to load a ROM file
-        uint8_t read_byte(uint16_t address);   // Read byte from RAM/ROM
-        array<uint8_t, BYTE_ARRAY_SIZE> read_array(uint16_t address, uint8_t length);   // Read array of bytes from RAM/ROM
+        uint8_t read_byte(uint16_t address);    // Read byte from RAM/ROM
+        uint8_t fetch_byte();                   // Read byte from ROM and increment PC
+        void read_rom_title();                  // Read rom title and load into string
         void write_byte(uint16_t address, uint8_t byte);                        // Write byte to RAM/ROM
         void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
         void inc_pc(int8_t amount);             // Increment pc by amount
@@ -29,6 +52,7 @@ class Memory
 
     private:
         string rom_title;                       // Title of the current game ROM file
+        uint8_t reg[REG_ARRAY_SIZE];            // Registers: A/F, B/C, D/E, H/L
 
     /* Flags register
 
