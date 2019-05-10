@@ -78,18 +78,41 @@ void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
     }
 }
 
+// Copy data between 8 or 16 bit registers
+// 16-bit pointers can be used as reg_id
+// for now assuming to register is 8-bit
+void Memory::reg_copy(uint8_t to_reg_id, uint8_t from_reg_id)
+{
+    // Check what type of register is used for from_reg
+    if (from_reg_id < 8)
+    {
+        // use reg_get and reg_set to copy data
+        reg_set(to_reg_id, reg_get(from_reg_id));
+    }
+    else if ((from_reg_id > 11) && (from_reg_id < 16))
+    {
+        // 16-bit pointer register
+        reg_set(to_reg_id,get_from_pointer(from_reg_id));
+    }
+}
+
 // Read byte from RAM/ROM
 uint8_t Memory::read_byte(uint16_t address)
 {
     return ram[address];
 }
 
+// Read byte from RAM/ROM pointed to by 16-bit register
+uint8_t Memory::get_from_pointer(uint8_t reg_id)
+{
+    return read_byte(reg_get16(reg_id));
+}
+
 // Read byte from ROM and increment PC
 uint8_t Memory::fetch_byte()
 {
-    // Need to increment pc first then return byte
-    inc_pc(1);
-    return ram[pc-1];
+    // Need to return current byte before incrementing PC
+    return ram[pc++];
 }
 
 // Read rom title and load into string
