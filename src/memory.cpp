@@ -35,6 +35,7 @@ uint8_t Memory::reg_get(uint8_t reg_id)
     }
     else
     {
+        throw "Invalid register id";
         return 0; // invalid register
     }
 }
@@ -53,6 +54,7 @@ uint16_t Memory::reg_get16(uint8_t reg_id)
         case RHL:   // HL register
             return (reg[RH] << 8) + reg[RL];
         default:    // Invalid register
+            throw "Invalid register id";
             return 0;
     }
 }
@@ -65,39 +67,108 @@ void Memory::reg_set(uint8_t reg_id, uint8_t reg_value)
     {
         reg[reg_id] = reg_value;
     }
+    else
+    {
+        throw "Invalid register id";
+    }
     printf("register %i set to %0.2X\n", reg_id, reg_value); // Debug message
 }
 
 // Set value in 16 bit register
 void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
 {
-    // Make sure reg_id is valid
-    if (reg_id < REG_ARRAY_SIZE)
+    uint8_t high_byte;
+    uint8_t low_byte;
+
+    high_byte = reg_value >> 8;
+    low_byte = reg_value & 0xff;
+
+    switch(reg_id)
     {
-        // to be implemented
+        case RAF:   // AF register
+            reg_set(RA,high_byte);
+            reg_set(RF,low_byte);
+            break;
+        case RBC:   // BC register
+            reg_set(RB,high_byte);
+            reg_set(RC,low_byte);
+            break;
+        case RDE:   // DE register
+            reg_set(RD,high_byte);
+            reg_set(RE,low_byte);
+            break;
+        case RHL:   // HL register
+            reg_set(RH,high_byte);
+            reg_set(RL,low_byte);
+            break;
+        default:    // Invalid register
+            throw "Invalid register id";
     }
 }
 
-// Copy data between 8 or 16 bit registers
-// 16-bit pointers can be used as reg_id
-// for now assuming to register is 8-bit
+// Add value to 8 or 18-bit register, default is 1
+void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
+{
+    // 16 bit register value
+    uint16_t reg_val;
+
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        // 8 bit register
+        reg[reg_id] += add_value;
+    }
+    else if ((reg_id > 7) && (reg_id < 12)) // Check if valid 16-bit register used
+    {
+        reg_val = reg_get16(reg_id) + add_value;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Subtract value from 8or 16-bit register, default is 1
+void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value)
+{
+    // 16 bit register value
+    uint16_t reg_val;
+
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        // 8 bit register
+        reg[reg_id] -= sub_value;
+    }
+    else if ((reg_id > 7) && (reg_id < 12)) // Check if valid 16-bit register used
+    {
+        reg_val = reg_get16(reg_id) - sub_value;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Copy data between 8 bit registers
 void Memory::reg_copy(uint8_t to_reg_id, uint8_t from_reg_id)
 {
-    // Check what type of register is used for from_reg
-    if (from_reg_id < 8)
+    // Check if registers are valid
+    if ((from_reg_id < REG_ARRAY_SIZE) && (to_reg_id < REG_ARRAY_SIZE))
     {
         // use reg_get and reg_set to copy data
         reg_set(to_reg_id, reg_get(from_reg_id));
     }
-    else if ((from_reg_id > 11) && (from_reg_id < 16))
+    else
     {
-        // 16-bit pointer register
-        reg_set(to_reg_id,get_from_pointer(from_reg_id));
+        throw "Invalid register id";
     }
 }
 
 // Read byte from RAM/ROM
-uint8_t Memory::read_byte(uint16_t address)
+uint8_t Memory::get_byte(uint16_t address)
 {
     return ram[address];
 }
@@ -105,7 +176,16 @@ uint8_t Memory::read_byte(uint16_t address)
 // Read byte from RAM/ROM pointed to by 16-bit register
 uint8_t Memory::get_from_pointer(uint8_t reg_id)
 {
-    return read_byte(reg_get16(reg_id));
+    // Check if valid 16-bit register used
+    if ((reg_id > 7) && (reg_id < 12))
+    {
+        return get_byte(reg_get16(reg_id));
+    }
+    else
+    {
+        throw "Invalid register id";
+        return 0; // invalid register
+    }
 }
 
 // Read byte from ROM and increment PC
@@ -139,6 +219,20 @@ void Memory::write_byte(uint16_t address, uint8_t byte)
     ram[address] = byte;
 }
 
+// Set byte at RAM address pointed to by 16-bit register to byte value
+void Memory::set_from_pointer(uint8_t reg_id, uint8_t byte_value)
+{
+    // Check if valid 16-bit register used
+    if ((reg_id > 7) && (reg_id < 12))
+    {
+        write_byte(reg_get16(reg_id), byte_value);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
 // Write array of bytes to RAM/ROM
 void Memory::write_array(uint16_t address, uint8_t* bytes, uint8_t length)
 {
@@ -154,6 +248,27 @@ void Memory::inc_pc(int8_t amount)
 {
     // Increment the pc
     pc += amount;
+}
+
+// Decrement pc by amount
+void Memory::dec_pc(int8_t amount)
+{
+    // Increment the pc
+    pc -= amount;
+}
+
+// Increment sp by amount
+void Memory::inc_sp(int8_t amount)
+{
+    // Increment the pc
+    sp += amount;
+}
+
+// Decrement sp by amount
+void Memory::dec_sp(int8_t amount)
+{
+    // Increment the pc
+    sp -= amount;
 }
 
 // Function to load a ROM file (currently only supporting

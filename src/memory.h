@@ -24,10 +24,10 @@
 #define RDE  10  // DE register
 #define RHL  11  // HL register
 
-#define VAF  12   // value at AF - These are dereneced 16-bit pointers, used in get_from_pointer
-#define VBC  13   // value at BC
-#define VDE  14   // value at DE
-#define VHL  15   // value at HL
+//#define VAF  12   // value at AF - These are dereneced 16-bit pointers, used in get_from_pointer
+//#define VBC  13   // value at BC
+//#define VDE  14   // value at DE
+//#define VHL  15   // value at HL
 
 #include <stdint.h>
 #include <string>
@@ -36,9 +36,7 @@ using namespace std;
 class Memory
 {
     public:
-        char ram[MEM_SIZE];                         // 64kB RAM
         char flags;                                 // Flags register
-        uint16_t sp, pc;                            // Stack pointer and program counter
 
         Memory();                                   // Constructor
         void init();                                // Initialise registers
@@ -46,20 +44,28 @@ class Memory
         uint16_t reg_get16(uint8_t reg_id);         // Get contents of 16 bit register
         void reg_set(uint8_t reg_id, uint8_t reg_value);        // Set value in 8 bit register
         void reg_set(uint8_t reg_id, uint16_t reg_value);       // Set value in 16 bit register
-        void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between registers
-        int8_t load_rom(char* rom_path);            // Function to load a ROM file
-        uint8_t read_byte(uint16_t address);        // Read byte from RAM/ROM
+        void reg_add(uint8_t reg_id, uint8_t = 1);              // Add value to register, default is 1
+        void reg_sub(uint8_t reg_id, uint8_t = 1);              // Subtract value from register, default is 1
+        void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
+        uint8_t get_byte(uint16_t address);         // Read byte from RAM/ROM
         uint8_t get_from_pointer(uint8_t reg_id);   // Read byte from RAM/ROM pointed to by 16-bit register
         uint8_t fetch_byte();                       // Read byte from ROM and increment PC
         void read_rom_title();                      // Read rom title and load into string
-        void write_byte(uint16_t address, uint8_t byte);                        // Write byte to RAM/ROM
+        void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
+        void set_from_pointer(uint8_t reg_id, uint8_t byte_value);             // Set byte at RAM address pointed to by 16-bit register to byte value
         void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
         void inc_pc(int8_t amount);                 // Increment pc by amount
+        void dec_pc(int8_t amount);                 // Decrement pc by amount
+        void inc_sp(int8_t amount);                 // Increment sp by amount
+        void dec_sp(int8_t amount);                 // Secrement sp by amount
+        int8_t load_rom(char* rom_path);            // Function to load a ROM file
         string get_rom_title();                     // Get the current ROM title
 
     private:
+        char ram[MEM_SIZE];                         // 64kB RAM
+        uint8_t reg[REG_ARRAY_SIZE];                // Registers: A/F, B/C, D/E, H/L
+        uint16_t sp, pc;                            // Stack pointer and program counter
         string rom_title;                           // Title of the current game ROM file
-        uint8_t reg[REG_ARRAY_SIZE];             // Registers: A/F, B/C, D/E, H/L
 
     /* Flags register
 
