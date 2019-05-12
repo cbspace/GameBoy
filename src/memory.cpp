@@ -15,10 +15,11 @@ Memory::Memory()
 // Initialise memory
 void Memory::init()
 {
-    // Initialise registers, sp and pc
-    sp = SP_INITIAL_VALUE;    // sp initialised to fffe (gameboy default)
-    pc = ROM_START_ADDRESS;   // pc initialised to 0x100 (start address)
-    flags = 0;
+    // Initialise sp and pc
+    set_sp(SP_INITIAL_VALUE);    // sp initialised to fffe (gameboy default)
+    set_pc(ROM_START_ADDRESS);   // pc initialised to 0x100 (start address)
+
+    // Initialise registerse
     for (uint8_t i = 0; i < REG_ARRAY_SIZE; i++)
     {
         reg[i] = 0;
@@ -86,28 +87,28 @@ void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
     switch(reg_id)
     {
         case RAF:   // AF register
-            reg_set(RA,high_byte);
-            reg_set(RF,low_byte);
+            reg[RA] = high_byte;
+            reg[RF] = low_byte;
             break;
         case RBC:   // BC register
-            reg_set(RB,high_byte);
-            reg_set(RC,low_byte);
+            reg[RB] = high_byte;
+            reg[RC] = low_byte;
             break;
         case RDE:   // DE register
-            reg_set(RD,high_byte);
-            reg_set(RE,low_byte);
+            reg[RD] = high_byte;
+            reg[RE] = low_byte;
             break;
         case RHL:   // HL register
-            reg_set(RH,high_byte);
-            reg_set(RL,low_byte);
+            reg[RH] = high_byte;
+            reg[RL] = low_byte;
             break;
         default:    // Invalid register
             throw "Invalid register id";
     }
 }
 
-// Add value to 8 or 18-bit register, default is 1
-void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
+// Increment register, flags not changed
+void Memory::reg_inc(uint8_t reg_id)
 {
     // 16 bit register value
     uint16_t reg_val;
@@ -116,9 +117,70 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
     if (reg_id < REG_ARRAY_SIZE)
     {
         // 8 bit register
+        reg[reg_id]++;
+    }
+    else if ((reg_id > REG_16_START) && (reg_id < REG_16_END)) // Check if valid 16-bit register used
+    {
+        reg_val = reg_get16(reg_id) + 1;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Decrement register, flags not changed
+void Memory::reg_dec(uint8_t reg_id)
+{
+    // 16 bit register value
+    uint16_t reg_val;
+
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        // 8 bit register
+        reg[reg_id]--;
+    }
+    else if ((reg_id > REG_16_START) && (reg_id < REG_16_END)) // Check if valid 16-bit register used
+    {
+        reg_val = reg_get16(reg_id) - 1;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Add value to 8-bit register, flags updated
+void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
+{
+    // Make sure reg_id is valid
+    if (reg_id < REG_ARRAY_SIZE)
+    {
+        // Update flags
+        half_carry_test(reg[reg_id],add_value);
+        full_carry_test(reg[reg_id],add_value);
+        reg[RF] = flags;
+
+        // Update 8 bit register
         reg[reg_id] += add_value;
     }
-    else if ((reg_id > 7) && (reg_id < 12)) // Check if valid 16-bit register used
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Add value to 16-bit register, flags updated
+void Memory::reg_add(uint8_t reg_id, uint16_t add_value)
+{
+    // 16 bit register value
+    uint16_t reg_val;
+
+    // Check if valid 16-bit register used
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
     {
         reg_val = reg_get16(reg_id) + add_value;
         reg_set(reg_id,reg_val);
@@ -129,19 +191,29 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
     }
 }
 
-// Subtract value from 8or 16-bit register, default is 1
+// Subtract value from 8-bit register, flags updated
 void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value)
 {
-    // 16 bit register value
-    uint16_t reg_val;
-
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
         // 8 bit register
         reg[reg_id] -= sub_value;
     }
-    else if ((reg_id > 7) && (reg_id < 12)) // Check if valid 16-bit register used
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Subtract value from 16-bit register, flags updated
+void Memory::reg_sub(uint8_t reg_id, uint16_t sub_value)
+{
+    // 16 bit register value
+    uint16_t reg_val;
+
+    // Check if valid 16-bit register used
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
     {
         reg_val = reg_get16(reg_id) - sub_value;
         reg_set(reg_id,reg_val);
@@ -177,7 +249,7 @@ uint8_t Memory::get_byte(uint16_t address)
 uint8_t Memory::get_from_pointer(uint8_t reg_id)
 {
     // Check if valid 16-bit register used
-    if ((reg_id > 7) && (reg_id < 12))
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
     {
         return get_byte(reg_get16(reg_id));
     }
@@ -195,24 +267,6 @@ uint8_t Memory::fetch_byte()
     return ram[pc++];
 }
 
-// Read rom title and load into string
-void Memory::read_rom_title()
-{
-    char rom_title_array[BYTE_ARRAY_SIZE];
-
-    // Copy bytes (max length for title is 14 bytes)
-    for (uint8_t i = 0; i < 14; i++)
-    {
-        rom_title_array[i] = ram[ROM_TITLE_ADDRESS + i];
-    }
-
-    // Append a Null
-    rom_title_array[14] = '\0';
-
-    // Convert to a string
-    rom_title = rom_title_array;
-}
-
 // Write byte to RAM/ROM
 void Memory::write_byte(uint16_t address, uint8_t byte)
 {
@@ -223,7 +277,7 @@ void Memory::write_byte(uint16_t address, uint8_t byte)
 void Memory::set_from_pointer(uint8_t reg_id, uint8_t byte_value)
 {
     // Check if valid 16-bit register used
-    if ((reg_id > 7) && (reg_id < 12))
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
     {
         write_byte(reg_get16(reg_id), byte_value);
     }
@@ -243,32 +297,88 @@ void Memory::write_array(uint16_t address, uint8_t* bytes, uint8_t length)
         }
 }
 
+// Set pc value
+void Memory::set_pc(uint16_t pc_value)
+{
+    pc = pc_value;
+}
+
+// Set sp value
+void Memory::set_sp(uint16_t sp_value)
+{
+    sp = sp_value;
+}
+
+// Get sp value
+uint16_t Memory::get_sp()
+{
+    return sp;
+}
+
 // Increment pc by amount
-void Memory::inc_pc(int8_t amount)
+void Memory::inc_pc(uint8_t amount)
 {
     // Increment the pc
     pc += amount;
 }
 
 // Decrement pc by amount
-void Memory::dec_pc(int8_t amount)
+void Memory::dec_pc(uint8_t amount)
 {
     // Increment the pc
     pc -= amount;
 }
 
 // Increment sp by amount
-void Memory::inc_sp(int8_t amount)
+void Memory::inc_sp(uint8_t amount)
 {
     // Increment the pc
     sp += amount;
 }
 
 // Decrement sp by amount
-void Memory::dec_sp(int8_t amount)
+void Memory::dec_sp(uint8_t amount)
 {
     // Increment the pc
     sp -= amount;
+}
+
+// Test half carry and update H flag
+void Memory::half_carry_test(uint8_t initial_val, uint8_t add_value)
+{
+    // Test for half carry
+    if ((initial_val & 0xff) + add_value > 0x0f)
+    {
+        // Set half carry flag
+        flags |= H_FLAG;
+    }
+    else
+    {
+        // Clear half carry flag
+        flags ^= !H_FLAG;
+    }
+}
+
+// Test full carry and update C flag
+void Memory::full_carry_test(uint8_t initial_val, uint8_t add_value)
+{
+    // Test for full carry
+    if (initial_val + add_value > 0xff)
+    {
+        // Set full carry flag
+        flags |= C_FLAG;
+    }
+    else
+    {
+        // Clear full carry flag
+        flags ^= !C_FLAG;
+    }
+}
+
+// Get value of flags variable
+uint8_t Memory::get_flags()
+{
+    return flags;
 }
 
 // Function to load a ROM file (currently only supporting
@@ -293,6 +403,24 @@ int8_t Memory::load_rom(char* rom_path)
     }
 
     return 0;
+}
+
+// Read rom title and load into string
+void Memory::read_rom_title()
+{
+    char rom_title_array[BYTE_ARRAY_SIZE];
+
+    // Copy bytes (max length for title is 14 bytes)
+    for (uint8_t i = 0; i < 14; i++)
+    {
+        rom_title_array[i] = ram[ROM_TITLE_ADDRESS + i];
+    }
+
+    // Append a Null
+    rom_title_array[14] = '\0';
+
+    // Convert to a string
+    rom_title = rom_title_array;
 }
 
 // Function to get the current ROM title

@@ -36,6 +36,9 @@ void Cpu::cycle()
 // Process a instruction read from ROM
 void Cpu::process_instruction(uint8_t rom_byte)
 {
+    // Used for temporary 8-bit variable
+    uint8_t tmp8_value;
+
     // Used for instructions that use 16-bit immediate value
     uint16_t imm16_value;
 
@@ -366,22 +369,22 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0x3a:  // Set register A to value at (HL), decrement HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            mem->reg_sub(RHL);
+            mem->reg_dec(RHL);
             clk->add_cycles(8);
             break;
         case 0x32:  // Set byte at (HL) to register A, decrement HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            mem->reg_sub(RHL);
+            mem->reg_dec(RHL);
             clk->add_cycles(8);
             break;
         case 0x2a:  // Set register A to value at (HL), increment HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            mem->reg_add(RHL);
+            mem->reg_inc(RHL);
             clk->add_cycles(8);
             break;
         case 0x22:  // Set byte at (HL) to register A, increment HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            mem->reg_add(RHL);
+            mem->reg_inc(RHL);
             clk->add_cycles(8);
             break;
         case 0xe0:  // Set byte at ($FF00 + imm8 n) to register A
@@ -411,6 +414,34 @@ void Cpu::process_instruction(uint8_t rom_byte)
             imm16_value += mem->fetch_byte() << 8;
             mem->reg_set(RHL,imm16_value);
             clk->add_cycles(12);
+            break;
+        case 0x31:  // Set SP to 16 bit immediate value nn
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            mem->set_sp(imm16_value);
+            clk->add_cycles(12);
+            break;
+        case 0xf9:  // Set SP to value in HL
+            mem->set_sp(mem->reg_get16(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xf8:  // Set HL to SP + imm8 n
+            imm16_value = mem->get_sp() + mem->fetch_byte();
+            tmp8_value = mem->get_flags() & (H_FLAG + C_FLAG);
+            mem->reg_set(RF,tmp8_value);
+            mem->reg_set(RHL,imm16_value);
+            clk->add_cycles(12);
+            break;
+        case 0x08:  // Set bytes at (nn) to SP value
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            // sp low byte
+            tmp8_value = mem->get_sp() & 0xff;
+            mem->write_byte(imm16_value,tmp8_value);
+            // sp high byte
+            tmp8_value = mem->get_sp() >> 8;
+            mem->write_byte(imm16_value + 1,tmp8_value);
+            clk->add_cycles(20);
             break;
     }
 

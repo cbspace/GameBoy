@@ -19,15 +19,19 @@
 #define RH  6   // H register
 #define RL  7   // L register
 
-#define RAF  8   // AF register - These register IDs are arbitrary and not directly mapped to registers
-#define RBC  9   // BC register
-#define RDE  10  // DE register
-#define RHL  11  // HL register
+#define REG_16_START  8   // Start of 16-bit register IDs
 
-//#define VAF  12   // value at AF - These are dereneced 16-bit pointers, used in get_from_pointer
-//#define VBC  13   // value at BC
-//#define VDE  14   // value at DE
-//#define VHL  15   // value at HL
+#define RAF  9   // AF register - These register IDs are arbitrary and not directly mapped to registers
+#define RBC  10  // BC register
+#define RDE  11  // DE register
+#define RHL  12  // HL register
+
+#define REG_16_END    13  // End of 16-bit register IDs
+
+#define Z_FLAG     0x80   // Zero flag mask
+#define N_FLAG     0x40   // Negative flag mask
+#define H_FLAG     0x20   // Half carry flag mask
+#define C_FLAG     0x10   // Full carry flag mask
 
 #include <stdint.h>
 #include <string>
@@ -36,38 +40,52 @@ using namespace std;
 class Memory
 {
     public:
-        char flags;                                 // Flags register
-
         Memory();                                   // Constructor
         void init();                                // Initialise registers
+        // Registers
         uint8_t reg_get(uint8_t reg_id);            // Get contents of 8 bit register
         uint16_t reg_get16(uint8_t reg_id);         // Get contents of 16 bit register
         void reg_set(uint8_t reg_id, uint8_t reg_value);        // Set value in 8 bit register
         void reg_set(uint8_t reg_id, uint16_t reg_value);       // Set value in 16 bit register
-        void reg_add(uint8_t reg_id, uint8_t = 1);              // Add value to register, default is 1
-        void reg_sub(uint8_t reg_id, uint8_t = 1);              // Subtract value from register, default is 1
+        void reg_inc(uint8_t reg_id);                           // Increment register, flags not changed
+        void reg_dec(uint8_t reg_id);                           // Decrement register, flags not changed
+        void reg_add(uint8_t reg_id, uint8_t add_value);        // Add value to 8-bit register, defaut is to update flags
+        void reg_add(uint8_t reg_id, uint16_t add_value);       // Add value to 16-bit register, defaut is to update flags
+        void reg_sub(uint8_t reg_id, uint8_t sub_value);        // Subtract value from 8-bit register, defaut is to update flags
+        void reg_sub(uint8_t reg_id, uint16_t sub_value);       // Subtract value from 16-bit register, defaut is to update flags
         void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
+        // RAM/ROM
         uint8_t get_byte(uint16_t address);         // Read byte from RAM/ROM
         uint8_t get_from_pointer(uint8_t reg_id);   // Read byte from RAM/ROM pointed to by 16-bit register
         uint8_t fetch_byte();                       // Read byte from ROM and increment PC
-        void read_rom_title();                      // Read rom title and load into string
         void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
         void set_from_pointer(uint8_t reg_id, uint8_t byte_value);             // Set byte at RAM address pointed to by 16-bit register to byte value
         void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
-        void inc_pc(int8_t amount);                 // Increment pc by amount
-        void dec_pc(int8_t amount);                 // Decrement pc by amount
-        void inc_sp(int8_t amount);                 // Increment sp by amount
-        void dec_sp(int8_t amount);                 // Secrement sp by amount
-        int8_t load_rom(char* rom_path);            // Function to load a ROM file
-        string get_rom_title();                     // Get the current ROM title
+        // Stack pointer and Program Counter
+        void set_pc(uint16_t pc_value);              // Set pc value
+        void set_sp(uint16_t sp_value);              // Set sp value
+        uint16_t get_sp();                           // Get sp value
+        void inc_pc(uint8_t amount);                 // Increment pc by amount
+        void dec_pc(uint8_t amount);                 // Decrement pc by amount
+        void inc_sp(uint8_t amount);                 // Increment sp by amount
+        void dec_sp(uint8_t amount);                 // Secrement sp by amount
+        // Flags
+        void half_carry_test(uint8_t initial_val, uint8_t add_value);  // Test half carry and update H flag
+        void full_carry_test(uint8_t initial_val, uint8_t add_value);  // Test full carry and update F flag
+        uint8_t get_flags();                         // Get value of flags variable, used in some instructions
+        // ROM Cartridge and game title
+        int8_t load_rom(char* rom_path);             // Function to load a ROM file
+        void read_rom_title();                       // Read rom title and load into string
+        string get_rom_title();                      // Get the current ROM title
 
     private:
-        char ram[MEM_SIZE];                         // 64kB RAM
-        uint8_t reg[REG_ARRAY_SIZE];                // Registers: A/F, B/C, D/E, H/L
-        uint16_t sp, pc;                            // Stack pointer and program counter
-        string rom_title;                           // Title of the current game ROM file
+        char ram[MEM_SIZE];                          // 64kB RAM
+        uint8_t reg[REG_ARRAY_SIZE];                 // Registers: A/F, B/C, D/E, H/L
+        uint8_t flags;                               // Store values of flags after operation (before copied to register F)
+        uint16_t sp, pc;                             // Stack pointer and program counter
+        string rom_title;                            // Title of the current game ROM file
 
-    /* Flags register
+    /* Flags register (RF)
 
         7   6   5   4   3   2   1   0
         Z   N   H   C   0   0   0   0
