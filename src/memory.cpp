@@ -159,13 +159,21 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // Update flags
+        // Update HC flags
         half_carry_test(reg[reg_id],add_value);
         full_carry_test(reg[reg_id],add_value);
-        reg[RF] = flags;
 
         // Update 8 bit register
         reg[reg_id] += add_value;
+
+        // Update Z flag
+        if (reg[reg_id] == 0)
+        {
+            flags |= Z_FLAG;
+        }
+
+        // Update flags
+        reg[RF] = flags;
     }
     else
     {
@@ -341,6 +349,36 @@ void Memory::dec_sp(uint8_t amount)
 {
     // Increment the pc
     sp -= amount;
+}
+
+// Push 16-bit value to stack and decrement sp
+void Memory::stack_push(uint16_t push_val)
+{
+    uint8_t byte_val;
+
+    // Decrement the stack pointer
+    dec_sp(2);
+
+    // Push high byte on first then lower byte
+    byte_val = push_val >> 8;
+    ram[sp+1] = byte_val;
+    byte_val = push_val & 0xff;
+    ram[sp] = byte_val;
+}
+
+// Pop 16-bit value from stack and increment sp
+uint16_t Memory::stack_pop()
+{
+    uint16_t ret_val;
+
+    // Increment the stack pointer
+    inc_sp(2);
+
+    // Pop high byte first then lower byte
+    ret_val = ram[sp-1] << 8;
+    ret_val += ram[sp];
+
+    return ret_val;
 }
 
 // Test half carry and update H flag

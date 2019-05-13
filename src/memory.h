@@ -69,6 +69,8 @@ class Memory
         void dec_pc(uint8_t amount);                 // Decrement pc by amount
         void inc_sp(uint8_t amount);                 // Increment sp by amount
         void dec_sp(uint8_t amount);                 // Secrement sp by amount
+        void stack_push(uint16_t push_val);          // Push 16bit value to stack and decrement sp
+        uint16_t stack_pop();                        // Pop 16-bit value from stack and increment sp
         // Flags
         void half_carry_test(uint8_t initial_val, uint8_t add_value);  // Test half carry and update H flag
         void full_carry_test(uint8_t initial_val, uint8_t add_value);  // Test full carry and update F flag
