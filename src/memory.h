@@ -28,10 +28,10 @@
 
 #define REG_16_END    13  // End of 16-bit register IDs
 
-#define Z_FLAG     0x80   // Zero flag mask
-#define N_FLAG     0x40   // Negative flag mask
-#define H_FLAG     0x20   // Half carry flag mask
-#define C_FLAG     0x10   // Full carry flag mask
+#define ZF     0x80   // Zero flag mask
+#define NF     0x40   // Negative flag mask
+#define HF     0x20   // Half carry flag mask
+#define CF     0x10   // Full carry flag mask
 
 #include <stdint.h>
 #include <string>
@@ -49,8 +49,8 @@ class Memory
         void reg_set(uint8_t reg_id, uint16_t reg_value);       // Set value in 16 bit register
         void reg_inc(uint8_t reg_id);                           // Increment register, flags not changed
         void reg_dec(uint8_t reg_id);                           // Decrement register, flags not changed
-        void reg_add(uint8_t reg_id, uint8_t add_value);        // Add value to 8-bit register, defaut is to update flags
-        void reg_add(uint8_t reg_id, uint16_t add_value);       // Add value to 16-bit register, defaut is to update flags
+        void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);        // Add value to 8-bit register and update flags, bool parameter is add with carry
+        void reg_add(uint8_t reg_id, uint16_t add_value);       // Add value to 16-bit register and update flags, bool parameter is add with carry
         void reg_sub(uint8_t reg_id, uint8_t sub_value);        // Subtract value from 8-bit register, defaut is to update flags
         void reg_sub(uint8_t reg_id, uint16_t sub_value);       // Subtract value from 16-bit register, defaut is to update flags
         void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
@@ -72,9 +72,8 @@ class Memory
         void stack_push(uint16_t push_val);          // Push 16bit value to stack and decrement sp
         uint16_t stack_pop();                        // Pop 16-bit value from stack and increment sp
         // Flags
-        void half_carry_test(uint8_t initial_val, uint8_t add_value);  // Test half carry and update H flag
-        void full_carry_test(uint8_t initial_val, uint8_t add_value);  // Test full carry and update F flag
-        uint8_t get_flags();                         // Get value of flags variable, used in some instructions
+        void flag_update(uint8_t flag_id, uint8_t flg_val);  // Set or clear flag
+        bool flag_get(uint8_t flag_id);              // Return flag value
         // ROM Cartridge and game title
         int8_t load_rom(char* rom_path);             // Function to load a ROM file
         void read_rom_title();                       // Read rom title and load into string

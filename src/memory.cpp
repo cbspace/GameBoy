@@ -153,27 +153,38 @@ void Memory::reg_dec(uint8_t reg_id)
     }
 }
 
-// Add value to 8-bit register, flags updated
-void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
+// Add value to 8-bit register and update flags, bool parameter is add with carry
+void Memory::reg_add(uint8_t reg_id, uint8_t add_value, bool carry)
 {
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // Update HC flags
-        half_carry_test(reg[reg_id],add_value);
-        full_carry_test(reg[reg_id],add_value);
+        uint16_t add_w_carry, total;
 
-        // Update 8 bit register
-        reg[reg_id] += add_value;
-
-        // Update Z flag
-        if (reg[reg_id] == 0)
+        // Carry is added to accomodate ADDC operations
+        add_w_carry = add_value;
+        if (carry)
         {
-            flags |= Z_FLAG;
+            add_w_carry += flag_get(ZF);
         }
 
-        // Update flags
-        reg[RF] = flags;
+        // The total sum
+        total = add_value + add_w_carry;
+
+        // Update H flag
+        flag_update(HF,(reg[reg_id] & 0xff00 == total & 0xff00));
+
+        // Update C flag
+        flag_update(CF,(total > 0xff));
+
+        // Update Z flag
+        flag_update(ZF,(reg[reg_id]!=0));
+
+        // Clear N flag
+        flag_update(NF,0);
+
+        // Update 8 bit register
+        reg[reg_id] = reg[reg_id] + (uint8_t)add_w_carry;
     }
     else
     {
@@ -181,7 +192,7 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value)
     }
 }
 
-// Add value to 16-bit register, flags updated
+// Add value to 16-bit register and update flags, bool parameter is add with carry
 void Memory::reg_add(uint8_t reg_id, uint16_t add_value)
 {
     // 16 bit register value
@@ -381,42 +392,25 @@ uint16_t Memory::stack_pop()
     return ret_val;
 }
 
-// Test half carry and update H flag
-void Memory::half_carry_test(uint8_t initial_val, uint8_t add_value)
+// Set or clear a flag
+void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
 {
-    // Test for half carry
-    if ((initial_val & 0xff) + add_value > 0x0f)
+    if (flg_val)
     {
-        // Set half carry flag
-        flags |= H_FLAG;
+        reg[RF] |= flag_id;
     }
     else
     {
-        // Clear half carry flag
-        flags ^= !H_FLAG;
+        reg[RF] ^= !flag_id;
     }
 }
 
-// Test full carry and update C flag
-void Memory::full_carry_test(uint8_t initial_val, uint8_t add_value)
+// Return flag value
+bool Memory::flag_get(uint8_t flag_id)
 {
-    // Test for full carry
-    if (initial_val + add_value > 0xff)
-    {
-        // Set full carry flag
-        flags |= C_FLAG;
-    }
-    else
-    {
-        // Clear full carry flag
-        flags ^= !C_FLAG;
-    }
-}
-
-// Get value of flags variable
-uint8_t Memory::get_flags()
-{
-    return flags;
+    uint8_t flag_val;
+    flag_val = reg[RF] & flag_id;
+    return !(flag_val==0);
 }
 
 // Function to load a ROM file (currently only supporting

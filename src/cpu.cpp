@@ -427,9 +427,9 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0xf8:  // Set HL to SP + imm8 n
             imm16_value = mem->get_sp() + mem->fetch_byte();
-            tmp8_value = mem->get_flags() & (H_FLAG + C_FLAG);
+            mem->flag_update(ZF,0);
+            mem->flag_update(NF,0);                        // NEED TO ADD H AND C FLAG OPERATIONS
             mem->reg_set(RF,tmp8_value);
-            mem->reg_set(RHL,imm16_value);
             clk->add_cycles(12);
             break;
         case 0x08:  // Set bytes at (nn) to SP value
@@ -511,6 +511,79 @@ void Cpu::process_instruction(uint8_t rom_byte)
             mem->reg_add(RA, mem->fetch_byte());
             clk->add_cycles(8);
             break;
+        case 0x8f:  // Set register A to reg A + reg A + carry
+            mem->reg_add(RA,mem->reg_get(RA),true);
+            clk->add_cycles(4);
+            break;
+        case 0x88:  // Set register A to reg A + reg B + carry
+            mem->reg_add(RA,mem->reg_get(RB),true);
+            clk->add_cycles(4);
+            break;
+        case 0x89:  // Set register A to reg A + reg C + carry
+            mem->reg_add(RA,mem->reg_get(RC),true);
+            clk->add_cycles(4);
+            break;
+        case 0x8a:  // Set register A to reg A + reg D + carry
+            mem->reg_add(RA,mem->reg_get(RD),true);
+            clk->add_cycles(4);
+            break;
+        case 0x8b:  // Set register A to reg A + reg E + carry
+            mem->reg_add(RA,mem->reg_get(RE),true);
+            clk->add_cycles(4);
+            break;
+        case 0x8c:  // Set register A to reg A + reg H + carry
+            mem->reg_add(RA,mem->reg_get(RH),true);
+            clk->add_cycles(4);
+            break;
+        case 0x8d:  // Set register A to reg A + reg L + carry
+            mem->reg_add(RA,mem->reg_get(RL),true);
+            clk->add_cycles(4);
+            break;
+        case 0x8e:  // Set register A to reg A + (HL) + carry
+            mem->reg_add(RA,mem->get_from_pointer(RHL),true);
+            clk->add_cycles(8);
+            break;
+        case 0xce:  // Set register A to reg A + imm8 n + carry
+            mem->reg_add(RA,mem->fetch_byte(),true);
+            clk->add_cycles(8);
+            break;
+        case 0x97:  // Set register A to reg A minus reg A
+            mem->reg_sub(RA,mem->reg_get(RA));
+            clk->add_cycles(4);
+            break;
+        case 0x90:  // Set register A to reg A minus reg B
+            mem->reg_sub(RA,mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0x91:  // Set register A to reg A minus reg C
+            mem->reg_sub(RA,mem->reg_get(RC));
+            clk->add_cycles(4);
+            break;
+        case 0x92:  // Set register A to reg A minus reg D
+            mem->reg_sub(RA,mem->reg_get(RD));
+            clk->add_cycles(4);
+            break;
+        case 0x93:  // Set register A to reg A minus reg E
+            mem->reg_sub(RA,mem->reg_get(RE));
+            clk->add_cycles(4);
+            break;
+        case 0x94:  // Set register A to reg A minus reg H
+            mem->reg_sub(RA,mem->reg_get(RH));
+            clk->add_cycles(4);
+            break;
+        case 0x95:  // Set register A to reg A minus reg L
+            mem->reg_sub(RA,mem->reg_get(RL));
+            clk->add_cycles(4);
+            break;
+        case 0x96:  // Set register A to reg A minus (HL)
+            mem->reg_sub(RA,mem->get_from_pointer(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xd6:  // Set register A to reg A minus imm8 n
+            mem->reg_sub(RA,mem->fetch_byte());
+            clk->add_cycles(8);
+            break;
+
     }
 
     // Increment the program counter(temp)
