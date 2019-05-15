@@ -47,19 +47,25 @@ class Memory
         uint16_t reg_get16(uint8_t reg_id);         // Get contents of 16 bit register
         void reg_set(uint8_t reg_id, uint8_t reg_value);        // Set value in 8 bit register
         void reg_set(uint8_t reg_id, uint16_t reg_value);       // Set value in 16 bit register
-        void reg_inc(uint8_t reg_id);                           // Increment register, flags not changed
-        void reg_dec(uint8_t reg_id);                           // Decrement register, flags not changed
-        void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);        // Add value to 8-bit register and update flags, bool parameter is add with carry
-        void reg_add(uint8_t reg_id, uint16_t add_value);       // Add value to 16-bit register and update flags, bool parameter is add with carry
-        void reg_sub(uint8_t reg_id, uint8_t sub_value);        // Subtract value from 8-bit register, defaut is to update flags
-        void reg_sub(uint8_t reg_id, uint16_t sub_value);       // Subtract value from 16-bit register, defaut is to update flags
         void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
+        void reg_inc(uint8_t reg_id);                           // Increment 8-bit register, flags updated
+        void reg_dec(uint8_t reg_id);                           // Decrement 8-bit register, flags not changed
+        // Math
+        void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);          // Add value to 8-bit register and update flags, bool parameter is add with carry
+        void reg_add(uint8_t reg_id, uint16_t add_value);                   // Add value to 16-bit register and update flags, bool parameter is add with carry
+        void reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow = 0);   // Subtract value from 8-bit register and update flags, bool param is borrow with carry
+        void reg_sub(uint8_t reg_id, uint16_t sub_value);                   // Subtract value from 16-bit register, defaut is to update flags
+        // Logical
+        void reg_and(uint8_t and_value);            // Register A is ANDed with and_value, result stored in register A - flags updated
+        void reg_or(uint8_t or_value);              // Register A is ORed with and_value, result stored in register A - flags updated
+        void reg_xor(uint8_t xor_value);            // Register A is XORed with and_value, result stored in register A - flags updated
+        void reg_compare(uint8_t cmp_value);        // Register A is compared with cmp_value, result stored in register A - flags updated
         // RAM/ROM
         uint8_t get_byte(uint16_t address);         // Read byte from RAM/ROM
-        uint8_t get_from_pointer(uint8_t reg_id);   // Read byte from RAM/ROM pointed to by 16-bit register
         uint8_t fetch_byte();                       // Read byte from ROM and increment PC
-        void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
+        uint8_t get_from_pointer(uint8_t reg_id);                              // Read byte from RAM/ROM pointed to by 16-bit register
         void set_from_pointer(uint8_t reg_id, uint8_t byte_value);             // Set byte at RAM address pointed to by 16-bit register to byte value
+        void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
         void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
         // Stack pointer and Program Counter
         void set_pc(uint16_t pc_value);              // Set pc value

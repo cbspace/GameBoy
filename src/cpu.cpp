@@ -369,22 +369,26 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0x3a:  // Set register A to value at (HL), decrement HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            mem->reg_dec(RHL);
+            imm16_value = mem->reg_get16(RHL) - 1;
+            mem->reg_set(RHL, imm16_value);
             clk->add_cycles(8);
             break;
         case 0x32:  // Set byte at (HL) to register A, decrement HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            mem->reg_dec(RHL);
+            imm16_value = mem->reg_get16(RHL) - 1;
+            mem->reg_set(RHL, imm16_value);
             clk->add_cycles(8);
             break;
         case 0x2a:  // Set register A to value at (HL), increment HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            mem->reg_inc(RHL);
+            imm16_value = mem->reg_get16(RHL) + 1;
+            mem->reg_set(RHL, imm16_value);
             clk->add_cycles(8);
             break;
         case 0x22:  // Set byte at (HL) to register A, increment HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            mem->reg_inc(RHL);
+            imm16_value = mem->reg_get16(RHL) + 1;
+            mem->reg_set(RHL, imm16_value);
             clk->add_cycles(8);
             break;
         case 0xe0:  // Set byte at ($FF00 + imm8 n) to register A
@@ -583,7 +587,218 @@ void Cpu::process_instruction(uint8_t rom_byte)
             mem->reg_sub(RA,mem->fetch_byte());
             clk->add_cycles(8);
             break;
+        case 0x9f:  // Set register A to reg A minus reg A - carry
+            mem->reg_sub(RA,mem->reg_get(RA),true);
+            clk->add_cycles(4);
+            break;
+        case 0x98:  // Set register A to reg A minus reg B - carry
+            mem->reg_sub(RA,mem->reg_get(RB),true);
+            clk->add_cycles(4);
+            break;
+        case 0x99:  // Set register A to reg A minus reg C - carry
+            mem->reg_sub(RA,mem->reg_get(RC),true);
+            clk->add_cycles(4);
+            break;
+        case 0x9a:  // Set register A to reg A minus reg D - carry
+            mem->reg_sub(RA,mem->reg_get(RD),true);
+            clk->add_cycles(4);
+            break;
+        case 0x9b:  // Set register A to reg A minus reg E - carry
+            mem->reg_sub(RA,mem->reg_get(RE),true);
+            clk->add_cycles(4);
+            break;
+        case 0x9c:  // Set register A to reg A minus reg H - carry
+            mem->reg_sub(RA,mem->reg_get(RH),true);
+            clk->add_cycles(4);
+            break;
+        case 0x9d:  // Set register A to reg A minus reg L - carry
+            mem->reg_sub(RA,mem->reg_get(RL),true);
+            clk->add_cycles(4);
+            break;
+        case 0x9e:  // Set register A to reg A minus (HL) - carry
+            mem->reg_sub(RA,mem->get_from_pointer(RHL),true);
+            clk->add_cycles(8);
+            break;
+        case 0xde:  // Set register A to reg A minus imm8 n - carry
+            mem->reg_sub(RA,mem->fetch_byte(),true);
+            clk->add_cycles(8);
+            break;
+        case 0xa7:  // Set register A to reg A AND reg A
+            mem->reg_and(mem->reg_get(RA));
+            clk->add_cycles(4);
+            break;
+        case 0xa0:  // Set register A to reg A AND reg B
+            mem->reg_and(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xa1:  // Set register A to reg A AND reg C
+            mem->reg_and(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xa2:  // Set register A to reg A AND reg D
+            mem->reg_and(mem->reg_get(RD));
+            clk->add_cycles(4);
+            break;
+        case 0xa3:  // Set register A to reg A AND reg E
+            mem->reg_and(mem->reg_get(RE));
+            clk->add_cycles(4);
+            break;
+        case 0xa4:  // Set register A to reg A AND reg H
+            mem->reg_and(mem->reg_get(RH));
+            clk->add_cycles(4);
+            break;
+        case 0xa5:  // Set register A to reg A AND reg L
+            mem->reg_and(mem->reg_get(RL));
+            clk->add_cycles(4);
+            break;
+        case 0xa6:  // Set register A to reg A AND (HL)
+            mem->reg_and(mem->get_from_pointer(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xe6:  // Set register A to reg A AND imm8 n
+            mem->reg_and(mem->fetch_byte());
+            clk->add_cycles(8);
+            break;
+        case 0xb7:  // Set register A to reg A OR reg A
+            mem->reg_or(mem->reg_get(RA));
+            clk->add_cycles(4);
+            break;
+        case 0xb0:  // Set register A to reg A OR reg B
+            mem->reg_or(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xb1:  // Set register A to reg A OR reg C
+            mem->reg_or(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xb2:  // Set register A to reg A OR reg D
+            mem->reg_or(mem->reg_get(RD));
+            clk->add_cycles(4);
+            break;
+        case 0xb3:  // Set register A to reg A OR reg E
+            mem->reg_or(mem->reg_get(RE));
+            clk->add_cycles(4);
+            break;
+        case 0xb4:  // Set register A to reg A OR reg H
+            mem->reg_or(mem->reg_get(RH));
+            clk->add_cycles(4);
+            break;
+        case 0xb5:  // Set register A to reg A OR reg L
+            mem->reg_or(mem->reg_get(RL));
+            clk->add_cycles(4);
+            break;
+        case 0xb6:  // Set register A to reg A OR (HL)
+            mem->reg_or(mem->get_from_pointer(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xf6:  // Set register A to reg A OR imm8 n
+            mem->reg_or(mem->fetch_byte());
+            clk->add_cycles(8);
+            break;
+        case 0xaf:  // Set register A to reg A XOR reg A
+            mem->reg_xor(mem->reg_get(RA));
+            clk->add_cycles(4);
+            break;
+        case 0xa8:  // Set register A to reg A XOR reg B
+            mem->reg_xor(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xa9:  // Set register A to reg A XOR reg C
+            mem->reg_xor(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xaa:  // Set register A to reg A XOR reg D
+            mem->reg_xor(mem->reg_get(RD));
+            clk->add_cycles(4);
+            break;
+        case 0xab:  // Set register A to reg A XOR reg E
+            mem->reg_xor(mem->reg_get(RE));
+            clk->add_cycles(4);
+            break;
+        case 0xac:  // Set register A to reg A XOR reg H
+            mem->reg_xor(mem->reg_get(RH));
+            clk->add_cycles(4);
+            break;
+        case 0xad:  // Set register A to reg A XOR reg L
+            mem->reg_xor(mem->reg_get(RL));
+            clk->add_cycles(4);
+            break;
+        case 0xae:  // Set register A to reg A XOR (HL)
+            mem->reg_xor(mem->get_from_pointer(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xee:  // Set register A to reg A XOR imm8 n
+            mem->reg_xor(mem->fetch_byte());
+            clk->add_cycles(8);
+            break;
+        case 0xbf:  // Compare register A to register A and update flags
+            mem->reg_compare(mem->reg_get(RA));
+            clk->add_cycles(4);
+            break;
+        case 0xb8:  // Compare register A to register B and update flags
+            mem->reg_compare(mem->reg_get(RB));
+            clk->add_cycles(4);
+            break;
+        case 0xb9:  // Compare register A to register C and update flags
+            mem->reg_compare(mem->reg_get(RC));
+            clk->add_cycles(4);
+            break;
+        case 0xba:  // Compare register A to register D and update flags
+            mem->reg_compare(mem->reg_get(RD));
+            clk->add_cycles(4);
+            break;
+        case 0xbb:  // Compare register A to register E and update flags
+            mem->reg_compare(mem->reg_get(RE));
+            clk->add_cycles(4);
+            break;
+        case 0xbc:  // Compare register A to register F and update flags
+            mem->reg_compare(mem->reg_get(RH));
+            clk->add_cycles(4);
+            break;
+        case 0xbd:  // Compare register A to register L and update flags
+            mem->reg_compare(mem->reg_get(RL));
+            clk->add_cycles(4);
+            break;
+        case 0xbe:  // Compare register A to (HL) and update flags
+            mem->reg_compare(mem->get_from_pointer(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0xfe:  // Compare register A to imm8 n and update flags
+            mem->reg_compare(mem->fetch_byte());
+            clk->add_cycles(8);
+            break;
+        case 0x3c:  // Increment register A by 1 and update flags
+            mem->reg_inc(RA);
+            clk->add_cycles(4);
+            break;
+        case 0x04:  // Increment register B by 1 and update flags
+            mem->reg_inc(RB);
+            clk->add_cycles(4);
+            break;
+        case 0x0c:  // Increment register C by 1 and update flags
+            mem->reg_inc(RC);
+            clk->add_cycles(4);
+            break;
+        case 0x14:  // Increment register D by 1 and update flags
+            mem->reg_inc(RD);
+            clk->add_cycles(4);
+            break;
+        case 0x1c:  // Increment register E by 1 and update flags
+            mem->reg_inc(RE);
+            clk->add_cycles(4);
+            break;
+        case 0x24:  // Increment register H by 1 and update flags
+            mem->reg_inc(RH);
+            clk->add_cycles(4);
+            break;
+        case 0x2c:  // Increment register L by 1 and update flags
+            mem->reg_inc(RL);
+            clk->add_cycles(4);
+            break;
+        case 0x34:  // Increment (HL) by 1 and update flags
 
+            clk->add_cycles(12);
+            break;
     }
 
     // Increment the program counter(temp)

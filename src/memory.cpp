@@ -107,22 +107,38 @@ void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
     }
 }
 
-// Increment register, flags not changed
+// Copy data between 8 bit registers
+void Memory::reg_copy(uint8_t to_reg_id, uint8_t from_reg_id)
+{
+    // Check if registers are valid
+    if ((from_reg_id < REG_ARRAY_SIZE) && (to_reg_id < REG_ARRAY_SIZE))
+    {
+        // use reg_get and reg_set to copy data
+        reg_set(to_reg_id, reg_get(from_reg_id));
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Increment 8-bit register, flags updated
 void Memory::reg_inc(uint8_t reg_id)
 {
-    // 16 bit register value
-    uint16_t reg_val;
-
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // 8 bit register
+        // Update H flag
+        flag_update(HF,(reg[reg_id] & 0xf0 == (reg[reg_id] + 1) & 0xf0));
+
+        // Clear N flag
+        flag_update(NF,0);
+
+        // Update 8 bit register
         reg[reg_id]++;
-    }
-    else if ((reg_id > REG_16_START) && (reg_id < REG_16_END)) // Check if valid 16-bit register used
-    {
-        reg_val = reg_get16(reg_id) + 1;
-        reg_set(reg_id,reg_val);
+
+        // Update Z flag
+        flag_update(ZF,(reg[reg_id]==0));
     }
     else
     {
@@ -165,26 +181,26 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value, bool carry)
         add_w_carry = add_value;
         if (carry)
         {
-            add_w_carry += flag_get(ZF);
+            add_w_carry += flag_get(CF);
         }
 
         // The total sum
-        total = add_value + add_w_carry;
+        total = reg[reg_id] + add_w_carry;
 
         // Update H flag
-        flag_update(HF,(reg[reg_id] & 0xff00 == total & 0xff00));
+        flag_update(HF,(reg[reg_id] & 0xf0 == total & 0xf0));
 
         // Update C flag
         flag_update(CF,(total > 0xff));
-
-        // Update Z flag
-        flag_update(ZF,(reg[reg_id]!=0));
 
         // Clear N flag
         flag_update(NF,0);
 
         // Update 8 bit register
-        reg[reg_id] = reg[reg_id] + (uint8_t)add_w_carry;
+        reg[reg_id] += add_value + carry;
+
+        // Update Z flag
+        flag_update(ZF,(reg[reg_id]==0));
     }
     else
     {
@@ -210,14 +226,38 @@ void Memory::reg_add(uint8_t reg_id, uint16_t add_value)
     }
 }
 
-// Subtract value from 8-bit register, flags updated
-void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value)
+// Subtract value from 8-bit register and flags updated, bool brrow used for sub with borrow
+void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow)
 {
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // 8 bit register
-        reg[reg_id] -= sub_value;
+        int16_t sub_w_borrow, total;
+
+        // Borrow is subtracted to accomodate SBC operations
+        sub_w_borrow = sub_value;
+        if (borrow)
+        {
+            sub_w_borrow -= flag_get(CF);
+        }
+
+        // The total result
+        total = sub_value - sub_w_borrow;
+
+        // Update H flag
+        flag_update(HF,(reg[reg_id] & 0xf0 == total & 0xf0));
+
+        // Update C flag
+        flag_update(CF,!(total < 0));
+
+        // Set N flag
+        flag_update(NF,1);
+
+        // Update 8 bit register
+        reg[reg_id] -= sub_value - borrow;
+
+        // Update Z flag
+        flag_update(ZF,(reg[reg_id]==0));
     }
     else
     {
@@ -243,25 +283,95 @@ void Memory::reg_sub(uint8_t reg_id, uint16_t sub_value)
     }
 }
 
-// Copy data between 8 bit registers
-void Memory::reg_copy(uint8_t to_reg_id, uint8_t from_reg_id)
+// Register A is ANDed with and_value, result stored in register A - flags updated
+void Memory::reg_and(uint8_t and_value)
 {
-    // Check if registers are valid
-    if ((from_reg_id < REG_ARRAY_SIZE) && (to_reg_id < REG_ARRAY_SIZE))
-    {
-        // use reg_get and reg_set to copy data
-        reg_set(to_reg_id, reg_get(from_reg_id));
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
+    // Update register A
+    reg[RA] &= and_value;
+
+    // Update H flag
+    flag_update(HF,1);
+
+    // Update C flag
+    flag_update(CF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[RA]==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+}
+
+// Register A is ORed with and_value, result stored in register A - flags updated
+void Memory::reg_or(uint8_t or_value)
+{
+    // Update register A
+    reg[RA] |= or_value;
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update C flag
+    flag_update(CF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[RA]==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+}
+
+// Register A is XORed with and_value, result stored in register A - flags updated
+void Memory::reg_xor(uint8_t xor_value)
+{
+    // Update register A
+    reg[RA] ^= xor_value;
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update C flag
+    flag_update(CF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[RA]==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+}
+
+// Register A is compared with cmp_value, result stored in register A - flags updated
+void Memory::reg_compare(uint8_t cmp_value)
+{
+    int16_t total;
+
+    // The total result
+    total = reg[RA] - cmp_value;
+
+    // Update H flag
+    flag_update(HF,(reg[RA] & 0xf0 == total & 0xf0));
+
+    // Update C flag
+    flag_update(CF,!(total < 0));
+
+    // Update Z flag
+    flag_update(ZF,(total==0));
+
+    // Set N flag
+    flag_update(NF,1);
 }
 
 // Read byte from RAM/ROM
 uint8_t Memory::get_byte(uint16_t address)
 {
     return ram[address];
+}
+
+// Read byte from ROM and increment PC
+uint8_t Memory::fetch_byte()
+{
+    // Need to return current byte before incrementing PC
+    return ram[pc++];
 }
 
 // Read byte from RAM/ROM pointed to by 16-bit register
@@ -279,19 +389,6 @@ uint8_t Memory::get_from_pointer(uint8_t reg_id)
     }
 }
 
-// Read byte from ROM and increment PC
-uint8_t Memory::fetch_byte()
-{
-    // Need to return current byte before incrementing PC
-    return ram[pc++];
-}
-
-// Write byte to RAM/ROM
-void Memory::write_byte(uint16_t address, uint8_t byte)
-{
-    ram[address] = byte;
-}
-
 // Set byte at RAM address pointed to by 16-bit register to byte value
 void Memory::set_from_pointer(uint8_t reg_id, uint8_t byte_value)
 {
@@ -304,6 +401,12 @@ void Memory::set_from_pointer(uint8_t reg_id, uint8_t byte_value)
     {
         throw "Invalid register id";
     }
+}
+
+// Write byte to RAM/ROM
+void Memory::write_byte(uint16_t address, uint8_t byte)
+{
+    ram[address] = byte;
 }
 
 // Write array of bytes to RAM/ROM
