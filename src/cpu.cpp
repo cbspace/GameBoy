@@ -795,9 +795,57 @@ void Cpu::process_instruction(uint8_t rom_byte)
             mem->reg_inc(RL);
             clk->add_cycles(4);
             break;
-        case 0x34:  // Increment (HL) by 1 and update flags
-
+        case 0x34:  // Increment byte at (HL) by 1 and update flags
+            mem->inc_from_pointer(RHL);
             clk->add_cycles(12);
+            break;
+        case 0x3d:  // Decrement register A by 1 and update flags
+            mem->reg_dec(RA);
+            clk->add_cycles(4);
+            break;
+        case 0x05:  // Decrement register B by 1 and update flags
+            mem->reg_dec(RB);
+            clk->add_cycles(4);
+            break;
+        case 0x0d:  // Decrement register C by 1 and update flags
+            mem->reg_dec(RC);
+            clk->add_cycles(4);
+            break;
+        case 0x15:  // Decrement register D by 1 and update flags
+            mem->reg_dec(RD);
+            clk->add_cycles(4);
+            break;
+        case 0x1d:  // Decrement register E by 1 and update flags
+            mem->reg_dec(RE);
+            clk->add_cycles(4);
+            break;
+        case 0x25:  // Decrement register H by 1 and update flags
+            mem->reg_dec(RH);
+            clk->add_cycles(4);
+            break;
+        case 0x2d:  // Decrement register L by 1 and update flags
+            mem->reg_dec(RL);
+            clk->add_cycles(4);
+            break;
+        case 0x35:  // Decrement byte at (HL) by 1 and update flags
+            mem->dec_from_pointer(RHL);
+            clk->add_cycles(12);
+            break;
+        case 0x09:  // Register HL is set to register HL + register BC, flags updated
+            mem->reg_add16(RHL,mem->reg_get16(RBC));
+            clk->add_cycles(8);
+            break;
+        case 0x19:  // Register HL is set to register HL + register DE, flags updated
+            mem->reg_add16(RHL,mem->reg_get16(RDE));
+            clk->add_cycles(8);
+            break;
+        case 0x29:  // Register HL is set to register HL + register HL, flags updated
+            mem->reg_add16(RHL,mem->reg_get16(RHL));
+            clk->add_cycles(8);
+            break;
+        case 0x39:  // Register HL is set to register HL + SP, flags updated
+            mem->reg_add16(RHL,mem->get_sp());
+            clk->add_cycles(8);
             break;
     }
 
