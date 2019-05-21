@@ -2,125 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="src/memory.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4707" topLine="60" />
-		</Cursor>
-	</File>
-	<File name="src/cpu.cpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="32171" topLine="817" />
-		</Cursor>
-	</File>
-	<File name="src/display.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="61" topLine="24" />
-		</Cursor>
-	</File>
-	<File name="src/emulator.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="199" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/memory.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7013" topLine="46" />
-		</Cursor>
-		<Folding>
-			<Collapse line="9" />
-			<Collapse line="16" />
-			<Collapse line="23" />
-			<Collapse line="30" />
-			<Collapse line="33" />
-			<Collapse line="37" />
-			<Collapse line="45" />
-			<Collapse line="47" />
-			<Collapse line="64" />
-			<Collapse line="67" />
-			<Collapse line="71" />
-			<Collapse line="79" />
-			<Collapse line="87" />
-			<Collapse line="111" />
-			<Collapse line="114" />
-			<Collapse line="119" />
-			<Collapse line="126" />
-			<Collapse line="129" />
-			<Collapse line="143" />
-			<Collapse line="150" />
-			<Collapse line="156" />
-			<Collapse line="169" />
-			<Collapse line="175" />
-			<Collapse line="182" />
-			<Collapse line="185" />
-			<Collapse line="191" />
-			<Collapse line="214" />
-			<Collapse line="219" />
-			<Collapse line="240" />
-			<Collapse line="243" />
-			<Collapse line="249" />
-			<Collapse line="272" />
-			<Collapse line="277" />
-			<Collapse line="320" />
-			<Collapse line="339" />
-			<Collapse line="358" />
-			<Collapse line="377" />
-			<Collapse line="398" />
-			<Collapse line="404" />
-			<Collapse line="411" />
-			<Collapse line="414" />
-			<Collapse line="418" />
-			<Collapse line="426" />
-			<Collapse line="429" />
-			<Collapse line="433" />
-			<Collapse line="440" />
-			<Collapse line="446" />
-			<Collapse line="449" />
-			<Collapse line="456" />
-			<Collapse line="477" />
-			<Collapse line="498" />
-			<Collapse line="504" />
-			<Collapse line="510" />
-			<Collapse line="516" />
-			<Collapse line="523" />
-			<Collapse line="530" />
-			<Collapse line="537" />
-			<Collapse line="544" />
-			<Collapse line="559" />
-			<Collapse line="574" />
-			<Collapse line="576" />
-			<Collapse line="580" />
-			<Collapse line="587" />
-			<Collapse line="596" />
-			<Collapse line="600" />
-			<Collapse line="602" />
-			<Collapse line="619" />
-			<Collapse line="624" />
-			<Collapse line="637" />
-		</Folding>
-	</File>
-	<File name="src/main.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/cpu.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="78" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/emulator.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="177" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="src/main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="156" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/display.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="543" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src/clock.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
@@ -128,9 +12,54 @@
 			<Cursor1 position="1301" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="src/display.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="61" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="src/memory.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5728" topLine="60" />
+		</Cursor>
+	</File>
 	<File name="src/clock.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="819" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src/emulator.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="177" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/cpu.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="46807" topLine="1118" />
+		</Cursor>
+	</File>
+	<File name="src/memory.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17838" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/main.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/emulator.h" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="199" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/display.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="543" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/cpu.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="877" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

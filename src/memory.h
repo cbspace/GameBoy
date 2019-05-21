@@ -55,8 +55,13 @@ class Memory
         /// Math
         void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);          // Add value to 8-bit register and update flags, bool parameter is add with carry
         void reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow = 0);   // Subtract value from 8-bit register and update flags, bool param is borrow with carry
-        void reg_add16(uint8_t reg_id, uint16_t reg_n_val);                   // Add 2 16-bit registers and update flags
+        void reg_add16(uint8_t reg_id, uint16_t reg_n_val);                 // Add 2 16-bit registers and update flags
         void reg_daa();                                         // Decimal Adjust register A (DAA), flags updated
+        void reg_rla(bool carry);                               // Rotate contents of A register left and store bit 7 in CF, flags updated
+        void reg_rl(uint8_t reg_id, bool carry);                // Rotate contents of register n left and store bit 7 in CF, flags updated
+        void reg_rra(bool carry);                               // Rotate contents of A register right and store bit 0 in CF, flags updated
+        void reg_rr(uint8_t reg_id, bool carry);                // Rotate contents of register n right and store bit 0 in CF, flags updated
+        void reg_sla(uint8_t reg_id);                           // Shift contents of register n left and store bit 7 in CF, bit0 = 0, flags updated
         /// Logical
         void reg_and(uint8_t and_value);            // Register A is ANDed with and_value, result stored in register A - flags updated
         void reg_or(uint8_t or_value);              // Register A is ORed with and_value, result stored in register A - flags updated
@@ -69,10 +74,12 @@ class Memory
         uint8_t get_from_pointer(uint8_t reg_id);                              // Read byte from RAM/ROM pointed to by 16-bit register
         void set_from_pointer(uint8_t reg_id, uint8_t byte_value);             // Set byte at RAM address pointed to by 16-bit register to byte value
         void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
-        void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
         void inc_from_pointer(uint8_t reg_id);                                 // Increment byte and update flags
         void dec_from_pointer(uint8_t reg_id);                                 // Decrement byte and update flags
         void swap_from_pointer(uint8_t reg_id);                                // Swap upper and lower nibbles of register, flags updated
+        void rl_from_pointer(uint8_t reg_id, bool carry);                      // Rotate contents of byte at (n) left and store bit 7 in CF, flags updated
+        void rr_from_pointer(uint8_t reg_id, bool carry);                      // Rotate contents of byte at (n) right and store bit 0 in CF, flags updated
+        void sla_from_pointer(uint8_t reg_id);                                 // Shift contents of byte at (n) left and store bit 7 in CF, bit0 = 0, flags updated
         /// Stack pointer and Program Counter
         void set_pc(uint16_t pc_value);              // Set pc value
         void set_sp(uint16_t sp_value);              // Set sp value

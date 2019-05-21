@@ -341,6 +341,183 @@ void Memory::reg_daa()
     flag_update(ZF,(reg[RA]==0));
 }
 
+// Rotate contents of A register left and store bit 7 in CF, flags updated
+// When carry is true, bit 0 = previous bit 7
+// When carry is false, bit 0 = previous CF
+// Flags 0 0 0 C
+void Memory::reg_rla(bool carry)
+{
+    uint8_t a_value, bit7;
+
+    // Get value of bit 7
+    bit7 = (reg[RA] & 0x80) >> 7;
+
+    // Shift register A left by 1
+    a_value = reg[RA] << 1;
+
+    if (carry)
+    {
+        // Append previous bit 7 to bit 0
+        reg[RA] = a_value + bit7;
+    }
+    else
+    {
+        // Append previous CF to bit 0
+        reg[RA] = a_value + flag_get(CF);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,0);
+
+    // Set CF to bit7
+    flag_update(CF,(bool)bit7);
+}
+
+// Rotate contents of register n left and store bit 7 in CF, flags updated
+// When carry is true, bit 0 = previous bit 7
+// When carry is false, bit 0 = previous CF
+// Flags Z 0 0 C
+void Memory::reg_rl(uint8_t reg_id, bool carry)
+{
+    uint8_t a_value, bit7;
+
+    // Get value of bit 7
+    bit7 = (reg[reg_id] & 0x80) >> 7;
+
+    // Shift register A left by 1
+    a_value = reg[reg_id] << 1;
+
+    if (carry)
+    {
+        // Append previous bit 7 to bit 0
+        reg[reg_id] = a_value + bit7;
+    }
+    else
+    {
+        // Append previous CF to bit 0
+        reg[reg_id] = a_value + flag_get(CF);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Set CF to bit7
+    flag_update(CF,(bool)bit7);
+}
+
+// Rotate contents of A register right and store bit 0 in CF, flags updated
+// When carry is true, bit 7 = previous bit 0
+// When carry is false, bit 7 = previous CF
+// Flags 0 0 0 C
+void Memory::reg_rra(bool carry)
+{
+    uint8_t a_value, bit0;
+
+    // Get value of bit 0
+    bit0 = reg[RA] & 0x01;
+
+    // Shift register A right by 1
+    a_value = reg[RA] >> 1;
+
+    if (carry)
+    {
+        // Append previous bit 0 to bit 7
+        reg[RA] = a_value + (bit0 << 7);
+    }
+    else
+    {
+        // Append previous CF to bit 7
+        reg[RA] = a_value + (flag_get(CF) << 7);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,0);
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Rotate contents of register n right and store bit 0 in CF, flags updated
+// When carry is true, bit 7 = previous bit 0
+// When carry is false, bit 7 = previous CF
+// Flags Z 0 0 C
+void Memory::reg_rr(uint8_t reg_id, bool carry)
+{
+    uint8_t a_value, bit0;
+
+    // Get value of bit 0
+    bit0 = reg[reg_id] & 0x01;
+
+    // Shift register A right by 1
+    a_value = reg[reg_id] >> 1;
+
+    if (carry)
+    {
+        // Append previous bit 0 to bit 7
+        reg[reg_id] = a_value + (bit0 << 7);
+    }
+    else
+    {
+        // Append previous CF to bit 7
+        reg[reg_id] = a_value + (flag_get(CF) << 7);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Shift contents of register n left and store bit 7 in CF, bit0 = 0, flags updated
+// Flags Z 0 0 C
+void Memory::reg_sla(uint8_t reg_id)
+{
+    uint8_t bit7;
+
+    // Get value of bit 7
+    bit7 = (reg[reg_id] & 0x80) >> 7;
+
+    // Shift register left by 1
+    reg[reg_id] = reg[reg_id] << 1;
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Set CF to bit7
+    flag_update(CF,(bool)bit7);
+}
+
 /// Logical Functions
 
 // Register A is ANDed with and_value, result stored in register A - flags updated
@@ -490,16 +667,6 @@ void Memory::write_byte(uint16_t address, uint8_t byte)
     ram[address] = byte;
 }
 
-// Write array of bytes to RAM/ROM
-void Memory::write_array(uint16_t address, uint8_t* bytes, uint8_t length)
-{
-        // Copy bytes
-        for (uint8_t i = 0; i < length; i++)
-        {
-            ram[i] = ram[address + i];
-        }
-}
-
 // Increment byte and update flags
 void Memory::inc_from_pointer(uint8_t reg_id)
 {
@@ -566,6 +733,121 @@ void Memory::swap_from_pointer(uint8_t reg_id)
 
     // Clear N flag
     flag_update(NF,0);
+}
+
+// Rotate contents of byte at (n) left and store bit 7 in CF, flags updated
+// When carry is true, bit 0 = previous bit 7
+// When carry is false, bit 0 = previous CF
+// Flags Z 0 0 C
+void Memory::rl_from_pointer(uint8_t reg_id, bool carry)
+{
+    uint8_t byte_in, a_value, bit7;
+
+    // Get byte
+    byte_in = get_from_pointer(reg_id);
+
+    // Get value of bit 7
+    bit7 = (byte_in & 0x80) >> 7;
+
+    // Shift register left by 1
+    a_value = byte_in << 1;
+
+    if (carry)
+    {
+        // Append previous bit 7 to bit 0
+        a_value += bit7;
+        set_from_pointer(reg_id, a_value);
+    }
+    else
+    {
+        // Append previous CF to bit 0
+        a_value += flag_get(CF);
+        set_from_pointer(reg_id, a_value);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(a_value==0));
+
+    // Set CF to bit7
+    flag_update(CF,(bool)bit7);
+}
+
+// Rotate contents of byte at (n) right and store bit 0 in CF, flags updated
+// When carry is true, bit 7 = previous bit 0
+// When carry is false, bit 7 = previous CF
+// Flags Z 0 0 C
+void Memory::rr_from_pointer(uint8_t reg_id, bool carry)
+{
+    uint8_t byte_in, a_value, bit0;
+
+    // Get byte
+    byte_in = get_from_pointer(reg_id);
+
+    // Get value of bit 0
+    bit0 = byte_in & 0x01;
+
+    // Shift register right by 1
+    a_value = byte_in >> 1;
+
+    if (carry)
+    {
+        // Append previous bit 0 to bit 7
+        a_value += (bit0 << 7);
+        set_from_pointer(reg_id, a_value);
+    }
+    else
+    {
+        // Append previous CF to bit 7
+        a_value += (flag_get(CF) << 7);
+        set_from_pointer(reg_id, a_value);
+    }
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(a_value==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Shift contents of byte at (n) left and store bit 7 in CF, bit0 = 0, flags updated
+// Flags Z 0 0 C
+void Memory::sla_from_pointer(uint8_t reg_id)
+{
+    uint8_t byte_in, byte_val, bit7;
+
+    // Get byte
+    byte_in = get_from_pointer(reg_id);
+
+    // Get value of bit 7
+    bit7 = (byte_in & 0x80) >> 7;
+
+    // Shift register left by 1
+    byte_val = byte_in << 1;
+    set_from_pointer(reg_id, byte_val);
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(byte_val==0));
+
+    // Set CF to bit7
+    flag_update(CF,(bool)bit7);
 }
 
 /// Stack pointer and Program Counter
