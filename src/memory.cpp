@@ -26,6 +26,8 @@ void Memory::init()
     }
 }
 
+/// Register Functions
+
 // Get contents of 8 bit register
 uint8_t Memory::reg_get(uint8_t reg_id)
 {
@@ -146,6 +148,42 @@ void Memory::reg_inc(uint8_t reg_id)
     }
 }
 
+// Increment 16-bit register, flags not updated
+void Memory::reg_inc16(uint8_t reg_id)
+{
+    uint16_t reg_val;
+
+    // Check if valid 16-bit register used
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
+    {
+        reg_val = reg_get16(reg_id);
+        reg_val++;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
+// Decrement 16-bit register, flags not updated
+void Memory::reg_dec16(uint8_t reg_id)
+{
+    uint16_t reg_val;
+
+    // Check if valid 16-bit register used
+    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
+    {
+        reg_val = reg_get16(reg_id);
+        reg_val--;
+        reg_set(reg_id,reg_val);
+    }
+    else
+    {
+        throw "Invalid register id";
+    }
+}
+
 // Decrement register, flags updated
 void Memory::reg_dec(uint8_t reg_id)
 {
@@ -177,6 +215,8 @@ void Memory::reg_dec(uint8_t reg_id)
         throw "Invalid register id";
     }
 }
+
+/// Math Functions
 
 // Add value to 8-bit register and update flags, bool parameter is add with carry
 void Memory::reg_add(uint8_t reg_id, uint8_t add_value, bool carry)
@@ -217,25 +257,6 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value, bool carry)
     }
 }
 
-/*// Add value to 16-bit register and update flags, bool parameter is add with carry
-void Memory::reg_add(uint8_t reg_id, uint16_t add_value)
-{
-    // 16 bit register value
-    uint16_t reg_val;
-
-    // Check if valid 16-bit register used
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        reg_val = reg_get16(reg_id) + add_value;
-        reg_set(reg_id,reg_val);
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
-}
-*/
-
 // Subtract value from 8-bit register and flags updated, bool brrow used for sub with borrow
 void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow)
 {
@@ -275,25 +296,6 @@ void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow)
     }
 }
 
-/*// Subtract value from 16-bit register, flags updated
-void Memory::reg_sub(uint8_t reg_id, uint16_t sub_value)
-{
-    // 16 bit register value
-    uint16_t reg_val;
-
-    // Check if valid 16-bit register used
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        reg_val = reg_get16(reg_id) - sub_value;
-        reg_set(reg_id,reg_val);
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
-}
-*/
-
 // Add 2 16-bit registers and update flags
 void Memory::reg_add16(uint8_t reg_id, uint16_t reg_n_val)
 {
@@ -315,6 +317,31 @@ void Memory::reg_add16(uint8_t reg_id, uint16_t reg_n_val)
     reg_set(reg_id,(uint16_t)total);
 
 }
+
+// Decimal Adjust register A (DAA), flags updated
+void Memory::reg_daa()
+{
+    // Check if ls digit is valid BCD value
+    if ((reg[RA] & 0xf) > 9 || flag_get(HF))
+    {
+        reg[RA] += 6;
+    }
+    // Check if ms digit is valid BCD value
+    if ((reg[RA] & 0xf0) > 9 || flag_get(CF))
+    {
+        reg[RA] += 0x60;
+
+        // Update C flag
+        flag_update(CF,1);
+    }
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[RA]==0));
+}
+
+/// Logical Functions
 
 // Register A is ANDed with and_value, result stored in register A - flags updated
 void Memory::reg_and(uint8_t and_value)
@@ -393,6 +420,27 @@ void Memory::reg_compare(uint8_t cmp_value)
     // Set N flag
     flag_update(NF,1);
 }
+
+// Swap upper and lower nibbles of register, flags updated
+void Memory::reg_swap(uint8_t reg_id)
+{
+    // Update register
+    reg[reg_id] = (reg[reg_id] >> 4) | ((reg[reg_id] & 0xf) << 4);
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update C flag
+    flag_update(CF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+}
+
+/// RAM/ROM Functions
 
 // Read byte from RAM/ROM
 uint8_t Memory::get_byte(uint16_t address)
@@ -494,6 +542,34 @@ void Memory::dec_from_pointer(uint8_t reg_id)
     flag_update(ZF,(byte_in==0));
 }
 
+// Swap upper and lower nibbles of register, flags updated
+void Memory::swap_from_pointer(uint8_t reg_id)
+{
+    // Get the byte
+    uint8_t byte_in, new_val;
+    byte_in = get_from_pointer(reg_id);
+
+    // Perform the swap
+    new_val = (byte_in >> 4) | ((byte_in & 0xf) << 4);
+
+    // Update byte
+    set_from_pointer(RHL, new_val);
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update C flag
+    flag_update(CF,0);
+
+    // Update Z flag
+    flag_update(ZF,(new_val==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+}
+
+/// Stack pointer and Program Counter
+
 // Set pc value
 void Memory::set_pc(uint16_t pc_value)
 {
@@ -540,6 +616,30 @@ void Memory::dec_sp(uint8_t amount)
     sp -= amount;
 }
 
+// Add value to sp and update flags
+void Memory::sp_add(uint8_t amount)
+{
+    uint32_t total;
+
+    // The total sum
+    total = sp + amount;
+
+    // Update H flag (half carry from bit 11)
+    flag_update(HF,(sp & 0xf000 == total & 0xf000));
+
+    // Update C flag (carry from bit 15)
+    flag_update(CF,(total > 0xffff));
+
+    // Clear N flag
+    flag_update(NF,0);
+
+    // Clear Z flag
+    flag_update(ZF,0);
+
+    // Update 16 bit sp register
+    sp = (uint16_t)total;
+}
+
 // Push 16-bit value to stack and decrement sp
 void Memory::stack_push(uint16_t push_val)
 {
@@ -583,6 +683,8 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
     }
 }
 
+/// Flag Operations
+
 // Return flag value
 bool Memory::flag_get(uint8_t flag_id)
 {
@@ -590,6 +692,8 @@ bool Memory::flag_get(uint8_t flag_id)
     flag_val = reg[RF] & flag_id;
     return !(flag_val==0);
 }
+
+/// ROM Cartridge and game title
 
 // Function to load a ROM file (currently only supporting
 // 16 or 32kb ROMS - cart type 0 or 1)

@@ -847,6 +847,96 @@ void Cpu::process_instruction(uint8_t rom_byte)
             mem->reg_add16(RHL,mem->get_sp());
             clk->add_cycles(8);
             break;
+        case 0xe8:  // SP is set to SP + imm8 n, flags updated
+            mem->sp_add(mem->fetch_byte());
+            clk->add_cycles(16);
+            break;
+        case 0x03:  // Increment BC register by 1, flags not updated
+            mem->inc_from_pointer(RBC);
+            clk->add_cycles(8);
+            break;
+        case 0x13:  // Increment DE register by 1, flags not updated
+            mem->inc_from_pointer(RDE);
+            clk->add_cycles(8);
+            break;
+        case 0x23:  // Increment HL register by 1, flags not updated
+            mem->inc_from_pointer(RHL);
+            clk->add_cycles(8);
+            break;
+        case 0x33:  // Increment SP register by 1, flags not updated
+            mem->inc_sp(1);
+            clk->add_cycles(8);
+            break;
+        case 0x0b:  // Decrement BC register by 1, flags not updated
+            mem->dec_from_pointer(RBC);
+            clk->add_cycles(8);
+            break;
+        case 0x1b:  // Decrement DE register by 1, flags not updated
+            mem->dec_from_pointer(RDE);
+            clk->add_cycles(8);
+            break;
+        case 0x2b:  // Decrement HL register by 1, flags not updated
+            mem->dec_from_pointer(RHL);
+            clk->add_cycles(8);
+            break;
+        case 0x3b:  // Decrement SP register by 1, flags not updated
+            mem->dec_sp(1);
+            clk->add_cycles(8);
+            break;
+        case 0xcb:  // Process a CB prefixed instruction
+            process_cb_instruction(mem->fetch_byte()); // Cycles are added as instructions are processed
+            break;
+        case 0x27:  // Decimal Adjust register A (DAA)
+            mem->reg_daa();
+            clk->add_cycles(4);
+            break;
+    }
+
+    // Increment the program counter(temp)
+    mem->inc_pc(1);
+
+    // Add clock cycles (temp so we don't get stuck)
+    clk->add_cycles(4);
+}
+
+// Process a CB prefixed instruction
+void Cpu::process_cb_instruction(uint8_t rom_byte)
+{
+    // switch statement to match opcode and perform operations
+    switch(rom_byte)
+    {
+        case 0x37:  // Swap upper and lower nibbles of register A, flags updated
+            mem->reg_swap(RA);
+            clk->add_cycles(8);
+            break;
+        case 0x30:  // Swap upper and lower nibbles of register B, flags updated
+            mem->reg_swap(RB);
+            clk->add_cycles(8);
+            break;
+        case 0x31:  // Swap upper and lower nibbles of register C, flags updated
+            mem->reg_swap(RC);
+            clk->add_cycles(8);
+            break;
+        case 0x32:  // Swap upper and lower nibbles of register D, flags updated
+            mem->reg_swap(RD);
+            clk->add_cycles(8);
+            break;
+        case 0x33:  // Swap upper and lower nibbles of register E, flags updated
+            mem->reg_swap(RE);
+            clk->add_cycles(8);
+            break;
+        case 0x34:  // Swap upper and lower nibbles of register H, flags updated
+            mem->reg_swap(RH);
+            clk->add_cycles(8);
+            break;
+        case 0x35:  // Swap upper and lower nibbles of register L, flags updated
+            mem->reg_swap(RL);
+            clk->add_cycles(8);
+            break;
+        case 0x36:  // Swap upper and lower nibbles of byte at (HL), flags updated
+            mem->swap_from_pointer(RHL);
+            clk->add_cycles(16);
+            break;
     }
 
     // Increment the program counter(temp)

@@ -50,17 +50,19 @@ class Memory
         void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
         void reg_inc(uint8_t reg_id);                           // Increment 8-bit register, flags updated
         void reg_dec(uint8_t reg_id);                           // Decrement 8-bit register, flags updated
+        void reg_inc16(uint8_t reg_id);                         // Increment 16-bit register, flags not updated
+        void reg_dec16(uint8_t reg_id);                         // Decrement 16-bit register, flags not updated
         /// Math
         void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);          // Add value to 8-bit register and update flags, bool parameter is add with carry
-        //void reg_add(uint8_t reg_id, uint16_t add_value);                   // Add value to 16-bit register and update flags, bool parameter is add with carry
         void reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow = 0);   // Subtract value from 8-bit register and update flags, bool param is borrow with carry
-        //void reg_sub(uint8_t reg_id, uint16_t sub_value);                   // Subtract value from 16-bit register, defaut is to update flags
         void reg_add16(uint8_t reg_id, uint16_t reg_n_val);                   // Add 2 16-bit registers and update flags
+        void reg_daa();                                         // Decimal Adjust register A (DAA), flags updated
         /// Logical
         void reg_and(uint8_t and_value);            // Register A is ANDed with and_value, result stored in register A - flags updated
         void reg_or(uint8_t or_value);              // Register A is ORed with and_value, result stored in register A - flags updated
         void reg_xor(uint8_t xor_value);            // Register A is XORed with and_value, result stored in register A - flags updated
         void reg_compare(uint8_t cmp_value);        // Register A is compared with cmp_value, result stored in register A - flags updated
+        void reg_swap(uint8_t reg_id);              // Swap upper and lower nibbles of register, flags updated
         /// RAM/ROM
         uint8_t get_byte(uint16_t address);         // Read byte from RAM/ROM
         uint8_t fetch_byte();                       // Read byte from ROM and increment PC
@@ -70,6 +72,7 @@ class Memory
         void write_array(uint16_t address, uint8_t* bytes, uint8_t length);    // Write array of bytes to RAM/ROM
         void inc_from_pointer(uint8_t reg_id);                                 // Increment byte and update flags
         void dec_from_pointer(uint8_t reg_id);                                 // Decrement byte and update flags
+        void swap_from_pointer(uint8_t reg_id);                                // Swap upper and lower nibbles of register, flags updated
         /// Stack pointer and Program Counter
         void set_pc(uint16_t pc_value);              // Set pc value
         void set_sp(uint16_t sp_value);              // Set sp value
@@ -78,6 +81,7 @@ class Memory
         void dec_pc(uint8_t amount);                 // Decrement pc by amount
         void inc_sp(uint8_t amount);                 // Increment sp by amount
         void dec_sp(uint8_t amount);                 // Secrement sp by amount
+        void sp_add(uint8_t amount);                 // Add value to sp and update flags
         void stack_push(uint16_t push_val);          // Push 16bit value to stack and decrement sp
         uint16_t stack_pop();                        // Pop 16-bit value from stack and increment sp
         /// Flags
