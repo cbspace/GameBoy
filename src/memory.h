@@ -10,28 +10,28 @@
 
 #define SP_INITIAL_VALUE    0xfffe      // Initial value of the stack pointer
 
-#define RA  0   // A register - These register IDs are mapped to the reg array
-#define RF  1   // F register
-#define RB  2   // B register
-#define RC  3   // C register
-#define RD  4   // D register
-#define RE  5   // E register
-#define RH  6   // H register
-#define RL  7   // L register
+#define RA  0                           // A register - These register IDs are mapped to the reg array
+#define RF  1                           // F register
+#define RB  2                           // B register
+#define RC  3                           // C register
+#define RD  4                           // D register
+#define RE  5                           // E register
+#define RH  6                           // H register
+#define RL  7                           // L register
 
-#define REG_16_START  8   // Start of 16-bit register IDs
+#define REG_16_START  8                 // Start of 16-bit register IDs
 
-#define RAF  9   // AF register - These register IDs are arbitrary and not directly mapped to registers
-#define RBC  10  // BC register
-#define RDE  11  // DE register
-#define RHL  12  // HL register
+#define RAF  9                          // AF register - These register IDs are arbitrary and not directly mapped to registers
+#define RBC  10                         // BC register
+#define RDE  11                         // DE register
+#define RHL  12                         // HL register
 
-#define REG_16_END    13  // End of 16-bit register IDs
+#define REG_16_END    13                // End of 16-bit register IDs
 
-#define ZF     0x80   // Zero flag mask
-#define NF     0x40   // Negative flag mask
-#define HF     0x20   // Half carry flag mask
-#define CF     0x10   // Full carry flag mask
+#define ZF     0x80                     // Zero flag mask
+#define NF     0x40                     // Negative flag mask
+#define HF     0x20                     // Half carry flag mask
+#define CF     0x10                     // Full carry flag mask
 
 #include <stdint.h>
 #include <string>
@@ -40,71 +40,81 @@ using namespace std;
 class Memory
 {
     public:
-        Memory();                                   // Constructor
-        void init();                                // Initialise registers
+        Memory();                                                   // Constructor
+        void init();                                                // Initialise registers
         /// Registers
-        uint8_t reg_get(uint8_t reg_id);            // Get contents of 8 bit register
-        uint16_t reg_get16(uint8_t reg_id);         // Get contents of 16 bit register
-        void reg_set(uint8_t reg_id, uint8_t reg_value);        // Set value in 8 bit register
-        void reg_set(uint8_t reg_id, uint16_t reg_value);       // Set value in 16 bit register
-        void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);  // Copy data between 8-bit registers
-        void reg_inc(uint8_t reg_id);                           // Increment 8-bit register, flags updated
-        void reg_dec(uint8_t reg_id);                           // Decrement 8-bit register, flags updated
-        void reg_inc16(uint8_t reg_id);                         // Increment 16-bit register, flags not updated
-        void reg_dec16(uint8_t reg_id);                         // Decrement 16-bit register, flags not updated
+        uint8_t reg_get(uint8_t reg_id);                            // Get contents of 8 bit register
+        uint16_t reg_get16(uint8_t reg_id);                         // Get contents of 16 bit register
+        void reg_set(uint8_t reg_id, uint8_t reg_value);            // Set value in 8 bit register
+        void reg_set(uint8_t reg_id, uint16_t reg_value);           // Set value in 16 bit register
+        void reg_copy(uint8_t from_reg_id, uint8_t to_reg_id);      // Copy data between 8-bit registers
+        void reg_inc(uint8_t reg_id);                               // Increment 8-bit register, flags updated
+        void reg_dec(uint8_t reg_id);                               // Decrement 8-bit register, flags updated
+        void reg_inc16(uint8_t reg_id);                             // Increment 16-bit register, flags not updated
+        void reg_dec16(uint8_t reg_id);                             // Decrement 16-bit register, flags not updated
         /// Math
         void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);          // Add value to 8-bit register and update flags, bool parameter is add with carry
         void reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow = 0);   // Subtract value from 8-bit register and update flags, bool param is borrow with carry
         void reg_add16(uint8_t reg_id, uint16_t reg_n_val);                 // Add 2 16-bit registers and update flags
-        void reg_daa();                                         // Decimal Adjust register A (DAA), flags updated
-        void reg_rla(bool carry);                               // Rotate contents of A register left and store bit 7 in CF, flags updated
-        void reg_rl(uint8_t reg_id, bool carry);                // Rotate contents of register n left and store bit 7 in CF, flags updated
-        void reg_rra(bool carry);                               // Rotate contents of A register right and store bit 0 in CF, flags updated
-        void reg_rr(uint8_t reg_id, bool carry);                // Rotate contents of register n right and store bit 0 in CF, flags updated
-        void reg_sla(uint8_t reg_id);                           // Shift contents of register n left and store bit 7 in CF, bit0 = 0, flags updated
+        void reg_daa();                                                     // Decimal Adjust register A (DAA), flags updated
+        void reg_rla(bool carry);                                           // Rotate contents of A register left and store bit 7 in CF, flags updated
+        void reg_rl(uint8_t reg_id, bool carry);                            // Rotate contents of register n left and store bit 7 in CF, flags updated
+        void reg_rra(bool carry);                                           // Rotate contents of A register right and store bit 0 in CF, flags updated
+        void reg_rr(uint8_t reg_id, bool carry);                            // Rotate contents of register n right and store bit 0 in CF, flags updated
+        void reg_sla(uint8_t reg_id);                                       // Shift contents of register n left and store bit 7 in CF, bit0 = 0, flags updated
+        void reg_sra(uint8_t reg_id);                                       // Shift contents of register A right and store bit 0 in CF, bit7 unchanged, flags updated
+        void reg_srl(uint8_t reg_id);                                       // Shift contents of register A right and store bit 0 in CF, bit7 = 0, flags updated
         /// Logical
-        void reg_and(uint8_t and_value);            // Register A is ANDed with and_value, result stored in register A - flags updated
-        void reg_or(uint8_t or_value);              // Register A is ORed with and_value, result stored in register A - flags updated
-        void reg_xor(uint8_t xor_value);            // Register A is XORed with and_value, result stored in register A - flags updated
-        void reg_compare(uint8_t cmp_value);        // Register A is compared with cmp_value, result stored in register A - flags updated
-        void reg_swap(uint8_t reg_id);              // Swap upper and lower nibbles of register, flags updated
+        void reg_and(uint8_t and_value);                            // Register A is ANDed with and_value, result stored in register A - flags updated
+        void reg_or(uint8_t or_value);                              // Register A is ORed with and_value, result stored in register A - flags updated
+        void reg_xor(uint8_t xor_value);                            // Register A is XORed with and_value, result stored in register A - flags updated
+        void reg_compare(uint8_t cmp_value);                        // Register A is compared with cmp_value, result stored in register A - flags updated
+        void reg_swap(uint8_t reg_id);                              // Swap upper and lower nibbles of register, flags updated
+        void bit_test(uint8_t reg_id, uint8_t bit_number);          // Test bit b in register and set flags accordingly
+        void bit_set(uint8_t reg_id, uint8_t bit_number);           // Set bit in register, flags not affected
+        void bit_res(uint8_t reg_id, uint8_t bit_number);           // Reset bit in register, flags not affected
         /// RAM/ROM
-        uint8_t get_byte(uint16_t address);         // Read byte from RAM/ROM
-        uint8_t fetch_byte();                       // Read byte from ROM and increment PC
-        uint8_t get_from_pointer(uint8_t reg_id);                              // Read byte from RAM/ROM pointed to by 16-bit register
-        void set_from_pointer(uint8_t reg_id, uint8_t byte_value);             // Set byte at RAM address pointed to by 16-bit register to byte value
-        void write_byte(uint16_t address, uint8_t byte);                       // Write byte to RAM/ROM
-        void inc_from_pointer(uint8_t reg_id);                                 // Increment byte and update flags
-        void dec_from_pointer(uint8_t reg_id);                                 // Decrement byte and update flags
-        void swap_from_pointer(uint8_t reg_id);                                // Swap upper and lower nibbles of register, flags updated
-        void rl_from_pointer(uint8_t reg_id, bool carry);                      // Rotate contents of byte at (n) left and store bit 7 in CF, flags updated
-        void rr_from_pointer(uint8_t reg_id, bool carry);                      // Rotate contents of byte at (n) right and store bit 0 in CF, flags updated
-        void sla_from_pointer(uint8_t reg_id);                                 // Shift contents of byte at (n) left and store bit 7 in CF, bit0 = 0, flags updated
+        uint8_t get_byte(uint16_t address);                             // Read byte from RAM/ROM
+        uint8_t fetch_byte();                                           // Read byte from ROM and increment PC
+        uint8_t get_from_pointer(uint8_t reg_id);                       // Read byte from RAM/ROM pointed to by 16-bit register
+        void set_from_pointer(uint8_t reg_id, uint8_t byte_value);      // Set byte at RAM address pointed to by 16-bit register to byte value
+        void write_byte(uint16_t address, uint8_t byte);                // Write byte to RAM/ROM
+        void inc_from_pointer(uint8_t reg_id);                          // Increment byte at (n) and update flags
+        void dec_from_pointer(uint8_t reg_id);                          // Decrement byte at (n) and update flags
+        void swap_from_pointer(uint8_t reg_id);                         // Swap upper and lower nibbles of byte at (n), flags updated
+        void rl_from_pointer(uint8_t reg_id, bool carry);               // Rotate contents of byte at (n) left and store bit 7 in CF, flags updated
+        void rr_from_pointer(uint8_t reg_id, bool carry);               // Rotate contents of byte at (n) right and store bit 0 in CF, flags updated
+        void sla_from_pointer(uint8_t reg_id);                          // Shift contents of byte at (n) left and store bit 7 in CF, bit0 = 0, flags updated
+        void sra_from_pointer(uint8_t reg_id);                          // Shift contents byte at (n) right and store bit 0 in CF, bit7 unchanged, flags updated
+        void srl_from_pointer(uint8_t reg_id);                          // Shift contents byte at (n) right and store bit 0 in CF, bit7 = 0, flags updated
+        void bit_test_from_pointer(uint8_t reg_id, uint8_t bit_number); // Test bit b in byte at (n) and set flags accordingly
+        void bit_set_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Set bit in in byte at (n), flags not affected
+        void bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Reset bit in in byte at (n), flags not affected
         /// Stack pointer and Program Counter
-        void set_pc(uint16_t pc_value);              // Set pc value
-        void set_sp(uint16_t sp_value);              // Set sp value
-        uint16_t get_sp();                           // Get sp value
-        void inc_pc(uint8_t amount);                 // Increment pc by amount
-        void dec_pc(uint8_t amount);                 // Decrement pc by amount
-        void inc_sp(uint8_t amount);                 // Increment sp by amount
-        void dec_sp(uint8_t amount);                 // Secrement sp by amount
-        void sp_add(uint8_t amount);                 // Add value to sp and update flags
-        void stack_push(uint16_t push_val);          // Push 16bit value to stack and decrement sp
-        uint16_t stack_pop();                        // Pop 16-bit value from stack and increment sp
+        void set_pc(uint16_t pc_value);                             // Set pc value
+        void set_sp(uint16_t sp_value);                             // Set sp value
+        uint16_t get_sp();                                          // Get sp value
+        void inc_pc(uint8_t amount);                                // Increment pc by amount
+        void dec_pc(uint8_t amount);                                // Decrement pc by amount
+        void inc_sp(uint8_t amount);                                // Increment sp by amount
+        void dec_sp(uint8_t amount);                                // Secrement sp by amount
+        void sp_add(uint8_t amount);                                // Add value to sp and update flags
+        void stack_push(uint16_t push_val);                         // Push 16bit value to stack and decrement sp
+        uint16_t stack_pop();                                       // Pop 16-bit value from stack and increment sp
         /// Flags
-        void flag_update(uint8_t flag_id, uint8_t flg_val);  // Set or clear flag
-        bool flag_get(uint8_t flag_id);              // Return flag value
+        void flag_update(uint8_t flag_id, uint8_t flg_val);         // Set or clear flag
+        bool flag_get(uint8_t flag_id);                             // Return flag value
         /// ROM Cartridge and game title
-        int8_t load_rom(char* rom_path);             // Function to load a ROM file
-        void read_rom_title();                       // Read rom title and load into string
-        string get_rom_title();                      // Get the current ROM title
+        int8_t load_rom(char* rom_path);                            // Function to load a ROM file
+        void read_rom_title();                                      // Read rom title and load into string
+        string get_rom_title();                                     // Get the current ROM title
 
     private:
-        char ram[MEM_SIZE];                          // 64kB RAM
-        uint8_t reg[REG_ARRAY_SIZE];                 // Registers: A/F, B/C, D/E, H/L
-        uint8_t flags;                               // Store values of flags after operation (before copied to register F)
-        uint16_t sp, pc;                             // Stack pointer and program counter
-        string rom_title;                            // Title of the current game ROM file
+        char ram[MEM_SIZE];                                         // 64kB RAM
+        uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
+        uint8_t flags;                                              // Store values of flags after operation (before copied to register F)
+        uint16_t sp, pc;                                            // Stack pointer and program counter
+        string rom_title;                                           // Title of the current game ROM file
 
     /* Flags register (RF)
 

@@ -518,6 +518,59 @@ void Memory::reg_sla(uint8_t reg_id)
     flag_update(CF,(bool)bit7);
 }
 
+// Shift contents of register A right and store bit 0 in CF, bit7 unchanged, flags updated
+// Flags Z 0 0 C
+void Memory::reg_sra(uint8_t reg_id)
+{
+    uint8_t bit0, bit7;
+
+    // Get value of bit 0
+    bit0 = reg[reg_id] & 0x01;
+
+    // Get value of bit 7
+    bit7 = reg[reg_id] & 0x80;
+
+    // Shift register right by 1 and reinstate bit 7
+    reg[reg_id] = (reg[reg_id] >> 1) + bit7;
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Shift contents of register A right and store bit 0 in CF, bit7 = 0, flags updated
+// Flags Z 0 0 C
+void Memory::reg_srl(uint8_t reg_id)
+{
+    uint8_t bit0;
+
+    // Get value of bit 0
+    bit0 = reg[reg_id] & 0x01;
+
+    // Shift register right by 1
+    reg[reg_id] = reg[reg_id] >> 1;
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(reg[reg_id]==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
 /// Logical Functions
 
 // Register A is ANDed with and_value, result stored in register A - flags updated
@@ -615,6 +668,47 @@ void Memory::reg_swap(uint8_t reg_id)
 
     // Clear N flag
     flag_update(NF,0);
+}
+
+// Test bit b in register and set flags accordingly
+// Flags Z 0 1 -
+void Memory::bit_test(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t bit_val;
+
+    // Get bit value
+    bit_val = reg[reg_id] >> (bit_number);
+
+    // Update Z flag
+    flag_update(ZF,(bit_val==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+
+    // Update H flag
+    flag_update(HF,1);
+}
+
+// Set bit in register, flags not affected
+void Memory::bit_set(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t new_val, bit_mask;
+
+    // Set the bit
+    bit_mask = 1 << bit_number;
+    new_val = reg[reg_id] | bit_mask;
+    reg[reg_id] = new_val;
+}
+
+// Reset bit in register, flags not affected
+void Memory::bit_res(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t new_val, bit_mask;
+
+    // Set the bit
+    bit_mask = 1 << bit_number;
+    new_val = reg[reg_id] & ~bit_mask;
+    reg[reg_id] = new_val;
 }
 
 /// RAM/ROM Functions
@@ -848,6 +942,114 @@ void Memory::sla_from_pointer(uint8_t reg_id)
 
     // Set CF to bit7
     flag_update(CF,(bool)bit7);
+}
+
+// Shift contents of byte at (n) right and store bit 0 in CF, bit7 unchanged, flags updated
+// Flags Z 0 0 C
+void Memory::sra_from_pointer(uint8_t reg_id)
+{
+    uint8_t byte_in, byte_val, bit0, bit7;
+
+    // Get byte
+    byte_in = get_from_pointer(reg_id);
+
+    // Get value of bit 0
+    bit0 = byte_in & 0x01;
+
+    // Get value of bit 7
+    bit7 = byte_in & 0x80;
+
+    // Shift register right by 1 and reinstate bit 7
+    byte_val = (byte_in >> 1) + bit7;
+    set_from_pointer(reg_id, byte_val);
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(byte_val==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Shift contents of byte at (n) right and store bit 0 in CF, bit7 = 0, flags updated
+// Flags Z 0 0 C
+void Memory::srl_from_pointer(uint8_t reg_id)
+{
+    uint8_t byte_in, byte_val, bit0;
+
+    // Get byte
+    byte_in = get_from_pointer(reg_id);
+
+    // Get value of bit 0
+    bit0 = byte_in & 0x01;
+
+    // Shift register right by 1
+    byte_val = byte_in >> 1;
+    set_from_pointer(reg_id, byte_val);
+
+    // Update H flag
+    flag_update(HF,0);
+
+    // Update N flag
+    flag_update(NF,0);
+
+    // Update Z flag
+    flag_update(ZF,(byte_val==0));
+
+    // Set CF to bit0
+    flag_update(CF,(bool)bit0);
+}
+
+// Test bit b in byte at (n) and set flags accordingly
+// Flags Z 0 1 -
+void Memory::bit_test_from_pointer(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t bit_val;
+
+    // Get bit value
+    bit_val = get_from_pointer(reg_id) >> bit_number;
+
+    // Update Z flag
+    flag_update(ZF,(bit_val==0));
+
+    // Clear N flag
+    flag_update(NF,0);
+
+    // Update H flag
+    flag_update(HF,1);
+}
+
+// Set bit in in byte at (n), flags not affected
+void Memory::bit_set_from_pointer(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t byte_val, new_val, bit_mask;
+
+    // Get current byte value
+    byte_val = get_from_pointer(reg_id);
+
+    // Set the bit
+    bit_mask = 1 << bit_number;
+    new_val = byte_val | bit_mask;
+    set_from_pointer(reg_id, new_val);
+}
+
+// Reset bit in in byte at (n), flags not affected
+void Memory::bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number)
+{
+    uint8_t byte_val, new_val, bit_mask;
+
+    // Get current byte value
+    byte_val = get_from_pointer(reg_id);
+
+    // Reset the bit
+    bit_mask = 1 << bit_number;
+    new_val = byte_val & ~bit_mask;
+    set_from_pointer(reg_id, new_val);
 }
 
 /// Stack pointer and Program Counter
