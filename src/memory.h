@@ -100,7 +100,9 @@ class Memory
         void dec_sp(uint8_t amount);                                // Secrement sp by amount
         void sp_add(uint8_t amount);                                // Add value to sp and update flags
         void stack_push(uint16_t push_val);                         // Push 16bit value to stack and decrement sp
+        void pc_push();                                             // Push PC value on to stack and decrement sp
         uint16_t stack_pop();                                       // Pop 16-bit value from stack and increment sp
+        void jmp_n(int8_t jmp_amount);                              // Jump to address at PC + e (e = signed 8-bit immediate)
         /// Flags
         void flag_update(uint8_t flag_id, uint8_t flg_val);         // Set or clear flag
         bool flag_get(uint8_t flag_id);                             // Return flag value

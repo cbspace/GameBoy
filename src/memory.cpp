@@ -74,7 +74,7 @@ void Memory::reg_set(uint8_t reg_id, uint8_t reg_value)
     {
         throw "Invalid register id";
     }
-    printf("register %i set to %0.2X\n", reg_id, reg_value); // Debug message
+    printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
 }
 
 // Set value in 16 bit register
@@ -131,7 +131,7 @@ void Memory::reg_inc(uint8_t reg_id)
     if (reg_id < REG_ARRAY_SIZE)
     {
         // Update H flag
-        flag_update(HF,(reg[reg_id] & 0xf0 == (reg[reg_id] + 1) & 0xf0));
+        flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] + 1) & 0xf0));
 
         // Clear N flag
         flag_update(NF,0);
@@ -194,7 +194,7 @@ void Memory::reg_dec(uint8_t reg_id)
     if (reg_id < REG_ARRAY_SIZE)
     {
         // Update H flag
-        flag_update(HF,(reg[reg_id] & 0xf0 == (reg[reg_id] - 1) & 0xf0));
+        flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] - 1) & 0xf0));
 
         // Clear N flag
         flag_update(NF,0);
@@ -237,7 +237,7 @@ void Memory::reg_add(uint8_t reg_id, uint8_t add_value, bool carry)
         total = reg[reg_id] + add_w_carry;
 
         // Update H flag
-        flag_update(HF,(reg[reg_id] & 0xf0 == total & 0xf0));
+        flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
 
         // Update C flag
         flag_update(CF,(total > 0xff));
@@ -276,7 +276,7 @@ void Memory::reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow)
         total = sub_value - sub_w_borrow;
 
         // Update H flag
-        flag_update(HF,(reg[reg_id] & 0xf0 == total & 0xf0));
+        flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
 
         // Update C flag
         flag_update(CF,!(total < 0));
@@ -305,7 +305,7 @@ void Memory::reg_add16(uint8_t reg_id, uint16_t reg_n_val)
     total = reg_get16(reg_id) + reg_n_val;
 
     // Update H flag (half carry from bit 11)
-    flag_update(HF,(reg_get16(reg_id) & 0xf000 == total & 0xf000));
+    flag_update(HF,(reg_get16(reg_id) & 0xf000) == (total & 0xf000));
 
     // Update C flag (carry from bit 15)
     flag_update(CF,(total > 0xffff));
@@ -639,7 +639,7 @@ void Memory::reg_compare(uint8_t cmp_value)
     total = reg[RA] - cmp_value;
 
     // Update H flag
-    flag_update(HF,(reg[RA] & 0xf0 == total & 0xf0));
+    flag_update(HF,(reg[RA] & 0xf0) == (total & 0xf0));
 
     // Update C flag
     flag_update(CF,!(total < 0));
@@ -769,7 +769,7 @@ void Memory::inc_from_pointer(uint8_t reg_id)
     byte_in = get_from_pointer(reg_id);
 
     // Update H flag
-    flag_update(HF,(byte_in & 0xf0 == (byte_in + 1) & 0xf0));
+    flag_update(HF,(byte_in & 0xf0) == ((byte_in + 1) & 0xf0));
 
     // Clear N flag
     flag_update(NF,0);
@@ -790,7 +790,7 @@ void Memory::dec_from_pointer(uint8_t reg_id)
     byte_in = get_from_pointer(reg_id);
 
     // Update H flag
-    flag_update(HF,(byte_in & 0xf0 == (byte_in - 1) & 0xf0));
+    flag_update(HF,(byte_in & 0xf0) == ((byte_in - 1) & 0xf0));
 
     // Clear N flag
     flag_update(NF,0);
@@ -1109,7 +1109,7 @@ void Memory::sp_add(uint8_t amount)
     total = sp + amount;
 
     // Update H flag (half carry from bit 11)
-    flag_update(HF,(sp & 0xf000 == total & 0xf000));
+    flag_update(HF,(sp & 0xf000) == (total & 0xf000));
 
     // Update C flag (carry from bit 15)
     flag_update(CF,(total > 0xffff));
@@ -1139,6 +1139,21 @@ void Memory::stack_push(uint16_t push_val)
     ram[sp] = byte_val;
 }
 
+// Push PC value on to stack and decrement sp
+void Memory::pc_push()
+{
+    uint8_t byte_val;
+
+    // Decrement the stack pointer
+    dec_sp(2);
+
+    // Push high byte on first then lower byte
+    byte_val = pc >> 8;
+    ram[sp+1] = byte_val;
+    byte_val = pc & 0xff;
+    ram[sp] = byte_val;
+}
+
 // Pop 16-bit value from stack and increment sp
 uint16_t Memory::stack_pop()
 {
@@ -1165,6 +1180,16 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
     {
         reg[RF] ^= !flag_id;
     }
+}
+
+// Jump to address at PC + e (e = signed 8-bit immediate)
+void Memory::jmp_n(int8_t jmp_amount)
+{
+    int32_t pc_val;
+
+    // Set pc to new value
+    pc_val = (int32_t)pc + (int32_t)jmp_amount;
+    pc = (uint16_t)pc_val;
 }
 
 /// Flag Operations

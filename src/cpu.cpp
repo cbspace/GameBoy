@@ -39,6 +39,9 @@ void Cpu::process_instruction(uint8_t rom_byte)
     // Used for temporary 8-bit variable
     uint8_t tmp8_value;
 
+    // Used for signed 8-bit variable
+    int8_t signed8_imm;
+
     // Used for instructions that use 16-bit immediate value
     uint16_t imm16_value;
 
@@ -961,7 +964,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(2);
+                mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -975,7 +978,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(2);
+                mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -989,7 +992,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(2);
+                mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -1003,7 +1006,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(2);
+                mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -1012,18 +1015,249 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x18:  // Jump to address at PC + e (e = signed 8-bit immediate)
-            int8_t signed8_imm;
             signed8_imm = mem->fetch_byte();
-
+            mem->jmp_n(signed8_imm);
             clk->add_cycles(12);
             break;
+        case 0x20:  // Jump to address at PC + e if ZF is reset (e = signed 8-bit immediate)
+            signed8_imm = mem->fetch_byte();
+            if (!mem->flag_get(ZF))
+            {
+                mem->jmp_n(signed8_imm);
+                clk->add_cycles(12);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0x28:  // Jump to address at PC + e if ZF is set (e = signed 8-bit immediate)
+            signed8_imm = mem->fetch_byte();
+            if (mem->flag_get(ZF))
+            {
+                mem->jmp_n(signed8_imm);
+                clk->add_cycles(12);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0x30:  // Jump to address at PC + e if CF is reset (e = signed 8-bit immediate)
+            signed8_imm = mem->fetch_byte();
+            if (!mem->flag_get(CF))
+            {
+                mem->jmp_n(signed8_imm);
+                clk->add_cycles(12);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0x38:  // Jump to address at PC + e if CF is set (e = signed 8-bit immediate)
+            signed8_imm = mem->fetch_byte();
+            if (mem->flag_get(CF))
+            {
+                mem->jmp_n(signed8_imm);
+                clk->add_cycles(12);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0xcd:  // Push PC onto stack and jmp to nn (CALL)
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(24);
+            break;
+        case 0xc4:  // Push PC onto stack and jmp to nn (CALL) if ZF is reset
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            if (!mem->flag_get(ZF))
+            {
+                mem->pc_push();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(24);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(12);
+            }
+            break;
+        case 0xcc:  // Push PC onto stack and jmp to nn (CALL) if ZF is set
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            if (mem->flag_get(ZF))
+            {
+                mem->pc_push();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(24);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(12);
+            }
+            break;
+        case 0xd4:  // Push PC onto stack and jmp to nn (CALL) if CF is reset
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            if (!mem->flag_get(CF))
+            {
+                mem->pc_push();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(24);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(12);
+            }
+            break;
+        case 0xdc:  // Push PC onto stack and jmp to nn (CALL) if CF is set
+            imm16_value = mem->fetch_byte();
+            imm16_value += mem->fetch_byte() << 8;
+            if (mem->flag_get(CF))
+            {
+                mem->pc_push();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(24);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(12);
+            }
+            break;
+        case 0xc7:  // Push PC onto stack and jmp to address 0x0000 + 0x00 (RST)
+            imm16_value = 0x0000;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xcf:  // Push PC onto stack and jmp to address 0x0000 + 0x08 (RST)
+            imm16_value = 0x0008;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xd7:  // Push PC onto stack and jmp to address 0x0000 + 0x10 (RST)
+            imm16_value = 0x0010;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xdf:  // Push PC onto stack and jmp to address 0x0000 + 0x18 (RST)
+            imm16_value = 0x0018;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xe7:  // Push PC onto stack and jmp to address 0x0000 + 0x20 (RST)
+            imm16_value = 0x0020;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xef:  // Push PC onto stack and jmp to address 0x0000 + 0x28 (RST)
+            imm16_value = 0x0028;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xf7:  // Push PC onto stack and jmp to address 0x0000 + 0x30 (RST)
+            imm16_value = 0x0030;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xff:  // Push PC onto stack and jmp to address 0x0000 + 0x20 (RST)
+            imm16_value = 0x0038;
+            mem->inc_pc(1);
+            mem->pc_push();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xc9:  // Pop 2 bytes from the stack and jump to that address (RET)
+            imm16_value = mem->stack_pop();
+            mem->set_pc(imm16_value);
+            clk->add_cycles(16);
+            break;
+        case 0xc0:  // Pop 2 bytes from the stack and jump to that address if ZF is reset
+            if (!mem->flag_get(ZF))
+            {
+                imm16_value = mem->stack_pop();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(20);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0xc8:  // Pop 2 bytes from the stack and jump to that address if ZF is set
+            if (mem->flag_get(ZF))
+            {
+                imm16_value = mem->stack_pop();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(20);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0xd0:  // Pop 2 bytes from the stack and jump to that address if CF is reset
+            if (!mem->flag_get(CF))
+            {
+                imm16_value = mem->stack_pop();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(20);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0xd8:  // Pop 2 bytes from the stack and jump to that address if CF is set
+            if (mem->flag_get(CF))
+            {
+                imm16_value = mem->stack_pop();
+                mem->set_pc(imm16_value);
+                clk->add_cycles(20);
+            }
+            else
+            {
+                mem->inc_pc(1);
+                clk->add_cycles(8);
+            }
+            break;
+        case 0xd9:  // Pop 2 bytes from the stack, jump to that address and enable interrupts (RETI)
+            imm16_value = mem->stack_pop();
+            mem->set_pc(imm16_value);
+            // Enable interrupts
+            clk->add_cycles(16);
+            break;
     }
-
-    // Increment the program counter(temp)
-    mem->inc_pc(1);
-
-    // Add clock cycles (temp so we don't get stuck)
-    clk->add_cycles(4);
 }
 
 // Process a CB prefixed instruction
@@ -2057,10 +2291,4 @@ void Cpu::process_cb_instruction(uint8_t rom_byte)
             clk->add_cycles(16);
             break;
     }
-
-    // Increment the program counter(temp)
-    mem->inc_pc(1);
-
-    // Add clock cycles (temp so we don't get stuck)
-    clk->add_cycles(4);
 }
