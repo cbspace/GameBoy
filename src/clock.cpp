@@ -27,7 +27,7 @@ void Clock::frame_delay()
     }
 }
 
-// Add cycles to frame_clock_cycles
+// Add cycles to frame_clock_cycles (4Mhz Clock)
 void Clock::add_cycles(uint8_t amount)
 {
     frame_clock_cycles += amount;

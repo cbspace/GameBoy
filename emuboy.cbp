@@ -14,6 +14,7 @@
 				<Option parameters="&apos;/home/craig/code/emuboy/_roms/Tetris.gb&apos;" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -42,6 +43,8 @@
 		<Unit filename="src/display.h" />
 		<Unit filename="src/emulator.cpp" />
 		<Unit filename="src/emulator.h" />
+		<Unit filename="src/interrupt.cpp" />
+		<Unit filename="src/interrupt.h" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/main.h" />
 		<Unit filename="src/memory.cpp" />

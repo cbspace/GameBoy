@@ -2,6 +2,7 @@
 #include "display.h"
 #include "cpu.h"
 #include "memory.h"
+#include "interrupt.h"
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
@@ -11,11 +12,20 @@ using namespace std;
 // Constructor
 Emulator::Emulator()
 {
-    // Pass pointer to memory object to CPU
+    // Pass pointer to memory object to CPU object
     cp.attach_memory(&mem);
 
-    // Pass pointer to clock object to CPU
+    // Pass pointer to clock object to CPU object
     cp.attach_clock(&clk);
+
+    // Pass pointer to interrupt object to CPU object
+    cp.attach_interrupt(&ir);
+
+    // Pass pointer to memory object to interrupt object
+    ir.attach_memory(&mem);
+
+    // Pass pointer to clock object to interrupt object
+    ir.attach_clock(&clk);
 }
 
 // Run the emulator

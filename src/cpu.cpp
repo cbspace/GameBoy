@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "clock.h"
+#include "interrupt.h"
 
 // Constructor
 Cpu::Cpu()
@@ -18,6 +19,12 @@ void Cpu::attach_memory(Memory* mem_in)
 void Cpu::attach_clock(Clock* clock_in)
 {
     clk = clock_in;
+}
+
+// Set pointer used to access interrupt object
+void Cpu::attach_interrupt(Interrupt* interrupt_in)
+{
+    ir = interrupt_in;
 }
 
 // Perform a single CPU cycle
@@ -915,13 +922,13 @@ void Cpu::process_instruction(uint8_t rom_byte)
         case 0x00:  // No operation (NOP)
             clk->add_cycles(4);
             break;
-        case 0x76:  // Halt the CPU until an interrupt occurs
-            // Not implemented yet
+        case 0x76:  // Halt the CPU until an interrupt occurs (HALT)
+            ir->cpu_halt();
             clk->add_cycles(4);
             break;
-        case 0x10:  // Halt the CPU and LCD until a button is pressed
-            // Not implemented yet
+        case 0x10:  // Stop the CPU and LCD until a button is pressed (STOP)
             mem->fetch_byte(); // Byte should be 0x00
+            ir->cpu_stop();
             clk->add_cycles(4);
             break;
         case 0xf3:  // Disable interrupts (happens after next instruction)

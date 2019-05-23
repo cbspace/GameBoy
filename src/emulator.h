@@ -5,10 +5,11 @@
 #include "display.h"
 #include "memory.h"
 #include "clock.h"
+#include "interrupt.h"
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.26";
+static const string RELEASE_VERSION = "0.27";
 
 class Emulator
 {
@@ -23,6 +24,7 @@ class Emulator
         Cpu cp;                                 // CPU for the emulator
         Memory mem;                             // Memory including registers
         Clock clk;                              // Clock for emulator
+        Interrupt ir;                           // Interrupt class object
 };
 
 #endif // EMULATOR_H
