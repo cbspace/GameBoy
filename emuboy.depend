@@ -20,7 +20,7 @@
 1555936195 /home/craig/code/emuboy/include/display.h
 	<SDL2/SDL.h>
 
-1558608305 source:/home/craig/code/emuboy/src/cpu.cpp
+1558689611 source:/home/craig/code/emuboy/src/cpu.cpp
 	"cpu.h"
 	"memory.h"
 	"clock.h"
@@ -72,7 +72,7 @@
 
 1555926122 /home/craig/code/emuboy/include/main.h
 
-1557385546 /home/craig/code/emuboy/src/clock.h
+1558691093 /home/craig/code/emuboy/src/clock.h
 	<stdint.h>
 
 1558604496 /home/craig/code/emuboy/src/cpu.h

@@ -33,11 +33,20 @@ void Cpu::cycle()
     // Byte read from ROM
     uint8_t byte_in;
 
-    // Fetch byte for execution
-    byte_in = mem->fetch_byte();
+    // Check if CPU is halted
+    if (!ir->get_halt() && !ir->get_stop())
+    {
+        // Fetch byte for execution
+        byte_in = mem->fetch_byte();
 
-    // Process the byte
-    process_instruction(byte_in);
+        // Process the byte
+        process_instruction(byte_in);
+    }
+    else if (ir->get_halt())
+    {
+        // The CPU is halted but we need to continue cycling
+        clk->add_cycles(4);
+    }
 }
 
 // Process a instruction read from ROM

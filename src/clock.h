@@ -17,6 +17,14 @@ iterations are executed. Note - this method does not result in a perfect represe
 of H-Blank as the timing would be compressed. It is not expected that this discrepency
 will be noticiable and most games don't even utilise H-Blank updates.
 
+CPU and Frame Timing:
+1. Perform 65,664 CPU cycles (Draw backgound line and sprite line and H Blank)
+2. Will need to set H-Blank ISR flag every 456 cycles
+3. Once 65,664 cycles reached, draw the frame
+4. Set V-Blank interrupt and flags
+5. Perform 4,560 cycles
+6. Do it all again!
+
 VBLANK Frequency: 59.73 Hz for Gameboy and 61.1 Hz for Super Gameboy
 VBLANK lasts ~1.1ms or 4560 clks (from manual)
 HBLANK lasts 204 clks
