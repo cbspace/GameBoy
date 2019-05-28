@@ -39,7 +39,7 @@ Total               17,556              70,224
 
 */
 
-#define CLK_FRAME_DELAY          500 //16    // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 
 class Clock

@@ -1060,6 +1060,12 @@ void Memory::set_pc(uint16_t pc_value)
     pc = pc_value;
 }
 
+// Get pc value
+uint16_t Memory::get_pc()
+{
+    return pc;
+}
+
 // Set sp value
 void Memory::set_sp(uint16_t sp_value)
 {
@@ -1169,6 +1175,18 @@ uint16_t Memory::stack_pop()
     return ret_val;
 }
 
+// Jump to address at PC + e (e = signed 8-bit immediate)
+void Memory::jmp_n(int8_t jmp_amount)
+{
+    int32_t pc_val;
+
+    // Set pc to new value
+    pc_val = (int32_t)pc + (int32_t)jmp_amount;
+    pc = (uint16_t)pc_val;
+}
+
+/// Flag Operations
+
 // Set or clear a flag
 void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
 {
@@ -1181,18 +1199,6 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
         reg[RF] ^= !flag_id;
     }
 }
-
-// Jump to address at PC + e (e = signed 8-bit immediate)
-void Memory::jmp_n(int8_t jmp_amount)
-{
-    int32_t pc_val;
-
-    // Set pc to new value
-    pc_val = (int32_t)pc + (int32_t)jmp_amount;
-    pc = (uint16_t)pc_val;
-}
-
-/// Flag Operations
 
 // Return flag value
 bool Memory::flag_get(uint8_t flag_id)

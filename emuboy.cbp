@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="&apos;/home/craig/code/emuboy/_roms/Tetris.gb&apos;" />
+				<Option parameters="&apos;/home/craig/code/emuboy/_roms/DMG_ROM.bin&apos;" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />

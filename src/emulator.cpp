@@ -26,6 +26,9 @@ Emulator::Emulator()
 
     // Pass pointer to clock object to interrupt object
     ir.attach_clock(&clk);
+
+    // Flag to signify if the user wishes to quit
+    quit_flag = false;
 }
 
 // Run the emulator
@@ -47,43 +50,50 @@ void Emulator::start(char* rom_path)
 // The main emulator loop
 void Emulator::main_loop()
 {
-    // Flag to signify if the user wishes to quit
-    bool quit_flag = false;
-
-    // SDL event handler
-    SDL_Event e;
-
     // Continue to loop until the user quits
     while (!quit_flag)
     {
         // Start the frame timer and reset clock cycles
         clk.frame_start();
 
-        // Handle events on the event queue
-        while ( SDL_PollEvent( &e ) != 0 )
-        {
-            // User requests to quit
-            if ( e.type == SDL_QUIT )
-            {
-                quit_flag = true;
-            }
-            else if ( e.type == SDL_KEYDOWN )
-            {
-                if ( e.key.keysym.sym == SDLK_ESCAPE )
-                {
-                    quit_flag = true;
-                }
-            }
-        }
+        // Check for key press events
+        key_down();
 
         while (!clk.max_cycles_reached())
         {
             // Perform CPU cycles
             cp.cycle();
+
+            // Check for interrupts and process accordingly
+            ir.check_interrupts();
         }
 
         // Delay until next frame
         clk.frame_delay();
+    }
+}
+
+// Process key press events
+void Emulator::key_down()
+{
+    // SDL event handler
+    SDL_Event e;
+
+    // Handle events on the event queue
+    while ( SDL_PollEvent( &e ) != 0 )
+    {
+        // User requests to quit
+        if ( e.type == SDL_QUIT )
+        {
+            quit_flag = true;
+        }
+        else if ( e.type == SDL_KEYDOWN )
+        {
+            if ( e.key.keysym.sym == SDLK_ESCAPE )
+            {
+                quit_flag = true;
+            }
+        }
     }
 }
 

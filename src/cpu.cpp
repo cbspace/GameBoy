@@ -2,6 +2,7 @@
 #include "memory.h"
 #include "clock.h"
 #include "interrupt.h"
+#include <SDL2/SDL.h> //temporary
 
 // Constructor
 Cpu::Cpu()
@@ -41,6 +42,11 @@ void Cpu::cycle()
 
         // Process the byte
         process_instruction(byte_in);
+
+        //temp
+        printf("PC: %4X\n", mem->get_pc());
+        printf("Byte: %2X\n\n", byte_in);
+        SDL_Delay(2000);
     }
     else if (ir->get_halt())
     {
@@ -940,12 +946,12 @@ void Cpu::process_instruction(uint8_t rom_byte)
             ir->cpu_stop();
             clk->add_cycles(4);
             break;
-        case 0xf3:  // Disable interrupts (happens after next instruction)
-            // Not implemented yet
+        case 0xf3:  // Disable interrupts (DI)
+            ir->disable_interrupts();
             clk->add_cycles(4);
             break;
-        case 0xfb:  // Enable interrupts (happens after next instruction)
-            // Not implemented yet
+        case 0xfb:  // Enable interrupts (EI) - happens after next instruction
+            ir->ei_count = 1; // Set ei counter so that ei is effective after next instruction
             clk->add_cycles(4);
             break;
         case 0x07:  // Rotate contents of A register left and store bit 7 in CF, flags updated
