@@ -85,7 +85,7 @@ void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
 
     high_byte = reg_value >> 8;
     low_byte = reg_value & 0xff;
-
+printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
     switch(reg_id)
     {
         case RAF:   // AF register
@@ -677,7 +677,7 @@ void Memory::bit_test(uint8_t reg_id, uint8_t bit_number)
     uint8_t bit_val;
 
     // Get bit value
-    bit_val = reg[reg_id] >> (bit_number);
+    bit_val = (reg[reg_id] >> bit_number) & 1;
 
     // Update Z flag
     flag_update(ZF,(bit_val==0));
@@ -1135,29 +1135,31 @@ void Memory::stack_push(uint16_t push_val)
 {
     uint8_t byte_val;
 
-    // Decrement the stack pointer
-    dec_sp(2);
-
+printf("Pushing: %4X\n",push_val);
     // Push high byte on first then lower byte
     byte_val = push_val >> 8;
-    ram[sp+1] = byte_val;
-    byte_val = push_val & 0xff;
     ram[sp] = byte_val;
+    byte_val = push_val & 0xff;
+    ram[sp-1] = byte_val;
+
+    // Decrement the stack pointer
+    dec_sp(2);
 }
 
 // Push PC value on to stack and decrement sp
 void Memory::pc_push()
 {
     uint8_t byte_val;
-
-    // Decrement the stack pointer
-    dec_sp(2);
+printf("Pushing PC: %4X\n",pc);
 
     // Push high byte on first then lower byte
     byte_val = pc >> 8;
-    ram[sp+1] = byte_val;
-    byte_val = pc & 0xff;
     ram[sp] = byte_val;
+    byte_val = pc & 0xff;
+    ram[sp-1] = byte_val;
+
+    // Decrement the stack pointer
+    dec_sp(2);
 }
 
 // Pop 16-bit value from stack and increment sp
@@ -1165,13 +1167,13 @@ uint16_t Memory::stack_pop()
 {
     uint16_t ret_val;
 
+    // Pop high byte first then lower byte
+    ret_val = ram[sp+2] << 8;
+    ret_val += ram[sp+1];
+
     // Increment the stack pointer
     inc_sp(2);
-
-    // Pop high byte first then lower byte
-    ret_val = ram[sp-1] << 8;
-    ret_val += ram[sp];
-
+printf("Popping: %4X\n",ret_val);
     return ret_val;
 }
 
@@ -1190,22 +1192,32 @@ void Memory::jmp_n(int8_t jmp_amount)
 // Set or clear a flag
 void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
 {
-    if (flg_val)
+    if (flg_val!=0)
     {
+        // Set flag to 1
         reg[RF] |= flag_id;
     }
     else
     {
-        reg[RF] ^= !flag_id;
+        // Clear flag to 0
+        reg[RF] &= !flag_id;
     }
 }
 
 // Return flag value
-bool Memory::flag_get(uint8_t flag_id)
+uint8_t Memory::flag_get(uint8_t flag_id)
 {
     uint8_t flag_val;
     flag_val = reg[RF] & flag_id;
-    return !(flag_val==0);
+
+    if (flag_val==0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 /// ROM Cartridge and game title

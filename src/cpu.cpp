@@ -37,16 +37,20 @@ void Cpu::cycle()
     // Check if CPU is halted
     if (!ir->get_halt() && !ir->get_stop())
     {
+    //temp
+    printf("PC: %4X\n", mem->get_pc());
+
         // Fetch byte for execution
         byte_in = mem->fetch_byte();
+
+    //temp
+    printf("Byte: %2X\n\n", byte_in);
 
         // Process the byte
         process_instruction(byte_in);
 
-        //temp
-        printf("PC: %4X\n", mem->get_pc());
-        printf("Byte: %2X\n\n", byte_in);
-        SDL_Delay(2000);
+    //temp
+    //SDL_Delay(1);
     }
     else if (ir->get_halt())
     {
@@ -1043,7 +1047,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0x20:  // Jump to address at PC + e if ZF is reset (e = signed 8-bit immediate)
             signed8_imm = mem->fetch_byte();
-            if (!mem->flag_get(ZF))
+            if (mem->flag_get(ZF)==0)
             {
                 mem->jmp_n(signed8_imm);
                 clk->add_cycles(12);

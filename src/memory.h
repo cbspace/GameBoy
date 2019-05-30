@@ -107,7 +107,7 @@ class Memory
         void jmp_n(int8_t jmp_amount);                              // Jump to address at PC + e (e = signed 8-bit immediate)
         /// Flags
         void flag_update(uint8_t flag_id, uint8_t flg_val);         // Set or clear flag
-        bool flag_get(uint8_t flag_id);                             // Return flag value
+        uint8_t flag_get(uint8_t flag_id);                          // Return flag value
         /// ROM Cartridge and game title
         int8_t load_rom(char* rom_path);                            // Function to load a ROM file
         void read_rom_title();                                      // Read rom title and load into string
