@@ -1200,7 +1200,7 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
     else
     {
         // Clear flag to 0
-        reg[RF] &= !flag_id;
+        reg[RF] &= ~flag_id;
     }
 }
 
@@ -1208,16 +1208,8 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
 uint8_t Memory::flag_get(uint8_t flag_id)
 {
     uint8_t flag_val;
-    flag_val = reg[RF] & flag_id;
-
-    if (flag_val==0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    flag_val = (reg[RF] & flag_id);
+    return !(flag_val==0);
 }
 
 /// ROM Cartridge and game title

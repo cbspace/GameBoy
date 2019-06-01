@@ -116,7 +116,6 @@ class Memory
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
         uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
-        uint8_t flags;                                              // Store values of flags after operation (before copied to register F)
         uint16_t sp, pc;                                            // Stack pointer and program counter
         string rom_title;                                           // Title of the current game ROM file
 

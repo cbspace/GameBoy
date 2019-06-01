@@ -37,20 +37,24 @@ void Cpu::cycle()
     // Check if CPU is halted
     if (!ir->get_halt() && !ir->get_stop())
     {
-    //temp
-    printf("PC: %4X\n", mem->get_pc());
+///temp
+printf("PC: %4X\n", mem->get_pc());
+if (mem->get_pc() == 0x6a)
+{
+    printf("Done!");
+}
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();
 
-    //temp
-    printf("Byte: %2X\n\n", byte_in);
+///temp
+printf("Byte: %2X\n\n", byte_in);
 
         // Process the byte
         process_instruction(byte_in);
 
-    //temp
-    //SDL_Delay(1);
+///temp
+//SDL_Delay(10);
     }
     else if (ir->get_halt())
     {
@@ -881,15 +885,15 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(16);
             break;
         case 0x03:  // Increment BC register by 1, flags not updated
-            mem->inc_from_pointer(RBC);
+            mem->reg_inc16(RBC);
             clk->add_cycles(8);
             break;
         case 0x13:  // Increment DE register by 1, flags not updated
-            mem->inc_from_pointer(RDE);
+            mem->reg_inc16(RDE);
             clk->add_cycles(8);
             break;
         case 0x23:  // Increment HL register by 1, flags not updated
-            mem->inc_from_pointer(RHL);
+            mem->reg_inc16(RHL);
             clk->add_cycles(8);
             break;
         case 0x33:  // Increment SP register by 1, flags not updated
@@ -897,15 +901,15 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(8);
             break;
         case 0x0b:  // Decrement BC register by 1, flags not updated
-            mem->dec_from_pointer(RBC);
+            mem->reg_dec16(RBC);
             clk->add_cycles(8);
             break;
         case 0x1b:  // Decrement DE register by 1, flags not updated
-            mem->dec_from_pointer(RDE);
+            mem->reg_dec16(RDE);
             clk->add_cycles(8);
             break;
         case 0x2b:  // Decrement HL register by 1, flags not updated
-            mem->dec_from_pointer(RHL);
+            mem->reg_dec16(RHL);
             clk->add_cycles(8);
             break;
         case 0x3b:  // Decrement SP register by 1, flags not updated
@@ -1047,14 +1051,14 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0x20:  // Jump to address at PC + e if ZF is reset (e = signed 8-bit immediate)
             signed8_imm = mem->fetch_byte();
-            if (mem->flag_get(ZF)==0)
+            if (!mem->flag_get(ZF))
             {
                 mem->jmp_n(signed8_imm);
                 clk->add_cycles(12);
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(8);
             }
             break;
@@ -1067,7 +1071,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(8);
             }
             break;
@@ -1080,7 +1084,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(8);
             }
             break;
@@ -1093,7 +1097,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(8);
             }
             break;
@@ -1115,7 +1119,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -1130,7 +1134,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -1145,7 +1149,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -1160,7 +1164,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
