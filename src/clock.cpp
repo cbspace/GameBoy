@@ -45,3 +45,16 @@ bool Clock::max_cycles_reached()
         return true;
     }
 }
+
+// Temp: Indicates if number of cycles before VBLNK is reached
+bool Clock::vblank_cycles_reached()
+{
+    if ( frame_clock_cycles > (CLK_CYCLES_MAX - CLK_CYCLES_VBLANK ) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

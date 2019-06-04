@@ -2,7 +2,7 @@
 1543318652 source:/home/craig/code/emuboy/emuboy.cpp
 	"display.h"
 
-1557138765 source:/home/craig/code/emuboy/src/display.cpp
+1559641076 source:/home/craig/code/emuboy/src/display.cpp
 	"display.h"
 	<iostream>
 	<stdint.h>
@@ -20,7 +20,7 @@
 1555936195 /home/craig/code/emuboy/include/display.h
 	<SDL2/SDL.h>
 
-1559380187 source:/home/craig/code/emuboy/src/cpu.cpp
+1559643255 source:/home/craig/code/emuboy/src/cpu.cpp
 	"cpu.h"
 	"memory.h"
 	"clock.h"
@@ -32,7 +32,7 @@
 1555921887 /home/craig/code/emuboy/include/emuboy.h
 	<string>
 
-1558609485 source:/home/craig/code/emuboy/src/clock.cpp
+1559640856 source:/home/craig/code/emuboy/src/clock.cpp
 	"clock.h"
 	<stdint.h>
 	<SDL2/SDL.h>
@@ -42,14 +42,14 @@
 1555934985 /home/craig/code/emuboy/include/memory.h
 	<string>
 
-1559374313 source:/home/craig/code/emuboy/src/memory.cpp
+1559643127 source:/home/craig/code/emuboy/src/memory.cpp
 	"memory.h"
 	<stdint.h>
 	<fstream>
 	<iostream>
 	<string>
 
-1559038744 source:/home/craig/code/emuboy/src/emulator.cpp
+1559643927 source:/home/craig/code/emuboy/src/emulator.cpp
 	"emulator.h"
 	"display.h"
 	"cpu.h"
@@ -73,7 +73,7 @@
 
 1555926122 /home/craig/code/emuboy/include/main.h
 
-1559039180 /home/craig/code/emuboy/src/clock.h
+1559643964 /home/craig/code/emuboy/src/clock.h
 	<stdint.h>
 
 1558604496 /home/craig/code/emuboy/src/cpu.h
@@ -81,12 +81,12 @@
 	"clock.h"
 	"interrupt.h"
 
-1557138765 /home/craig/code/emuboy/src/display.h
+1559640131 /home/craig/code/emuboy/src/display.h
 	<string>
 	<stdint.h>
 	<SDL2/SDL.h>
 
-1559220586 /home/craig/code/emuboy/src/emulator.h
+1559611786 /home/craig/code/emuboy/src/emulator.h
 	"cpu.h"
 	"display.h"
 	"memory.h"
@@ -100,11 +100,11 @@
 
 1555926122 /home/craig/code/emuboy/src/main.h
 
-1559038607 /home/craig/code/emuboy/src/interrupt.h
+1559640811 /home/craig/code/emuboy/src/interrupt.h
 	"memory.h"
 	"clock.h"
 
-1559039091 source:/home/craig/code/emuboy/src/interrupt.cpp
+1559643791 source:/home/craig/code/emuboy/src/interrupt.cpp
 	"interrupt.h"
 	"memory.h"
 	"clock.h"

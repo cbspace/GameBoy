@@ -45,8 +45,6 @@ void Interrupt::check_interrupts()
             {
                 printf("VBLank Interrupt\n");
             }
-
-            printf("Interrupt\n");
         }
     }
 
@@ -143,7 +141,7 @@ void Interrupt::if_update(uint8_t int_flag, bool flg_val)
     }
     else
     {
-        i_flags ^= !int_flag;
+        i_flags &= ~int_flag;
     }
 
     // Update interrupt flags

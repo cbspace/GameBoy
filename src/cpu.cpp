@@ -37,24 +37,24 @@ void Cpu::cycle()
     // Check if CPU is halted
     if (!ir->get_halt() && !ir->get_stop())
     {
-///temp
-printf("PC: %4X\n", mem->get_pc());
-if (mem->get_pc() == 0x6a)
-{
-    printf("Done!");
-}
+        ///temp
+        //printf("PC: %4X\n", mem->get_pc());
+        if (mem->get_pc() == 0x64)
+        {
+            printf("Done!");
+        }
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();
 
-///temp
-printf("Byte: %2X\n\n", byte_in);
+        ///temp
+        //printf("Byte: %2X\n\n", byte_in);
 
         // Process the byte
         process_instruction(byte_in);
 
-///temp
-//SDL_Delay(10);
+        ///temp
+        //SDL_Delay(10);
     }
     else if (ir->get_halt())
     {

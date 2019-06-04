@@ -20,9 +20,10 @@ static const int height = 144*SCALING_FACTOR;   // Screen height in pixels
 class Display
 {
     public:
-        Display();
-        int8_t init();
-        void set_title(string title_add);
+        Display();                              // Constructor
+        int8_t init();                          // Set up SDL
+        void set_title(string title_add);       // Set title of SDL window
+        void render_frame();                    // Render a single frame
         virtual ~Display();
 
     private:

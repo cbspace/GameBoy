@@ -74,7 +74,8 @@ void Memory::reg_set(uint8_t reg_id, uint8_t reg_value)
     {
         throw "Invalid register id";
     }
-    printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
+    ///temp
+    //printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
 }
 
 // Set value in 16 bit register
@@ -85,7 +86,8 @@ void Memory::reg_set(uint8_t reg_id, uint16_t reg_value)
 
     high_byte = reg_value >> 8;
     low_byte = reg_value & 0xff;
-printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
+///temp
+//printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
     switch(reg_id)
     {
         case RAF:   // AF register

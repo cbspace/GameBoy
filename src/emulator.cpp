@@ -43,6 +43,9 @@ void Emulator::start(char* rom_path)
     disp.set_title(mem.get_rom_title());
     cout << "Rom Title: " << mem.get_rom_title() << endl;
 
+    /// Temp set initial ie value
+    mem.write_byte(A_IENABLE,I_VBLANK);
+
     // Run the main loop
     main_loop();
 }
@@ -61,12 +64,24 @@ void Emulator::main_loop()
 
         while (!clk.max_cycles_reached())
         {
+            // Set VBLANK interrupt flag
+            if (clk.vblank_cycles_reached())
+            {
+                ir.if_update(I_VBLANK, true);
+            }
+
             // Perform CPU cycles
             cp.cycle();
 
             // Check for interrupts and process accordingly
             ir.check_interrupts();
         }
+
+        // Clear VBLANK interrupt flag
+        ir.if_update(I_VBLANK, false);
+
+        // Draw the frame!
+        disp.render_frame();
 
         // Delay until next frame
         clk.frame_delay();
