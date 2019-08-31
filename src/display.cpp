@@ -67,12 +67,6 @@ int8_t Display::init()
     return -1;
 }
 
-// Render a single frame
-void Display::render_frame()
-{
-    cout << "rendering\n";
-}
-
 // Close the SDL window and close SDL
 Display::~Display()
 {
@@ -82,4 +76,10 @@ Display::~Display()
 
 	// Tidy up
 	SDL_Quit();
+}
+
+// Render a single frame
+void Display::render_frame()
+{
+    cout << "rendering\n";
 }

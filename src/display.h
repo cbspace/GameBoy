@@ -23,8 +23,10 @@ class Display
         Display();                              // Constructor
         int8_t init();                          // Set up SDL
         void set_title(string title_add);       // Set title of SDL window
-        void render_frame();                    // Render a single frame
         virtual ~Display();
+
+        // Rendering
+        void render_frame();                    // Render a single frame
 
     private:
         SDL_Window* window;

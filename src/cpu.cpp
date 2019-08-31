@@ -41,7 +41,8 @@ void Cpu::cycle()
         //printf("PC: %4X\n", mem->get_pc());
         if (mem->get_pc() == 0x64)
         {
-            printf("Done!");
+            mem->ram_debug(0x8000);
+            printf("PC: %4X\n", mem->get_pc());
         }
 
         // Fetch byte for execution

@@ -43,8 +43,12 @@ void Emulator::start(char* rom_path)
     disp.set_title(mem.get_rom_title());
     cout << "Rom Title: " << mem.get_rom_title() << endl;
 
-    /// Temp set initial ie value
+    // Set initial value of V_BLANK interrupt enable (on)
     mem.write_byte(A_IENABLE,I_VBLANK);
+
+    ///temp
+    // Insert logo for dmg rom
+    mem.debug_insert_logo();
 
     // Run the main loop
     main_loop();

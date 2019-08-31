@@ -112,9 +112,13 @@ class Memory
         int8_t load_rom(char* rom_path);                            // Function to load a ROM file
         void read_rom_title();                                      // Read rom title and load into string
         string get_rom_title();                                     // Get the current ROM title
+        /// Debug
+        void ram_debug(uint16_t start_addr);                        // Copy 256 bytes from start address to debug ram
+        void debug_insert_logo();                                   // For testing purposes add the N logo into the RAM
 
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
+        char rdb[256];                                              // 256 bytes of debug ram
         uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         uint16_t sp, pc;                                            // Stack pointer and program counter
         string rom_title;                                           // Title of the current game ROM file
@@ -173,7 +177,7 @@ class Memory
     0100 - 0103 Begin code execution point. Usually contains a NOP
                 and a JP but not always.
 
-    0104 - 0133 Scrolling Nintendo graphic
+    0104 - 0133 Scrolling Logo graphic
                 ce ed 66 66  cc 0d 00 0b 03 73 00 83
     00 0c 00 0d 00 08 11 1f  88 89 00 0e dc cc 6e e6
     dd dd d9 99 bb bb 67 63  6e 0e ec cc dd dc 99 9f
