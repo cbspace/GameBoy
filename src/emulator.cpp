@@ -27,6 +27,9 @@ Emulator::Emulator()
     // Pass pointer to clock object to interrupt object
     ir.attach_clock(&clk);
 
+    // Pass pointer to memory object to display object
+    disp.attach_memory(&mem);
+
     // Flag to signify if the user wishes to quit
     quit_flag = false;
 }

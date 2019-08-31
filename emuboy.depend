@@ -2,8 +2,9 @@
 1543318652 source:/home/craig/code/emuboy/emuboy.cpp
 	"display.h"
 
-1567235148 source:/home/craig/code/emuboy/src/display.cpp
+1567255889 source:/home/craig/code/emuboy/src/display.cpp
 	"display.h"
+	"memory.h"
 	<iostream>
 	<stdint.h>
 	<string>
@@ -20,7 +21,7 @@
 1555936195 /home/craig/code/emuboy/include/display.h
 	<SDL2/SDL.h>
 
-1567240028 source:/home/craig/code/emuboy/src/cpu.cpp
+1567253977 source:/home/craig/code/emuboy/src/cpu.cpp
 	"cpu.h"
 	"memory.h"
 	"clock.h"
@@ -42,14 +43,14 @@
 1555934985 /home/craig/code/emuboy/include/memory.h
 	<string>
 
-1567240243 source:/home/craig/code/emuboy/src/memory.cpp
+1567240353 source:/home/craig/code/emuboy/src/memory.cpp
 	"memory.h"
 	<stdint.h>
 	<fstream>
 	<iostream>
 	<string>
 
-1567240286 source:/home/craig/code/emuboy/src/emulator.cpp
+1567256021 source:/home/craig/code/emuboy/src/emulator.cpp
 	"emulator.h"
 	"display.h"
 	"cpu.h"
@@ -81,7 +82,8 @@
 	"clock.h"
 	"interrupt.h"
 
-1559640131 /home/craig/code/emuboy/src/display.h
+1567255459 /home/craig/code/emuboy/src/display.h
+	"memory.h"
 	<string>
 	<stdint.h>
 	<SDL2/SDL.h>

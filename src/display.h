@@ -1,16 +1,25 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
+#include "memory.h"
+
 #include <string>
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-#define SCALING_FACTOR 2        // Scale display size by this amount
-#define WINDOW_TITLE "EmuBoy"   // Title to display on SDL Window
+#define SCALING_FACTOR      2           // Scale display size by this amount
+#define WINDOW_TITLE        "EmuBoy"    // Title to display on SDL Window
 
-#define BG_COLOUR_R 0x92
-#define BG_COLOUR_G 0xAD
-#define BG_COLOUR_B 0x26
+#define BG_COLOUR_R         0x92
+#define BG_COLOUR_G         0xAD
+#define BG_COLOUR_B         0x26
+
+#define BG_COLOUR_ARGB      0xff92AD26
+
+#define BG_TILES_MAX        32
+//#define SPRITE_TILES_MAX    32
+#define BG_PX_MAX           255
+//#define SPRITE_PX_MAX       255
 
 using namespace std;
 
@@ -21,16 +30,23 @@ class Display
 {
     public:
         Display();                              // Constructor
+        void attach_memory(Memory* mem_in);     // Set pointer used to access memory object
         int8_t init();                          // Set up SDL
         void set_title(string title_add);       // Set title of SDL window
-        virtual ~Display();
+        virtual ~Display();                     // Destructor
 
         // Rendering
         void render_frame();                    // Render a single frame
 
     private:
+        Memory* mem;                            // Pointer to memory object
+
         SDL_Window* window;
         SDL_Surface* drawSurface;
+        SDL_Renderer* renderer;
+        SDL_Texture* texture;
+
+        uint32_t* pixels;
 };
 
 #endif // DISPLAY_H
