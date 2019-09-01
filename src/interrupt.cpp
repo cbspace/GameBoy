@@ -43,7 +43,7 @@ void Interrupt::check_interrupts()
         {
             if (I_VBLANK & i_current)
             {
-                printf("VBLank Interrupt\n");
+                //printf("VBLank Interrupt\n");
             }
         }
     }

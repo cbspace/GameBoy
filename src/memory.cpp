@@ -202,10 +202,14 @@ void Memory::reg_dec(uint8_t reg_id)
         flag_update(NF,0);
 
         // Update 8 bit register
-        reg[reg_id]--;
+        reg[reg_id] = reg[reg_id] - 1;
 
         // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
+
+        ///temp
+        printf("reg %i now equals %i ", reg_id, reg[reg_id]);
+        printf("hello");
     }
 /*    else if ((reg_id > REG_16_START) && (reg_id < REG_16_END)) // Check if valid 16-bit register used
     {
@@ -1152,7 +1156,7 @@ printf("Pushing: %4X\n",push_val);
 void Memory::pc_push()
 {
     uint8_t byte_val;
-printf("Pushing PC: %4X\n",pc);
+///printf("Pushing PC: %4X\n",pc);
 
     // Push high byte on first then lower byte
     byte_val = pc >> 8;
@@ -1175,7 +1179,7 @@ uint16_t Memory::stack_pop()
 
     // Increment the stack pointer
     inc_sp(2);
-printf("Popping: %4X\n",ret_val);
+///printf("Popping: %4X\n",ret_val);
     return ret_val;
 }
 

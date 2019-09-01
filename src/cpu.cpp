@@ -427,7 +427,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0xe0:  // Set byte at ($FF00 + imm8 n) to register A
             imm16_value = 0xff00 + mem->fetch_byte();
-            mem->write_byte(imm16_value,RA);
+            mem->write_byte(imm16_value,mem->reg_get(RA));
             clk->add_cycles(12);
             break;
         case 0xf0:  // Set register A to ($FF00 + imm8 n)

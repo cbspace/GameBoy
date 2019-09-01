@@ -117,21 +117,38 @@ void Display::render_frame()
     }
 
     /// Draw logo
-    uint8_t lg[6];
-    lg[0] = mem->get_byte(0x8010);
+    uint8_t lg[8];
+    /*lg[0] = mem->get_byte(0x8010);
     lg[1] = mem->get_byte(0x8012);
     lg[2] = mem->get_byte(0x8014);
     lg[3] = mem->get_byte(0x8016);
     lg[4] = mem->get_byte(0x8018);
-    lg[5] = mem->get_byte(0x8020);
+    lg[5] = mem->get_byte(0x801a);
+    lg[6] = mem->get_byte(0x801c);
+    lg[7] = mem->get_byte(0x801e);*/
 
-    for (uint16_t y = 0; y < 8; y++)
+    for (uint16_t b = 0; b < 6; b++)
     {
-        for (uint16_t x = 0; x < 8; x++)
+        lg[0] = mem->get_byte(0x8010 + b*16);
+        lg[1] = mem->get_byte(0x8012 + b*16);
+        lg[2] = mem->get_byte(0x8014 + b*16);
+        lg[3] = mem->get_byte(0x8016 + b*16);
+        lg[4] = mem->get_byte(0x8018 + b*16);
+        lg[5] = mem->get_byte(0x801a + b*16);
+        lg[6] = mem->get_byte(0x801c + b*16);
+        lg[7] = mem->get_byte(0x801e + b*16);
+
+        for (uint16_t y = 0; y < 8; y++)
         {
-            if ((lg[y] | (1<<(7-x))) >> (7-x) == 1)
+            for (uint16_t x = 0; x < 8; x++)
             {
-                pixels[y*width + x] = 0x00000000;
+                if ((lg[y] & (1<<(7-x))) >> (7-x) == 1)
+                {
+                    pixels[y*2*width + 2*(x+b*8)] = 0x00000000;
+                    pixels[y*2*width + 2*(x+b*8) + 1] = 0x00000000;
+                    pixels[(y*2+1)*width + 2*(x+b*8)] = 0x00000000;
+                    pixels[(y*2+1)*width + 2*(x+b*8) + 1] = 0x00000000;
+                }
             }
         }
     }
