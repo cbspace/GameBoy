@@ -39,6 +39,8 @@
 		<Unit filename="src/clock.h" />
 		<Unit filename="src/cpu.cpp" />
 		<Unit filename="src/cpu.h" />
+		<Unit filename="src/cpu_ins.cpp" />
+		<Unit filename="src/cpu_ins_cb.cpp" />
 		<Unit filename="src/display.cpp" />
 		<Unit filename="src/display.h" />
 		<Unit filename="src/emulator.cpp" />
@@ -49,6 +51,11 @@
 		<Unit filename="src/main.h" />
 		<Unit filename="src/memory.cpp" />
 		<Unit filename="src/memory.h" />
+		<Unit filename="src/memory_access.cpp" />
+		<Unit filename="src/memory_logic.cpp" />
+		<Unit filename="src/memory_math.cpp" />
+		<Unit filename="src/memory_reg.cpp" />
+		<Unit filename="src/memory_stack.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
