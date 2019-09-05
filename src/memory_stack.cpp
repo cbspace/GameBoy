@@ -88,7 +88,6 @@ void Memory::stack_push(uint16_t push_val)
 {
     uint8_t byte_val;
 
-printf("Pushing: %4X\n",push_val);
     // Push high byte on first then lower byte
     byte_val = push_val >> 8;
     ram[sp] = byte_val;
@@ -103,7 +102,6 @@ printf("Pushing: %4X\n",push_val);
 void Memory::pc_push()
 {
     uint8_t byte_val;
-///printf("Pushing PC: %4X\n",pc);
 
     // Push high byte on first then lower byte
     byte_val = pc >> 8;
@@ -121,12 +119,11 @@ uint16_t Memory::stack_pop()
     uint16_t ret_val;
 
     // Pop high byte first then lower byte
-    ret_val = ram[sp+2] << 8;
-    ret_val += ram[sp+1];
+    ret_val = (ram[sp+2] << 8) + (ram[sp+1] & 0xff);
 
     // Increment the stack pointer
     inc_sp(2);
-///printf("Popping: %4X\n",ret_val);
+
     return ret_val;
 }
 

@@ -117,26 +117,25 @@ void Display::render_frame()
     }
 
     /// Draw logo
-    uint8_t lg[8];
-    /*lg[0] = mem->get_byte(0x8010);
-    lg[1] = mem->get_byte(0x8012);
-    lg[2] = mem->get_byte(0x8014);
-    lg[3] = mem->get_byte(0x8016);
-    lg[4] = mem->get_byte(0x8018);
-    lg[5] = mem->get_byte(0x801a);
-    lg[6] = mem->get_byte(0x801c);
-    lg[7] = mem->get_byte(0x801e);*/
+    uint8_t lg[24];
+    /*lg[0] = 0x3c;
+    lg[1] = 0x42;
+    lg[2] = 0xb9;
+    lg[3] = 0xa5;
+    lg[4] = 0xb9;
+    lg[5] = 0xa5;
+    lg[6] = 0x42;
+    lg[7] = 0x3c;*/
 
-    for (uint16_t b = 0; b < 6; b++)
+
+
+    for (uint16_t b = 0; b < 12; b++)
     {
-        lg[0] = mem->get_byte(0x8010 + b*16);
-        lg[1] = mem->get_byte(0x8012 + b*16);
-        lg[2] = mem->get_byte(0x8014 + b*16);
-        lg[3] = mem->get_byte(0x8016 + b*16);
-        lg[4] = mem->get_byte(0x8018 + b*16);
-        lg[5] = mem->get_byte(0x801a + b*16);
-        lg[6] = mem->get_byte(0x801c + b*16);
-        lg[7] = mem->get_byte(0x801e + b*16);
+
+        for (int z = 0; z < 8; z++)
+        {
+            lg[z] = mem->get_byte(0x8010 + z * 2 + b*16);
+        }
 
         for (uint16_t y = 0; y < 8; y++)
         {
@@ -152,6 +151,29 @@ void Display::render_frame()
             }
         }
     }
+/*
+    for (uint16_t b = 0; b < 12; b++)
+    {
+
+        for (int z = 0; z < 8; z++)
+        {
+            lg[z] = mem->get_byte(0x80E0 + z * 2 + b*16);
+        }
+
+        for (uint16_t y = 0; y < 8; y++)
+        {
+            for (uint16_t x = 0; x < 8; x++)
+            {
+                if ((lg[y] & (1<<(7-x))) >> (7-x) == 1)
+                {
+                    pixels[y*2*width + 2*(x+b*8)] = 0x00000000;
+                    pixels[y*2*width + 2*(x+b*8) + 1] = 0x00000000;
+                    pixels[(y*2+1)*width + 2*(x+b*8)] = 0x00000000;
+                    pixels[(y*2+1)*width + 2*(x+b*8) + 1] = 0x00000000;
+                }
+            }
+        }
+    } */
     /*
 
     // Draw background tiles

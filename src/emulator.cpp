@@ -3,6 +3,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "interrupt.h"
+#include "emudebug.h"
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
@@ -21,6 +22,9 @@ Emulator::Emulator()
     // Pass pointer to interrupt object to CPU object
     cp.attach_interrupt(&ir);
 
+    // Pass pointer to debug object to CPU object
+    cp.attach_emudebug(&edb);
+
     // Pass pointer to memory object to interrupt object
     ir.attach_memory(&mem);
 
@@ -29,6 +33,9 @@ Emulator::Emulator()
 
     // Pass pointer to memory object to display object
     disp.attach_memory(&mem);
+
+    // Pass pointer to memory object to emudebug object
+    edb.attach_memory(&mem);
 
     // Flag to signify if the user wishes to quit
     quit_flag = false;
@@ -102,16 +109,16 @@ void Emulator::key_down()
     SDL_Event e;
 
     // Handle events on the event queue
-    while ( SDL_PollEvent( &e ) != 0 )
+    while (SDL_PollEvent(&e) != 0)
     {
         // User requests to quit
-        if ( e.type == SDL_QUIT )
+        if (e.type == SDL_QUIT)
         {
             quit_flag = true;
         }
-        else if ( e.type == SDL_KEYDOWN )
+        else if (e.type == SDL_KEYDOWN)
         {
-            if ( e.key.keysym.sym == SDLK_ESCAPE )
+            if (e.key.keysym.sym == SDLK_ESCAPE)
             {
                 quit_flag = true;
             }

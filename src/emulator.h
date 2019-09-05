@@ -6,10 +6,11 @@
 #include "memory.h"
 #include "clock.h"
 #include "interrupt.h"
+#include "emudebug.h"
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.32";
+static const string RELEASE_VERSION = "0.36";
 
 class Emulator
 {
@@ -26,6 +27,7 @@ class Emulator
         Memory mem;                             // Memory including registers
         Clock clk;                              // Clock for emulator
         Interrupt ir;                           // Interrupt class object
+        Emudebug edb;                           // Emudebug class object
         bool quit_flag;                         // Flag to signify if the user wishes to quit
 };
 

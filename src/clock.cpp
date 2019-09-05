@@ -20,10 +20,10 @@ void Clock::frame_delay()
     frame_elap_ticks = SDL_GetTicks() - frame_start_ticks ;
 
     // Check if frame is finished early
-    if ( frame_elap_ticks < CLK_FRAME_DELAY )
+    if (frame_elap_ticks < CLK_FRAME_DELAY)
     {
         // Wait for remaining time
-        SDL_Delay( CLK_FRAME_DELAY - frame_elap_ticks );
+        SDL_Delay(CLK_FRAME_DELAY - frame_elap_ticks);
     }
 }
 
@@ -36,7 +36,7 @@ void Clock::add_cycles(uint8_t amount)
 // Indicates if max clock cycles for a single frame is reached
 bool Clock::max_cycles_reached()
 {
-    if ( frame_clock_cycles < CLK_CYCLES_MAX )
+    if (frame_clock_cycles < CLK_CYCLES_MAX)
     {
         return false;
     }
@@ -49,7 +49,7 @@ bool Clock::max_cycles_reached()
 // Temp: Indicates if number of cycles before VBLNK is reached
 bool Clock::vblank_cycles_reached()
 {
-    if ( frame_clock_cycles > (CLK_CYCLES_MAX - CLK_CYCLES_VBLANK ) )
+    if (frame_clock_cycles > (CLK_CYCLES_MAX - CLK_CYCLES_VBLANK))
     {
         return true;
     }

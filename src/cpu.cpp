@@ -2,6 +2,8 @@
 #include "memory.h"
 #include "clock.h"
 #include "interrupt.h"
+#include "emudebug.h"
+#include <SDL2/SDL.h>
 
 // Perform a single CPU cycle
 void Cpu::cycle()
@@ -14,11 +16,12 @@ void Cpu::cycle()
     {
         ///temp
         //printf("PC: %4X\n", mem->get_pc());
-        if (mem->get_pc() == 0x64)
+        if (mem->get_pc() == 0x0064)
         {
-            mem->ram_debug(0x8000);
-            printf("PC: %4X\n", mem->get_pc());
+            SDL_Delay(10); //Dummy put break point here
         }
+        edb->dump_reg();
+        mem->ram_debug(0x8010);
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();
@@ -58,4 +61,10 @@ void Cpu::attach_clock(Clock* clock_in)
 void Cpu::attach_interrupt(Interrupt* interrupt_in)
 {
     ir = interrupt_in;
+}
+
+// Set pointer used to access debug object
+void Cpu::attach_emudebug(Emudebug* debug_in)
+{
+    edb = debug_in;
 }

@@ -101,6 +101,7 @@ string Memory::get_rom_title()
     return rom_title;
 }
 
+///temp
 // Copy 256 bytes from start address to debug ram
 void Memory::ram_debug(uint16_t start_addr)
 {

@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
+					<Add directory="src" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -26,6 +27,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="include" />
+					<Add directory="src" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -43,6 +45,8 @@
 		<Unit filename="src/cpu_ins_cb.cpp" />
 		<Unit filename="src/display.cpp" />
 		<Unit filename="src/display.h" />
+		<Unit filename="src/emudebug.cpp" />
+		<Unit filename="src/emudebug.h" />
 		<Unit filename="src/emulator.cpp" />
 		<Unit filename="src/emulator.h" />
 		<Unit filename="src/interrupt.cpp" />

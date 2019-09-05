@@ -181,20 +181,14 @@ void Memory::reg_dec(uint8_t reg_id)
         flag_update(NF,0);
 
         // Update 8 bit register
-        reg[reg_id] = reg[reg_id] - 1;
+        reg[reg_id]--;
 
         // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
 
         ///temp
-        printf("reg %i now equals %i ", reg_id, reg[reg_id]);
-        printf("hello");
+        //printf("reg %i now equals %i ", reg_id, reg[reg_id]);
     }
-/*    else if ((reg_id > REG_16_START) && (reg_id < REG_16_END)) // Check if valid 16-bit register used
-    {
-        reg_val = reg_get16(reg_id) - 1;
-        reg_set(reg_id,reg_val);
-    } */
     else
     {
         throw "Invalid register id";

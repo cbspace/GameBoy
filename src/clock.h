@@ -41,7 +41,7 @@ Total               17,556              70,224
 
 */
 
-#define CLK_FRAME_DELAY          500//16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_FRAME_DELAY          200//16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 #define CLK_CYCLES_LINE          252         // Clock cycles for a single line BG + Sprites
 #define CLK_CYCLES_HBLANK        204         // Clock cycles for a single line HBLANK period
