@@ -45,6 +45,7 @@
 		<Unit filename="src/cpu_ins_cb.cpp" />
 		<Unit filename="src/display.cpp" />
 		<Unit filename="src/display.h" />
+		<Unit filename="src/display_render.cpp" />
 		<Unit filename="src/emudebug.cpp" />
 		<Unit filename="src/emudebug.h" />
 		<Unit filename="src/emulator.cpp" />

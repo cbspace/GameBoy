@@ -47,6 +47,8 @@ class Display
         SDL_Texture* texture;
 
         uint32_t* pixels;
+        void draw_bg();                         // Draw bg tiles into pixel array
+        void draw_tile(uint16_t addr);          // Draw an individual tile located at adddr
 };
 
 #endif // DISPLAY_H

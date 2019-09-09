@@ -16,12 +16,12 @@ void Cpu::cycle()
     {
         ///temp
         //printf("PC: %4X\n", mem->get_pc());
-        if (mem->get_pc() == 0x0064)
-        {
-            SDL_Delay(10); //Dummy put break point here
-        }
-        edb->dump_reg();
-        mem->ram_debug(0x8010);
+        //if (mem->get_pc() == 0x0064)
+        //{
+        //    SDL_Delay(10); //Dummy put break point here
+        //}
+        //edb->dump_reg();
+        //mem->ram_debug(0x8010);
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();

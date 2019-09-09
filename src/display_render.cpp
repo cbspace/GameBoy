@@ -22,7 +22,7 @@ void Display::render_frame()
 {
     cout << "rendering\n";
 
-    /// Temp fill canvas
+    // Fill canvas with BG Colour
     for (uint16_t j = 0; j < height; j++)
     {
         for (uint16_t i = 0; i < width; i++)
@@ -31,74 +31,8 @@ void Display::render_frame()
         }
     }
 
-    /// Draw logo
-    uint8_t lg[24];
-    /*lg[0] = 0x3c;
-    lg[1] = 0x42;
-    lg[2] = 0xb9;
-    lg[3] = 0xa5;
-    lg[4] = 0xb9;
-    lg[5] = 0xa5;
-    lg[6] = 0x42;
-    lg[7] = 0x3c;*/
-
-
-
-    for (uint16_t b = 0; b < 12; b++)
-    {
-
-        for (int z = 0; z < 8; z++)
-        {
-            lg[z] = mem->get_byte(0x8010 + z * 2 + b*16);
-        }
-
-        for (uint16_t y = 0; y < 8; y++)
-        {
-            for (uint16_t x = 0; x < 8; x++)
-            {
-                if ((lg[y] & (1<<(7-x))) >> (7-x) == 1)
-                {
-                    pixels[y*2*width + 2*(x+b*8)] = 0x00000000;
-                    pixels[y*2*width + 2*(x+b*8) + 1] = 0x00000000;
-                    pixels[(y*2+1)*width + 2*(x+b*8)] = 0x00000000;
-                    pixels[(y*2+1)*width + 2*(x+b*8) + 1] = 0x00000000;
-                }
-            }
-        }
-    }
-
-    for (uint16_t b = 0; b < 12; b++)
-    {
-
-        for (int z = 0; z < 8; z++)
-        {
-            lg[z] = mem->get_byte(0x8090 + z * 2 + b*16);
-        }
-
-        for (uint16_t y = 0; y < 8; y++)
-        {
-            for (uint16_t x = 0; x < 8; x++)
-            {
-                if ((lg[y] & (1<<(7-x))) >> (7-x) == 1)
-                {
-                    pixels[y*2*width + 2*(x+b*8)] = 0x00000000;
-                    pixels[y*2*width + 2*(x+b*8) + 1] = 0x00000000;
-                    pixels[(y*2+1)*width + 2*(x+b*8)] = 0x00000000;
-                    pixels[(y*2+1)*width + 2*(x+b*8) + 1] = 0x00000000;
-                }
-            }
-        }
-    }
-    /*
-
-    // Draw background tiles
-    for (uint8_t bg_tile_x = 0; bg_tile_x < BG_TILES_MAX; bg_tile_x++)
-    {
-            for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
-            {
-
-            }
-    }*/
+    // Draw the background tiles
+    draw_bg();
 
     // Update texture
     SDL_UpdateTexture(texture, NULL, pixels, width * sizeof(uint32_t));
@@ -106,4 +40,55 @@ void Display::render_frame()
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
+}
+
+// Draw bg tiles into pixel array
+void Display::draw_bg()
+{
+    // Byte array for a tile
+    uint8_t tile[8];
+
+    // Current memory address
+    uint16_t addr;
+
+    // Draw background tiles
+    for (uint8_t bg_tile_x = 0; bg_tile_x < BG_TILES_MAX; bg_tile_x++)
+    {
+        for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
+        {
+            // Calculate start address for tile
+            addr = 0x8000 + (bg_tile_y * 512) + bg_tile_x * 8;
+
+            // Load data for tile
+            for (int b = 0; b < 8; b++)
+            {
+                tile[b] = mem->get_byte(addr + b * 2);
+            }
+
+            // Temp only draw viewable window
+            if ((bg_tile_x < 20) && (bg_tile_y < 18))
+            {
+                // Draw a tile
+                for (uint16_t y = 0; y < 8; y++)
+                {
+                    for (uint16_t x = 0; x < 8; x++)
+                    {
+                        if ((tile[y] & (1<<(7-x))) >> (7-x) == 1)
+                        {
+                            pixels[(((bg_tile_y * 8 + y) * 2) * 160 + (bg_tile_x * 8 + x))] = 0x00000000;
+                            pixels[(((bg_tile_y * 8 + y) * 2) * 160 + (bg_tile_x * 8 + x + 1))] = 0x00000000;
+                            pixels[((((bg_tile_y * 8 + y) * 2) + 1) * 160 + (bg_tile_x * 8 + x))] = 0x00000000;
+                            pixels[((((bg_tile_y * 8 + y) * 2) + 1) * 160 + (bg_tile_x * 8 + x + 1))] = 0x00000000;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Draw an individual tile located at adddr
+void draw_tile(uint16_t addr)
+{
+
 }
