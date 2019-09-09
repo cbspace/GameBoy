@@ -2,7 +2,7 @@
 1543318652 source:/home/craig/code/emuboy/emuboy.cpp
 	"display.h"
 
-1567673764 source:/home/craig/code/emuboy/src/display.cpp
+1568023096 source:/home/craig/code/emuboy/src/display.cpp
 	"display.h"
 	"memory.h"
 	<iostream>
