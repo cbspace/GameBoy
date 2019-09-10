@@ -102,10 +102,10 @@ string Memory::get_rom_title()
 }
 
 ///temp
-// Copy 256 bytes from start address to debug ram
+// Copy 1000 bytes from start address to debug ram
 void Memory::ram_debug(uint16_t start_addr)
 {
-    for (uint16_t i = 0; i < 256; i++)
+    for (uint16_t i = 0; i < 1000; i++)
     {
         rdb[i] = ram[start_addr + i];
     }

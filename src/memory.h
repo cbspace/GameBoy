@@ -5,7 +5,7 @@
 #define REG_ARRAY_SIZE      8           // Number of 8 bit registers
 #define BYTE_ARRAY_SIZE     16          // Used in read_rom_title and write_array
 
-#define ROM_START_ADDRESS   0x000 //0x100      // ROM program starts at this address
+#define ROM_START_ADDRESS   0x00 //0x100       // ROM program starts at this address
 #define ROM_TITLE_ADDRESS   0x134       // Address of title
 
 #define SP_INITIAL_VALUE    0xfffe      // Initial value of the stack pointer
@@ -118,7 +118,7 @@ class Memory
 
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
-        char rdb[256];                                              // 256 bytes of debug ram
+        char rdb[1000];                                             // 1000 bytes of debug ram
         uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         uint16_t sp, pc;                                            // Stack pointer and program counter
         string rom_title;                                           // Title of the current game ROM file

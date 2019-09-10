@@ -21,7 +21,7 @@ void Cpu::cycle()
         //    SDL_Delay(10); //Dummy put break point here
         //}
         //edb->dump_reg();
-        //mem->ram_debug(0x8010);
+        //mem->ram_debug(0x9900);
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();

@@ -48,16 +48,26 @@ void Display::draw_bg()
     // Byte array for a tile
     uint8_t tile[8];
 
-    // Current memory address
+    // Tile number of current tile (from bg tile map)
+    uint8_t tile_number;
+
+    // Memory address of tile
+    // bg tile map located at 9800 to 9BFF
     uint16_t addr;
 
-    // Draw background tiles
+    // X and Y position of pixel on screen
+    uint8_t pix_x, pix_y;
+
+    // Draw background tiles, loop through bg tile map
     for (uint8_t bg_tile_x = 0; bg_tile_x < BG_TILES_MAX; bg_tile_x++)
     {
         for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
         {
+            // Read tile number from bg tile map
+            tile_number = mem->get_byte(0x9800 + bg_tile_y*32 + bg_tile_x);
+
             // Calculate start address for tile
-            addr = 0x8000 + (bg_tile_y * 512) + bg_tile_x * 8;
+            addr = 0x8000 + tile_number * 16;
 
             // Load data for tile
             for (int b = 0; b < 8; b++)
@@ -75,10 +85,12 @@ void Display::draw_bg()
                     {
                         if ((tile[y] & (1<<(7-x))) >> (7-x) == 1)
                         {
-                            pixels[(((bg_tile_y * 8 + y) * 2) * 160 + (bg_tile_x * 8 + x))] = 0x00000000;
-                            pixels[(((bg_tile_y * 8 + y) * 2) * 160 + (bg_tile_x * 8 + x + 1))] = 0x00000000;
-                            pixels[((((bg_tile_y * 8 + y) * 2) + 1) * 160 + (bg_tile_x * 8 + x))] = 0x00000000;
-                            pixels[((((bg_tile_y * 8 + y) * 2) + 1) * 160 + (bg_tile_x * 8 + x + 1))] = 0x00000000;
+                            pix_y = bg_tile_y * 8 + y;
+                            pix_x = bg_tile_x * 8 + x;
+                            pixels[pix_y * SCALING_FACTOR * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR] = 0x00000000;
+                            pixels[pix_y * SCALING_FACTOR * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR + 1] = 0x00000000;
+                            pixels[(pix_y * SCALING_FACTOR + 1) * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR] = 0x00000000;
+                            pixels[(pix_y * SCALING_FACTOR + 1) * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR + 1] = 0x00000000;
                         }
                     }
                 }

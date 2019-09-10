@@ -327,7 +327,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
         case 0xea:  // Set byte at (nn) to register A
             imm16_value = mem->fetch_byte();
             imm16_value += mem->fetch_byte() << 8;
-            mem->write_byte(imm16_value,RA);
+            mem->write_byte(imm16_value,mem->reg_get(RA));
             clk->add_cycles(16);
             break;
         case 0xf2:  // Set register A to ($FF00 + register C)
@@ -337,7 +337,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             break;
         case 0xe2:  // Set byte at ($FF00 + register C) to register A
             imm16_value = 0xff00 + mem->reg_get(RC);
-            mem->write_byte(imm16_value,RA);
+            mem->write_byte(imm16_value,mem->reg_get(RA));
             clk->add_cycles(8);
             break;
         case 0x3a:  // Set register A to value at (HL), decrement HL
