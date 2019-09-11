@@ -1,6 +1,7 @@
 #include "interrupt.h"
 #include "memory.h"
 #include "clock.h"
+#include "display.h"
 
 Interrupt::Interrupt()
 {
@@ -10,6 +11,9 @@ Interrupt::Interrupt()
     ei_count = 0;           // 0 = Normal State, 1 = Flag Set, 2 = Delayed 1 cycle ready to reset
     i_flags = 0;
     i_enable = 0;
+    mem = NULL;
+    clk = NULL;
+    disp = NULL;
 }
 
 // Set pointer used to access memory object
@@ -22,6 +26,12 @@ void Interrupt::attach_memory(Memory* mem_in)
 void Interrupt::attach_clock(Clock* clk_in)
 {
     clk = clk_in;
+}
+
+// Set pointer used to access display object
+void Interrupt::attach_display(Display* disp_in)
+{
+    disp = disp_in;
 }
 
 // Perform interrupt checks each cycle
@@ -44,6 +54,9 @@ void Interrupt::check_interrupts()
             if (I_VBLANK & i_current)
             {
                 //printf("VBLank Interrupt\n");
+
+                // Draw the frame!
+                disp->render_frame();
             }
         }
     }

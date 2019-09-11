@@ -31,6 +31,9 @@ Emulator::Emulator()
     // Pass pointer to clock object to interrupt object
     ir.attach_clock(&clk);
 
+    // Pass pointer to display object to interrupt object
+    ir.attach_display(&disp);
+
     // Pass pointer to memory object to display object
     disp.attach_memory(&mem);
 
@@ -95,7 +98,7 @@ void Emulator::main_loop()
         ir.if_update(I_VBLANK, false);
 
         // Draw the frame!
-        disp.render_frame();
+        //disp.render_frame();
 
         // Delay until next frame
         clk.frame_delay();
