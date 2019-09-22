@@ -64,10 +64,10 @@ void Display::draw_bg()
         for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
         {
             // Read tile number from bg tile map
-            tile_number = mem->get_byte(0x9800 + bg_tile_y*32 + bg_tile_x);
+            tile_number = mem->get_byte(A_BGTM + bg_tile_y*32 + bg_tile_x);
 
             // Calculate start address for tile
-            addr = 0x8000 + tile_number * 16;
+            addr = A_TDT1 + tile_number * 16;
 
             // Load data for tile
             for (int b = 0; b < 8; b++)

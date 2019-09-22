@@ -33,7 +33,6 @@
 #define HF     0x20                     // Half carry flag mask
 #define CF     0x10                     // Full carry flag mask
 
-
 #include <stdint.h>
 #include <string>
 using namespace std;

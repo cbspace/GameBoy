@@ -86,7 +86,7 @@
 	"emudebug.h"
 	<stdint.h>
 
-1568024379 /home/craig/code/emuboy/src/display.h
+1569135649 /home/craig/code/emuboy/src/display.h
 	"memory.h"
 	<string>
 	<stdint.h>
@@ -101,7 +101,7 @@
 	"emudebug.h"
 	<string>
 
-1568114603 /home/craig/code/emuboy/src/memory.h
+1569135205 /home/craig/code/emuboy/src/memory.h
 	<stdint.h>
 	<string>
 
