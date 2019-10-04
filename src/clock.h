@@ -27,6 +27,9 @@ CPU and Frame Timing:
 * HBLANK not used yet, just run 65,664 cycles then draw frame, do VBLANK
   VBLANK cycles are not counted, will run till finished
 
+Will need to incorporate interpolation of drawing line and executing
+CPU instructions in order for progrms using LY register to work
+
 VBLANK Frequency: 59.73 Hz for Gameboy and 61.1 Hz for Super Gameboy
 VBLANK lasts ~1.1ms or 4560 clks (from manual)
 HBLANK lasts 204 clks

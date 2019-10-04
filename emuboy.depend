@@ -21,7 +21,7 @@
 1555936195 /home/craig/code/emuboy/include/display.h
 	<SDL2/SDL.h>
 
-1568113587 source:/home/craig/code/emuboy/src/cpu.cpp
+1570178634 source:/home/craig/code/emuboy/src/cpu.cpp
 	"cpu.h"
 	"memory.h"
 	"clock.h"
@@ -175,7 +175,7 @@
 	<iostream>
 	<iomanip>
 
-1568109459 source:/home/craig/code/emuboy/src/display_render.cpp
+1570178915 source:/home/craig/code/emuboy/src/display_render.cpp
 	"display.h"
 	"memory.h"
 	<iostream>

@@ -59,9 +59,9 @@ void Display::draw_bg()
     uint8_t pix_x, pix_y;
 
     // Draw background tiles, loop through bg tile map
-    for (uint8_t bg_tile_x = 0; bg_tile_x < BG_TILES_MAX; bg_tile_x++)
+    for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
     {
-        for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
+        for (uint8_t bg_tile_x = 0; bg_tile_x < BG_TILES_MAX; bg_tile_x++)
         {
             // Read tile number from bg tile map
             tile_number = mem->get_byte(A_BGTM + bg_tile_y*32 + bg_tile_x);
@@ -95,6 +95,9 @@ void Display::draw_bg()
                     }
                 }
             }
+
+            // Update LY register (LCD Y coordinate) - Currently in lots of 8
+            mem->write_byte(R_LY,bg_tile_y * 8);
         }
     }
 }
