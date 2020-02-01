@@ -15,13 +15,13 @@ void Cpu::cycle()
     if (!ir->get_halt() && !ir->get_stop())
     {
         ///temp
-        //printf("PC: %4X\n", mem->get_pc());
-        if (mem->get_pc() == 0x0070)
+        printf("PC: %4X\n", mem->get_pc());
+        if (mem->get_pc() == 0x006a)
         {
-            SDL_Delay(10); //Dummy put break point here
+            SDL_Delay(1); //Dummy put break point here
         }
         //edb->dump_reg();
-        mem->ram_debug(0xff44);
+        mem->ram_debug(0x8010);
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();

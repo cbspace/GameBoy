@@ -16,6 +16,9 @@
 
 #define BG_COLOUR_ARGB      0xff92AD26
 
+#define DISP_W   256           // Gameboy display width (Usually 160 pixels)
+#define DISP_H   256           // Gameboy display height (Usually 144 pixels)
+
 #define BG_TILES_MAX        32
 //#define SPRITE_TILES_MAX    32
 #define BG_PX_MAX           255
@@ -42,8 +45,8 @@
 
 using namespace std;
 
-static const int width = 160*SCALING_FACTOR;    // Screen width in pixels
-static const int height = 144*SCALING_FACTOR;   // Screen height in pixels
+static const int width = DISP_W*SCALING_FACTOR;    // Screen width in pixels
+static const int height = DISP_H*SCALING_FACTOR;   // Screen height in pixels
 
 class Display
 {

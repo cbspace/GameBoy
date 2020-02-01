@@ -44,7 +44,7 @@ Total               17,556              70,224
 
 */
 
-#define CLK_FRAME_DELAY          200//16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_FRAME_DELAY          20//16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 #define CLK_CYCLES_LINE          252         // Clock cycles for a single line BG + Sprites
 #define CLK_CYCLES_HBLANK        204         // Clock cycles for a single line HBLANK period
@@ -59,9 +59,11 @@ class Clock
         void add_cycles(uint8_t amount);    // Add cycles to frame_clock_cycles
         bool max_cycles_reached();          // Indicates if max clock cycles for a single frame is reached
         bool vblank_cycles_reached();       // Temp: Indicates if number of cycles before VBLNK is reached
+        bool hblank_cycles_reached();       // Temp: Indicates if number of cycles before HBLNK is reached
     private:
         uint32_t frame_start_ticks;         // Start time of frame
         uint32_t frame_clock_cycles;        // Number of clk cycles in current frame
+        uint32_t line_clock_cycles;         // Number of clk cycles in current line
 };
 
 #endif // CLOCK_H

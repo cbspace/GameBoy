@@ -10,6 +10,7 @@ void Clock::frame_start()
 {
     frame_start_ticks = SDL_GetTicks();
     frame_clock_cycles = 0;
+    line_clock_cycles = 0;
 }
 
 // SDL_Delay for remaining frame time
@@ -31,6 +32,7 @@ void Clock::frame_delay()
 void Clock::add_cycles(uint8_t amount)
 {
     frame_clock_cycles += amount;
+    line_clock_cycles += amount;
 }
 
 // Indicates if max clock cycles for a single frame is reached
@@ -51,6 +53,20 @@ bool Clock::vblank_cycles_reached()
 {
     if (frame_clock_cycles > (CLK_CYCLES_MAX - CLK_CYCLES_VBLANK))
     {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Temp: Indicates if number of cycles before HBLNK is reached
+bool Clock::hblank_cycles_reached()
+{
+    if (line_clock_cycles >= CLK_CYCLES_LINE)
+    {
+        line_clock_cycles = 0;
         return true;
     }
     else

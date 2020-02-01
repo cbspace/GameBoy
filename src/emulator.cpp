@@ -90,6 +90,13 @@ void Emulator::main_loop()
             // Perform CPU cycles
             cp.cycle();
 
+            /// Temp Update LY register (LCD Y coordinate)
+            if (clk.hblank_cycles_reached())
+            {
+                mem.write_byte(R_LY,mem.get_byte(R_LY) + 1);
+            }
+
+
             // Check for interrupts and process accordingly
             ir.check_interrupts();
         }

@@ -34,6 +34,9 @@ void Display::render_frame()
     // Draw the background tiles
     draw_bg();
 
+    /// Reset LY register
+    //mem->write_byte(R_LY,0);
+
     // Update texture
     SDL_UpdateTexture(texture, NULL, pixels, width * sizeof(uint32_t));
 
@@ -58,6 +61,15 @@ void Display::draw_bg()
     // X and Y position of pixel on screen
     uint8_t pix_x, pix_y;
 
+    // Scroll Y value
+    uint8_t scroll_y;
+
+    // Absolut Y value
+    uint8_t abs_y;
+
+    // Get value of SCROLLY register
+    scroll_y = mem->get_byte(R_SCY);
+
     // Draw background tiles, loop through bg tile map
     for (uint8_t bg_tile_y = 0; bg_tile_y < BG_TILES_MAX; bg_tile_y++)
     {
@@ -76,28 +88,34 @@ void Display::draw_bg()
             }
 
             // Temp only draw viewable window
-            if ((bg_tile_x < 20) && (bg_tile_y < 18))
+            if (bg_tile_x < 20)
             {
                 // Draw a tile
                 for (uint16_t y = 0; y < 8; y++)
                 {
-                    for (uint16_t x = 0; x < 8; x++)
+                    pix_y = bg_tile_y * 8 + y;
+
+                    if (pix_y >= scroll_y)
                     {
-                        if ((tile[y] & (1<<(7-x))) >> (7-x) == 1)
+                        abs_y = pix_y - scroll_y;
+
+                        if (abs_y < 143)
                         {
-                            pix_y = bg_tile_y * 8 + y;
-                            pix_x = bg_tile_x * 8 + x;
-                            pixels[pix_y * SCALING_FACTOR * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR] = 0x00000000;
-                            pixels[pix_y * SCALING_FACTOR * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR + 1] = 0x00000000;
-                            pixels[(pix_y * SCALING_FACTOR + 1) * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR] = 0x00000000;
-                            pixels[(pix_y * SCALING_FACTOR + 1) * SCALING_FACTOR * 160 + pix_x * SCALING_FACTOR + 1] = 0x00000000;
+                            for (uint16_t x = 0; x < 8; x++)
+                            {
+                                if ((tile[y] & (1<<(7-x))) >> (7-x) == 1)
+                                {
+                                    pix_x = bg_tile_x * 8 + x;
+                                    pixels[abs_y * SCALING_FACTOR * SCALING_FACTOR * DISP_W + pix_x * SCALING_FACTOR] = 0x00000000;
+                                    pixels[abs_y * SCALING_FACTOR * SCALING_FACTOR * DISP_W + pix_x * SCALING_FACTOR + 1] = 0x00000000;
+                                    pixels[(abs_y * SCALING_FACTOR + 1) * SCALING_FACTOR * DISP_W + pix_x * SCALING_FACTOR] = 0x00000000;
+                                    pixels[(abs_y * SCALING_FACTOR + 1) * SCALING_FACTOR * DISP_W + pix_x * SCALING_FACTOR + 1] = 0x00000000;
+                                }
+                            }
                         }
                     }
                 }
             }
-
-            // Update LY register (LCD Y coordinate) - Currently in lots of 8
-            mem->write_byte(R_LY,bg_tile_y * 8);
         }
     }
 }
