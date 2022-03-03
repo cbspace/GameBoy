@@ -19,10 +19,16 @@ void Memory::init()
     set_sp(SP_INITIAL_VALUE);    // sp initialised to fffe (gameboy default)
     set_pc(ROM_START_ADDRESS);   // pc initialised to 0x100 (start address)
 
-    // Initialise registerse
+    // Initialise registers
     for (uint8_t i = 0; i < REG_ARRAY_SIZE; i++)
     {
         reg[i] = 0;
+    }
+
+    // Initialise RAM
+    for (uint32_t i = 0; i < MEM_SIZE; i++)
+    {
+        ram[i] = 0;
     }
 }
 

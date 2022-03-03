@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     } else if (argc == 1) {
         emuboy.print_error("Command line argument not found, expecting path to ROM file");
     } else {
-        emuboy.print_error("Too many commnd line arguments");
+        emuboy.print_error("Too many command line arguments");
     }
 
 	return 0;

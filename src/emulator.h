@@ -10,7 +10,7 @@
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.39";
+static const string RELEASE_VERSION = "0.40";
 
 class Emulator
 {
