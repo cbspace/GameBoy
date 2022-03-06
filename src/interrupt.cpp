@@ -56,7 +56,7 @@ void Interrupt::check_interrupts()
                 //printf("VBLank Interrupt\n");
 
                 // Draw the frame!
-                disp->render_frame();
+                disp->update_frame();
             }
         }
     }

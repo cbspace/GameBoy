@@ -1,5 +1,6 @@
 #include "emulator.h"
 #include "display.h"
+#include "render.h"
 #include "cpu.h"
 #include "memory.h"
 #include "interrupt.h"
@@ -37,7 +38,13 @@ Emulator::Emulator()
     // Pass pointer to memory object to display object
     disp.attach_memory(&mem);
 
-    // Pass pointer to memory object to emudebug object
+    // Pass pointer to render object to display object
+    disp.attach_render(&ren);
+
+    // Pass pointer to memory object to render object
+    ren.attach_memory(&mem);
+	
+	// Pass pointer to memory object to emudebug object
     edb.attach_memory(&mem);
 
     // Flag to signify if the user wishes to quit
@@ -90,13 +97,6 @@ void Emulator::main_loop()
             // Perform CPU cycles
             cp.cycle();
 
-            /// Temp Update LY register (LCD Y coordinate)
-            if (clk.hblank_cycles_reached())
-            {
-                mem.write_byte(R_LY,mem.get_byte(R_LY) + 1);
-            }
-
-
             // Check for interrupts and process accordingly
             ir.check_interrupts();
         }
@@ -105,10 +105,15 @@ void Emulator::main_loop()
         ir.if_update(I_VBLANK, false);
 
         // Draw the frame!
-        //disp.render_frame();
+        disp.update_frame();
+
+        // If we reach CLK_CYCLES_LINE then
+        // Set H-Blank interrupt
+        //ir.if_update(H_VBLANK, true);
 
         // Delay until next frame
-        clk.frame_delay();
+        //clk.frame_delay();
+        //SDL_Delay(100);
     }
 }
 

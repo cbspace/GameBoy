@@ -3,6 +3,7 @@
 
 #include "cpu.h"
 #include "display.h"
+#include "render.h"
 #include "memory.h"
 #include "clock.h"
 #include "interrupt.h"
@@ -10,7 +11,7 @@
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.40";
+static const string RELEASE_VERSION = "0.41";
 
 class Emulator
 {
@@ -24,6 +25,7 @@ class Emulator
     private:
         Display disp;                           // Main SDL display
         Cpu cp;                                 // CPU for the emulator
+        Render ren;                             // Renderer		
         Memory mem;                             // Memory including registers
         Clock clk;                              // Clock for emulator
         Interrupt ir;                           // Interrupt class object
