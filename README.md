@@ -4,4 +4,5 @@
 
  Command line usage:
  gameboy path_to_rom [-dmg]
+
 [-dmg] Option used to run the DMG Boot Rom. This ROM is now working
