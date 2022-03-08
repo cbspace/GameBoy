@@ -1,5 +1,6 @@
-#include "display.h"
+#include "displayconst.h"
 #include "memory.h"
+#include "render.h"
 
 #include <iostream>
 #include <stdint.h>

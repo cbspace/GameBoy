@@ -2,7 +2,7 @@
 #define RENDER_H
 
 #include "memory.h"
-#include "display.h"
+#include "displayconst.h"
 
 #include <string>
 #include <stdint.h>

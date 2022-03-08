@@ -3,7 +3,7 @@
 
 #include "memory.h"
 #include "clock.h"
-#include "display.h"
+//#include "display.h"
 
 // Constants
 
@@ -31,7 +31,7 @@ class Interrupt
         Interrupt();
         void attach_memory(Memory* mem_in);     // Set pointer used to access memory object
         void attach_clock(Clock* clk_in);       // Set pointer used to access clock object
-        void attach_display(Display* disp_in);  // Set pointer used to access display object
+//        void attach_display(Display* disp_in);  // Set pointer used to access display object
 
         void check_interrupts();                // Perform interrupt checks each cycle
         void cpu_halt();                        // Halt the CPU until an interrupt occurs (HALT)
@@ -51,7 +51,7 @@ class Interrupt
 
         Memory* mem;                            // Pointer to memory object
         Clock* clk;                             // Pointer to clock object
-        Display* disp;                          // Pointer to display object
+        //Display* disp;                          // Pointer to display object
         bool ime;                               // Interrupt master enable
         bool halt_flag;                         // CPU halt flag (true = halted)
         bool stop_flag;                         // CPU stop flag (true = halted)

@@ -1,5 +1,7 @@
 #include "display.h"
+#include "displayconst.h"
 #include "memory.h"
+#include "interrupt.h"
 
 #include <iostream>
 #include <stdint.h>
@@ -20,6 +22,7 @@ Display::Display()
     ren = NULL;
     mem = NULL;
     texture = NULL;
+    ir = NULL;
 }
 
 // Set pointer used to access memory object
@@ -34,12 +37,23 @@ void Display::attach_render(Render* ren_in)
     ren = ren_in;
 }
 
+// Set pointer used to access interrupt object
+void Display::attach_interrupt(Interrupt* interrupt_in)
+{
+    ir = interrupt_in;
+}
+
 // Set the window title
 void Display::set_title(string title_add)
 {
     string window_title_const(WINDOW_TITLE);
-    string new_window_title = window_title_const + " - " + title_add;
-    SDL_SetWindowTitle(window, new_window_title.c_str());
+    if (title_add.length() > 0) {
+    	string new_window_title = window_title_const + " - " + title_add;
+    	SDL_SetWindowTitle(window, new_window_title.c_str());
+    }
+    else {
+    	SDL_SetWindowTitle(window, window_title_const.c_str());
+    }
 }
 
 // Draw frame to display
@@ -82,19 +96,24 @@ void Display::update_line()
     }
     else if (ly_val == DISP_H)
     {
-        // Set VBLANK interrupt flag
-    //    ir.if_update(I_VBLANK, true);
-draw_frame();
+        // Draw the frame
+    	draw_frame();
+
+    	// Set VBLANK interrupt flag
+        ir->if_update(I_VBLANK, true);
+
         // Update LY register
         mem->write_byte(R_LY, ly_val + 1);
     }
-    else if (ly_val < LCD_Y_MAX) {
+    else if (ly_val < LCD_Y_MAX)
+    {
         // Update LY register
         mem->write_byte(R_LY, ly_val + 1);
     }
-    else {
+    else
+    {
         // Clear VBLANK interrupt flag
-    //    ir.if_update(I_VBLANK, false);
+        ir->if_update(I_VBLANK, false);
 
         // Reset LY register
         mem->write_byte(R_LY, 0x00);

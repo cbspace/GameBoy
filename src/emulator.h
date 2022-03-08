@@ -11,14 +11,14 @@
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.41";
+static const string RELEASE_VERSION = "0.42";
 
 class Emulator
 {
     public:
         string rom_title;                       // Game title stored in the rom
         Emulator();                             // Constructor
-        void start(char* rom_path);             // Init SDL and load the ROM
+        void start(char* rom_path, bool rom_is_dmg); // Init SDL and load the ROM
         void main_loop();                       // The main emulator loop
         void key_down();                        // Process key press events
         void print_error(string error_string);  // Print error to std_out

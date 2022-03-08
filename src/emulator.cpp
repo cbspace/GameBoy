@@ -33,13 +33,16 @@ Emulator::Emulator()
     ir.attach_clock(&clk);
 
     // Pass pointer to display object to interrupt object
-    ir.attach_display(&disp);
+    //ir.attach_display(&disp);
 
     // Pass pointer to memory object to display object
     disp.attach_memory(&mem);
 
     // Pass pointer to render object to display object
     disp.attach_render(&ren);
+
+    // Pass pointer to interrupt object to Display object
+    disp.attach_interrupt(&ir);
 
     // Pass pointer to memory object to render object
     ren.attach_memory(&mem);
@@ -52,7 +55,7 @@ Emulator::Emulator()
 }
 
 // Run the emulator
-void Emulator::start(char* rom_path)
+void Emulator::start(char* rom_path, bool rom_is_dmg)
 {
     // Initialise SDL
     cout << "Loading Window" << endl;
@@ -60,15 +63,21 @@ void Emulator::start(char* rom_path)
 
     // Load the rom
     mem.load_rom(rom_path);
+
+    // Set window title
     disp.set_title(mem.get_rom_title());
     cout << "Rom Title: " << mem.get_rom_title() << endl;
 
+    if (rom_is_dmg) {
+    	// Set the PC start address at 0
+    	mem.set_pc(0x00);
+
+    	// Insert logo for dmg rom
+    	mem.debug_insert_logo();
+    }
+
     // Set initial value of V_BLANK interrupt enable (on)
     mem.write_byte(A_IENABLE,I_VBLANK);
-
-    ///temp
-    // Insert logo for dmg rom
-    mem.debug_insert_logo();
 
     // Run the main loop
     main_loop();
@@ -80,26 +89,23 @@ void Emulator::main_loop()
     // Continue to loop until the user quits
     while (!quit_flag)
     {
-        // Start the frame timer and reset clock cycles
-//        clk.frame_start();
-
         // Check for key press events
         key_down();
-
-//        while (!clk.max_cycles_reached())
 
         // Perform CPU cycles
         cp.cycle();
 
         if (clk.hblank_cycles_reached())
         {
+            // Update LCDSTAT register (clear H-Blank)
+
+
         	// Draw current line
         	disp.update_line();
         }
-SDL_Delay(1);
-        // If we reach CLK_CYCLES_LINE then
-        // Set H-Blank interrupt
-        //ir.if_update(H_VBLANK, true);
+
+        // TEMP slow down
+        //SDL_Delay(1);
 
         // Check for interrupts and process accordingly
         ir.check_interrupts();

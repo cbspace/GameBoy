@@ -1,7 +1,7 @@
 #include "interrupt.h"
 #include "memory.h"
 #include "clock.h"
-#include "display.h"
+//#include "display.h"
 
 Interrupt::Interrupt()
 {
@@ -13,7 +13,7 @@ Interrupt::Interrupt()
     i_enable = 0;
     mem = NULL;
     clk = NULL;
-    disp = NULL;
+    //disp = NULL;
 }
 
 // Set pointer used to access memory object
@@ -28,11 +28,13 @@ void Interrupt::attach_clock(Clock* clk_in)
     clk = clk_in;
 }
 
+/*
 // Set pointer used to access display object
 void Interrupt::attach_display(Display* disp_in)
 {
     disp = disp_in;
 }
+*/
 
 // Perform interrupt checks each cycle
 void Interrupt::check_interrupts()

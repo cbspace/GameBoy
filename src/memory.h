@@ -5,7 +5,7 @@
 #define REG_ARRAY_SIZE      8           // Number of 8 bit registers
 #define BYTE_ARRAY_SIZE     16          // Used in read_rom_title and write_array
 
-#define ROM_START_ADDRESS   0x100 //0x100       // ROM program starts at this address
+#define ROM_START_ADDRESS   0x100       // ROM program starts at this address (DMG Rom Start is 0)
 #define ROM_TITLE_ADDRESS   0x134       // Address of title
 
 #define SP_INITIAL_VALUE    0xfffe      // Initial value of the stack pointer
