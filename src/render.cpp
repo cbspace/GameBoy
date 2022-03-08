@@ -40,21 +40,14 @@ void Render::attach_pixels(uint8_t* pix_in)
 }
 
 // Render a single frame
-void Render::render_frame()
+void Render::render_line(uint8_t y)
 {
-    // Loop through lines on display
-    for (uint8_t y = 0; y < DISP_H; y++)
-    {
-        // Update LY register
-        // Note: LY register goes to 153 during V-Blank
-        mem->write_byte(R_LY, y);
+    // Draw the background tiles - single line
+    draw_bg_line(y);
 
-        // Draw the background tiles - single line
-        draw_bg_line(y);
+    // Draw the sprites - single line
+    //draw_sprites_line(y);
 
-        // Draw the sprites - single line
-        //draw_sprites_line(y);
-    }
 }
 
 // Draw bg tiles into pixel array

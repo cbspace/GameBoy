@@ -16,12 +16,12 @@ void Cpu::cycle()
     {
         ///temp
         printf("PC: %4X\n", mem->get_pc());
-        if (mem->get_pc() == 0x006a)
-        {
-            SDL_Delay(1); //Dummy put break point here
-        }
+//        if (mem->get_pc() == 0x006a)
+//        {
+//            SDL_Delay(1); //Dummy put break point here
+ //       }
         //edb->dump_reg();
-        mem->ram_debug(0x8010);
+//        mem->ram_debug(0x8010);
 
         // Fetch byte for execution
         byte_in = mem->fetch_byte();
@@ -43,6 +43,10 @@ void Cpu::cycle()
 Cpu::Cpu()
 {
     mem = NULL;
+    ir = NULL;
+    clk = NULL;
+    edb = NULL;
+    byte_in = 0x00;
 }
 
 // Set pointer used to access memory object

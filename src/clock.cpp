@@ -25,6 +25,9 @@ void Clock::frame_delay()
     {
         // Wait for remaining time
         SDL_Delay(CLK_FRAME_DELAY - frame_elap_ticks);
+
+        // Reset counter
+        frame_start();
     }
 }
 

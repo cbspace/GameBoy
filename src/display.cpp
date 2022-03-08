@@ -42,13 +42,10 @@ void Display::set_title(string title_add)
     SDL_SetWindowTitle(window, new_window_title.c_str());
 }
 
-// Update the frame on the display
-void Display::update_frame()
+// Draw frame to display
+void Display::draw_frame()
 {
-    cout << "rendering\n";
-
-    // Render pixel map
-    ren->render_frame();
+    cout << "Drawing Frame\n";
 
     // Scale the pixels to match buffer
     scale();
@@ -61,6 +58,47 @@ void Display::update_frame()
     SDL_RenderClear(sdlRenderer);
     SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
+
+    // Delay until next frame
+    //clk.frame_delay();
+    SDL_Delay(8);
+}
+
+// Update the current line
+void Display::update_line()
+{
+	uint8_t ly_val;
+
+	// Get current LY value from register
+    ly_val = mem->get_byte(R_LY);
+
+    if (ly_val < DISP_H)
+    {
+        // Render line
+        ren->render_line(ly_val);
+
+        // Update LY register
+        mem->write_byte(R_LY, ly_val + 1);
+    }
+    else if (ly_val == DISP_H)
+    {
+        // Set VBLANK interrupt flag
+    //    ir.if_update(I_VBLANK, true);
+draw_frame();
+        // Update LY register
+        mem->write_byte(R_LY, ly_val + 1);
+    }
+    else if (ly_val < LCD_Y_MAX) {
+        // Update LY register
+        mem->write_byte(R_LY, ly_val + 1);
+    }
+    else {
+        // Clear VBLANK interrupt flag
+    //    ir.if_update(I_VBLANK, false);
+
+        // Reset LY register
+        mem->write_byte(R_LY, 0x00);
+    }
 }
 
 // Add colour data to buffer

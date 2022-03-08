@@ -13,6 +13,8 @@
 #define BG_PX_MAX           255
 //#define SPRITE_PX_MAX       255
 
+#define LCD_Y_MAX			153 // Max Value of LY register
+
 // Memory Locations - Video
 #define A_TDT1      0x8000      // Tile Data Table 1 start address
 #define A_TDT2      0x8800      // Tile Data Table 2 start address
@@ -57,7 +59,7 @@ class Render
         virtual ~Render();                     // Destructor
 
         // Rendering
-        void render_frame();                    // Render a single frame
+        void render_line(uint8_t y);           // Render a single line
 
     private:
         Memory* mem;                            // Pointer to memory object

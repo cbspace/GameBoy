@@ -81,39 +81,28 @@ void Emulator::main_loop()
     while (!quit_flag)
     {
         // Start the frame timer and reset clock cycles
-        clk.frame_start();
+//        clk.frame_start();
 
         // Check for key press events
         key_down();
 
-        while (!clk.max_cycles_reached())
+//        while (!clk.max_cycles_reached())
+
+        // Perform CPU cycles
+        cp.cycle();
+
+        if (clk.hblank_cycles_reached())
         {
-            // Set VBLANK interrupt flag
-            if (clk.vblank_cycles_reached())
-            {
-                ir.if_update(I_VBLANK, true);
-            }
-
-            // Perform CPU cycles
-            cp.cycle();
-
-            // Check for interrupts and process accordingly
-            ir.check_interrupts();
+        	// Draw current line
+        	disp.update_line();
         }
-
-        // Clear VBLANK interrupt flag
-        ir.if_update(I_VBLANK, false);
-
-        // Draw the frame!
-        disp.update_frame();
-
+SDL_Delay(1);
         // If we reach CLK_CYCLES_LINE then
         // Set H-Blank interrupt
         //ir.if_update(H_VBLANK, true);
 
-        // Delay until next frame
-        //clk.frame_delay();
-        //SDL_Delay(100);
+        // Check for interrupts and process accordingly
+        ir.check_interrupts();
     }
 }
 

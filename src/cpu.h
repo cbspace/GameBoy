@@ -14,7 +14,7 @@ class Cpu
         Cpu();                                          // Constructor
         void attach_memory(Memory* mem_in);             // Set pointer used to access memory object
         void attach_clock(Clock* clock_in);             // Set pointer used to access clock object
-        void attach_interrupt(Interrupt* interrupt_in); // Set pointer used to access clock object
+        void attach_interrupt(Interrupt* interrupt_in); // Set pointer used to access interrupt object
         void attach_emudebug(Emudebug* debug_in);       // Set pointer used to access debug object
         void cycle();                                   // Perform a single CPU cycle
 

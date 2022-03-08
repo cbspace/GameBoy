@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-#define SCALING_FACTOR      3                  // Scale display size by this amount
-#define WINDOW_TITLE        "EmuBoy Render"    // Title to display on SDL Window
+#define SCALING_FACTOR      2                  // Scale display size by this amount
+#define WINDOW_TITLE        "EmuBoy"           // Title to display on SDL Window
 
 #define COLOUR_BG_ARGB      0xFF92AD26         // Background colour
 #define COLOUR_C1_ARGB      0xFF6D811C         // Colour 1
@@ -36,7 +36,8 @@ class Display
         void attach_render(Render* ren_in);     // Set pointer used to access render object
         int8_t init();                          // Set up SDL
         void set_title(string title_add);       // Set title of SDL window
-        void update_frame();                    // Update the frame on the display
+        void update_line();                     // Update the current line
+        void draw_frame();                      // Draw frame to display
         virtual ~Display();                     // Destructor
 
     private:
