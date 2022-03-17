@@ -9,12 +9,11 @@
 using namespace std;
 
 /* Rendering Steps:
- * 1 - //Fill Canvas with BG Colour
- * 2 - Draw Single Line to Buffer
+ * 1 - Draw Single Line to Buffer
  *  a) Draw Background and Window
  *  b) Draw Sprites
- * 3 - H-Blank period
- * 4 - After last line
+ * 2 - H-Blank period
+ * 3 - After last line
  *  a) Perform scaling on Buffer
  *  b) Write Buffer to display
  *  c) V-Blank ISR

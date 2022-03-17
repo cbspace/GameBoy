@@ -39,13 +39,13 @@ class Interrupt
         bool get_halt();                        // Get value of CPU halt flag
         bool get_stop();                        // Get value of CPU stop flag
         void disable_interrupts();              // Disable interrupts
+        void enable_interrupts();               // Enable Interrupts
         void if_update(uint8_t int_flag, bool flg_val);   // Update interrupt flag
 
         uint8_t ei_count;                       // Counter used to delay EI instruction by 1 cycle
 
     private:
         void cancel_stop();                     // Cancel CPU stop
-        void enable_interrupts();               // Enable Interrupts
         void process_ei_count();                // Process ei_count
         bool if_get(uint8_t int_flag);          // Get interrupt flag
 

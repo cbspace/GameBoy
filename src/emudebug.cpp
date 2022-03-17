@@ -6,6 +6,32 @@
 
 using namespace std;
 
+// Detect runaway CPU PC
+bool Emudebug::detect_runaway()
+{
+	uint16_t pc_val;
+
+	pc_val = mem->get_pc();
+
+	if (pc_val == (prev_pc + 1))
+	{
+		cpu_count += 1;
+		if (cpu_count >= 10)
+		{
+			cout << "CPU Runaway detected!\n";
+			return true;
+		}
+	}
+	else
+	{
+		cpu_count = 0;
+	}
+
+	prev_pc = pc_val;
+
+	return false;
+}
+
 // Dump PC, stack and registers
 void Emudebug::dump_reg()
 {
@@ -29,6 +55,8 @@ void Emudebug::dump_mem(uint8_t start, uint8_t finish)
 Emudebug::Emudebug()
 {
     mem = NULL;
+    cpu_count = 0;
+    prev_pc = 0;
 }
 
 // Set pointer used to access memory object

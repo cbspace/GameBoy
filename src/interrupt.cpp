@@ -3,6 +3,8 @@
 #include "clock.h"
 //#include "display.h"
 
+//#include <iostream>
+
 Interrupt::Interrupt()
 {
     ime = true;             // Turn on interrupt master enable
@@ -55,10 +57,17 @@ void Interrupt::check_interrupts()
         {
             if (I_VBLANK & i_current)
             {
-                //printf("VBLank Interrupt\n");
+            	//cout << "V-Blank\n";
 
-                // Draw the frame!
-                //disp->update_frame();
+            	// Push PC onto stack
+            	mem->pc_push();
+
+            	// Jump to starting address
+                mem->set_pc(IV_VBLANK);
+            }
+            if (I_LCDSTAT & i_current)
+            {
+
             }
         }
     }
@@ -103,6 +112,13 @@ void Interrupt::disable_interrupts()
     ime = false;
 }
 
+// Enable interrupts
+void Interrupt::enable_interrupts()
+{
+	// Set flag used to delay setting of IME
+	ei_count = 1;
+}
+
 //------------------------- Private ----------------------------------------
 
 // Exit stopped status
@@ -112,23 +128,17 @@ void Interrupt::cancel_stop()
     clk->add_cycles(217);
 }
 
-// Enable interrupts
-void Interrupt::enable_interrupts()
-{
-    // Make sure that DI command wasnt used in previous cycle
-    if (ei_count == 0)
-    {
-        // Enable Interrupts
-        ime = true;
-    }
-}
-
 // Process ei_count
 void Interrupt::process_ei_count()
 {
     // Process the EI counter (used to delay EI instruction 1 cycle)
     // 0 = Normal State, 1 = Flag Set, 2 = Delayed 1 cycle ready to reset
-    if (ei_count == 1)
+    if (ei_count == 0)
+    {
+        // Enable Interrupts
+        ime = true;
+    }
+    else if (ei_count == 1)
     {
         ei_count++;
     }

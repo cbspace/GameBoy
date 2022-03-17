@@ -62,9 +62,6 @@ void Emulator::start(char* rom_path, bool rom_is_dmg)
     	mem.debug_insert_logo();
     }
 
-    // Set initial value of V_BLANK interrupt enable (on)
-    mem.write_byte(A_IENABLE,I_VBLANK);
-
     // Run the main loop
     main_loop();
 }
@@ -81,17 +78,20 @@ void Emulator::main_loop()
         // Perform CPU cycles
         cp.cycle();
 
-        if (clk.hblank_cycles_reached())
+        // DEBUG - Detect CPU Runaway
+        if (edb.detect_runaway())
         {
-            // Update LCDSTAT register (clear H-Blank)
-
-
-        	// Draw current line
-        	disp.update_line();
+        	//quit_flag = true;
         }
 
-        // TEMP slow down
-        //SDL_Delay(1);
+        if (clk.hblank_cycles_reached())
+        {
+        	// Draw current line
+        	disp.update_line();
+
+            // TEMP slow down
+            //SDL_Delay(1);
+        }
 
         // Check for interrupts and process accordingly
         ir.check_interrupts();

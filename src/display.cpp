@@ -91,14 +91,16 @@ void Display::update_line()
 	// Get current LY value from register
     ly_val = mem->get_byte(R_LY);
 
+    // Draw line on display
     if (ly_val < DISP_H)
     {
         // Render line
         ren->render_line(ly_val);
 
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+        update_LY(ly_val + 1, 0x00);
     }
+    // Start of V-Blank, draw frame
     else if (ly_val == DISP_H)
     {
         // Draw the frame
@@ -108,21 +110,59 @@ void Display::update_line()
         ir->if_update(I_VBLANK, true);
 
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+        update_LY(ly_val + 1, 0x01);
     }
+    // During V-Blank
     else if (ly_val < LCD_Y_MAX)
     {
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+    	update_LY(ly_val + 1, 0x01);
     }
+    // After V-Blank
     else
     {
         // Clear VBLANK interrupt flag
         ir->if_update(I_VBLANK, false);
 
         // Reset LY register
-        mem->write_byte(R_LY, 0x00);
+        update_LY(0x00, 0x00);
     }
+}
+
+// Update LY register and STAT flags
+void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
+{
+	uint8_t lyc_val;
+
+    // Reset LY register
+    mem->write_byte(R_LY, ly_val);
+
+    // Get LYC value
+    lyc_val = mem->get_byte(R_LYC);
+
+    // Update Coincidence flag in STAT register
+    if (ly_val == lyc_val)
+    {
+    	mem->write_bit(R_LCDSTAT, 2, 1);
+    }
+    else
+    {
+    	mem->write_bit(R_LCDSTAT, 2, 0);
+    }
+
+    // Update Mode flags in STAT register
+    // Still need to implement mode 2 and 3
+    if (mode_val == 0x00)
+    {
+    	mem->write_bit(R_LCDSTAT, 1, 0);
+    	mem->write_bit(R_LCDSTAT, 0, 0);
+    }
+    else if (mode_val == 0x01)
+    {
+    	mem->write_bit(R_LCDSTAT, 1, 0);
+    	mem->write_bit(R_LCDSTAT, 0, 1);
+    }
+
 }
 
 // Add colour data to buffer

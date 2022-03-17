@@ -79,6 +79,7 @@ class Memory
         uint8_t get_from_pointer(uint8_t reg_id);                   // Read byte from RAM/ROM pointed to by 16-bit register
         void set_from_pointer(uint8_t reg_id, uint8_t byte_value);  // Set byte at RAM address pointed to by 16-bit register to byte value
         void write_byte(uint16_t address, uint8_t byte);            // Write byte to RAM/ROM
+        void write_bit(uint16_t address, uint8_t bit_number, uint8_t bit_val);   // Update individual bit in RAM/ROM
         void inc_from_pointer(uint8_t reg_id);                      // Increment byte at (n) and update flags
         void dec_from_pointer(uint8_t reg_id);                      // Decrement byte at (n) and update flags
         void swap_from_pointer(uint8_t reg_id);                     // Swap upper and lower nibbles of byte at (n), flags updated

@@ -55,6 +55,29 @@ void Memory::write_byte(uint16_t address, uint8_t byte)
     ram[address] = byte;
 }
 
+// Update individual bit in RAM/ROM
+void Memory::write_bit(uint16_t address, uint8_t bit_number, uint8_t bit_val)
+{
+	// Get byte
+	uint8_t current_value, new_value, bit_mask;
+	current_value = ram[address];
+
+	// Create mask
+	bit_mask = 1 << bit_number;
+
+	if (bit_val == 1)
+	{
+		new_value = current_value | bit_mask;
+	}
+	else if (bit_val == 0)
+	{
+		new_value = current_value & ~bit_mask;
+	}
+
+	// Update value
+	ram[address] = new_value;
+}
+
 // Increment byte and update flags
 void Memory::inc_from_pointer(uint8_t reg_id)
 {

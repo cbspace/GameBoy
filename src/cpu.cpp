@@ -15,7 +15,7 @@ void Cpu::cycle()
     if (!ir->get_halt() && !ir->get_stop())
     {
         ///temp
-//        printf("PC: %4X\n", mem->get_pc());
+        printf("PC: %4X\n", mem->get_pc());
 //        if (mem->get_pc() == 0x006a)
 //        {
 //            SDL_Delay(1); //Dummy put break point here
