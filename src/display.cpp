@@ -2,6 +2,7 @@
 #include "displayconst.h"
 #include "memory.h"
 #include "interrupt.h"
+#include "clock.h"
 
 #include <iostream>
 #include <stdint.h>
@@ -23,6 +24,7 @@ Display::Display()
     mem = NULL;
     texture = NULL;
     ir = NULL;
+    clk = NULL;
 }
 
 // Set pointer used to access memory object
@@ -43,6 +45,12 @@ void Display::attach_interrupt(Interrupt* interrupt_in)
     ir = interrupt_in;
 }
 
+// Set pointer used to access clock object
+void Display::attach_clock(Clock* clock_in)
+{
+    clk = clock_in;
+}
+
 // Set the window title
 void Display::set_title(string title_add)
 {
@@ -59,8 +67,6 @@ void Display::set_title(string title_add)
 // Draw frame to display
 void Display::draw_frame()
 {
-    cout << "Drawing Frame\n";
-
     // Scale the pixels to match buffer
     scale();
 
@@ -74,8 +80,7 @@ void Display::draw_frame()
     SDL_RenderPresent(sdlRenderer);
 
     // Delay until next frame
-    //clk.frame_delay();
-    SDL_Delay(8);
+    clk->frame_delay();
 }
 
 // Update the current line

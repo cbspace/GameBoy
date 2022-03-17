@@ -12,8 +12,6 @@
 #define DISP_W   160           // Gameboy display width (Usually 160 pixels)
 #define DISP_H   144           // Gameboy display height (Usually 144 pixels)
 
-using namespace std;
-
 static const int width = DISP_W * SCALING_FACTOR;    // Screen width in pixels
 static const int height = DISP_H * SCALING_FACTOR;   // Screen height in pixels
 

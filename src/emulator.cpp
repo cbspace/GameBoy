@@ -14,40 +14,26 @@ using namespace std;
 // Constructor
 Emulator::Emulator()
 {
-    // Pass pointer to memory object to CPU object
+    // Pass pointers to CPU instance
     cp.attach_memory(&mem);
-
-    // Pass pointer to clock object to CPU object
     cp.attach_clock(&clk);
-
-    // Pass pointer to interrupt object to CPU object
     cp.attach_interrupt(&ir);
-
-    // Pass pointer to debug object to CPU object
     cp.attach_emudebug(&edb);
 
-    // Pass pointer to memory object to interrupt object
+    // Pass pointers to Interrupt instance
     ir.attach_memory(&mem);
-
-    // Pass pointer to clock object to interrupt object
     ir.attach_clock(&clk);
 
-    // Pass pointer to display object to interrupt object
-    //ir.attach_display(&disp);
-
-    // Pass pointer to memory object to display object
+    // Pass pointers to memory Display instance
     disp.attach_memory(&mem);
-
-    // Pass pointer to render object to display object
     disp.attach_render(&ren);
-
-    // Pass pointer to interrupt object to Display object
     disp.attach_interrupt(&ir);
+    disp.attach_clock(&clk);
 
-    // Pass pointer to memory object to render object
+    // Pass pointer to Memory instance to Render instance
     ren.attach_memory(&mem);
 	
-	// Pass pointer to memory object to emudebug object
+	// Pass pointer to Memory instance to Emudebug instance
     edb.attach_memory(&mem);
 
     // Flag to signify if the user wishes to quit
