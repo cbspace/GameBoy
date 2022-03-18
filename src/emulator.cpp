@@ -61,6 +61,10 @@ void Emulator::start(char* rom_path, bool rom_is_dmg)
     	// Insert logo for dmg rom
     	mem.debug_insert_logo();
     }
+    else {
+    	// Initialise LCDC
+    	mem.write_byte(R_LCDC, 0x91);
+    }
 
     // Run the main loop
     main_loop();
@@ -81,7 +85,7 @@ void Emulator::main_loop()
         // DEBUG - Detect CPU Runaway
         if (edb.detect_runaway())
         {
-        	//quit_flag = true;
+        	quit_flag = true;
         }
 
         if (clk.hblank_cycles_reached())

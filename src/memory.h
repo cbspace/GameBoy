@@ -33,6 +33,7 @@
 #define HF     0x20                     // Half carry flag mask
 #define CF     0x10                     // Full carry flag mask
 
+#include "displayconst.h"
 #include <stdint.h>
 #include <string>
 using namespace std;
@@ -75,6 +76,7 @@ class Memory
         void bit_res(uint8_t reg_id, uint8_t bit_number);           // Reset bit in register, flags not affected
         /// RAM/ROM - memory_access.cpp
         uint8_t get_byte(uint16_t address);                         // Read byte from RAM/ROM
+        uint8_t get_bit(uint16_t address, uint8_t bit_number);      // Read a bit from an byte in RAM/ROM
         uint8_t fetch_byte();                                       // Read byte from ROM and increment PC
         uint8_t get_from_pointer(uint8_t reg_id);                   // Read byte from RAM/ROM pointed to by 16-bit register
         void set_from_pointer(uint8_t reg_id, uint8_t byte_value);  // Set byte at RAM address pointed to by 16-bit register to byte value
@@ -91,6 +93,7 @@ class Memory
         void bit_test_from_pointer(uint8_t reg_id, uint8_t bit_number); // Test bit b in byte at (n) and set flags accordingly
         void bit_set_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Set bit in in byte at (n), flags not affected
         void bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Reset bit in in byte at (n), flags not affected
+        void dma_transfer();										// Perform DMA transfer from ROM/RAM to OAM
         /// Stack pointer and Program Counter - memory_stack.cpp
         void set_pc(uint16_t pc_value);                             // Set pc value
         uint16_t get_pc();                                          // Get pc value

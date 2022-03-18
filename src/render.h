@@ -6,33 +6,6 @@
 
 #include <string>
 #include <stdint.h>
-//#include <SDL2/SDL.h>
-
-#define BG_TILES_MAX        32
-//#define SPRITE_TILES_MAX    32
-#define BG_PX_MAX           255
-//#define SPRITE_PX_MAX       255
-
-#define LCD_Y_MAX			153 // Max Value of LY register
-
-// Memory Locations - Video
-#define A_TDT1      0x8000      // Tile Data Table 1 start address
-#define A_TDT2      0x8800      // Tile Data Table 2 start address
-#define A_BGTM      0x9800      // Background Tile Map start address
-
-// Special Registers - Video
-#define R_LCDC      0xff40      // LCD Control
-#define R_LCDSTAT   0xff41      // LCD Status
-#define R_SCY       0xff42      // Scroll Y
-#define R_SCX       0xff43      // Scroll X
-#define R_LY        0xff44      // LCD Y coordinate
-#define R_LYC       0xff45      // LY Compare
-#define R_DMA       0xff46      // Direct Memory Access
-#define R_BGP       0xff47      // Background Palette
-#define R_OBP0      0xff48      // Object Palette 0
-#define R_OBP1      0xff49      // Object Palette 1
-#define R_WY        0xff4a      // Window Y Position
-#define R_WX        0xff4b      // Window X Position
 
 // Display Class looks after SDL Window
 // Render Class looks after pixel array
@@ -65,7 +38,7 @@ class Render
         Memory* mem;                            // Pointer to memory object
 
         void draw_bg_line(uint8_t line_y);      // Draw bg tiles into pixel array
-        uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x);  // Get a bg pixel from a tile
+        uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_t bg_tm);  // Get a bg pixel from a tile
 };
 
 #endif // RENDER_H

@@ -13,6 +13,14 @@ uint8_t Memory::get_byte(uint16_t address)
     return ram[address];
 }
 
+// Read a bit from an byte in RAM/ROM
+uint8_t Memory::get_bit(uint16_t address, uint8_t bit_number)
+{
+	uint8_t bit_mask;
+	bit_mask = 1 << bit_number;
+	return (ram[address] & bit_mask) >> bit_number;
+}
+
 // Read byte from ROM and increment PC
 uint8_t Memory::fetch_byte()
 {
@@ -53,6 +61,12 @@ void Memory::set_from_pointer(uint8_t reg_id, uint8_t byte_value)
 void Memory::write_byte(uint16_t address, uint8_t byte)
 {
     ram[address] = byte;
+
+    // Check for DMA Register Write
+    if (address == R_DMA)
+    {
+    	dma_transfer();
+    }
 }
 
 // Update individual bit in RAM/ROM
@@ -368,3 +382,21 @@ void Memory::bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number)
     new_val = byte_val & ~bit_mask;
     set_from_pointer(reg_id, new_val);
 }
+
+// Perform DMA transfer from ROM/RAM to OAM
+void Memory::dma_transfer()
+{
+	// Get start address for DMA transfer
+	uint8_t dma_start;
+	dma_start = ram[R_DMA];
+
+	// Transfer data
+	for (uint8_t i =0; i < 0xA0; i++)
+	{
+		ram[A_OAM + i] = ram[dma_start + i];
+	}
+}
+
+
+
+
