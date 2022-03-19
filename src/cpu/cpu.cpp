@@ -1,8 +1,8 @@
 #include "cpu.h"
-#include "memory.h"
-#include "clock.h"
-#include "interrupt.h"
-#include "emudebug.h"
+#include "../memory/memory.h"
+#include "../clock/clock.h"
+#include "../interrupt/interrupt.h"
+#include "../emudebug/emudebug.h"
 #include <SDL2/SDL.h>
 
 // Perform a single CPU cycle

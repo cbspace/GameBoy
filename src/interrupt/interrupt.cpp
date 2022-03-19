@@ -1,7 +1,6 @@
 #include "interrupt.h"
-#include "memory.h"
-#include "clock.h"
-//#include "display.h"
+#include "../memory/memory.h"
+#include "../clock/clock.h"
 
 //#include <iostream>
 
@@ -29,14 +28,6 @@ void Interrupt::attach_clock(Clock* clk_in)
 {
     clk = clk_in;
 }
-
-/*
-// Set pointer used to access display object
-void Interrupt::attach_display(Display* disp_in)
-{
-    disp = disp_in;
-}
-*/
 
 // Perform interrupt checks each cycle
 void Interrupt::check_interrupts()

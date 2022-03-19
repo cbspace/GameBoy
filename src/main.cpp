@@ -1,5 +1,5 @@
 #include "main.h"
-#include "emulator.h"
+#include "emulator/emulator.h"
 #include <iostream>
 #include <string>
 

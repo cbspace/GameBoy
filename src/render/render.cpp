@@ -1,6 +1,6 @@
-#include "displayconst.h"
-#include "memory.h"
 #include "render.h"
+#include "../display/displayconst.h"
+#include "../memory/memory.h"
 
 #include <iostream>
 #include <stdint.h>
@@ -107,6 +107,13 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 
 		// Calculate start address for tile
 		tile_addr = bg_tdt + tile_number * 16;
+
+		byte_number = (bg_y - tile_pos_y * 8) * 2;
+		bit_number = 7 - (bg_x - tile_pos_x * 8);
+
+		// Load data for tile byte
+		tile_byte1 = mem->get_byte(tile_addr + byte_number);
+		tile_byte2 = mem->get_byte(tile_addr + byte_number + 1);
 	}
 	else {
 		// Read tile number from bg tile map
@@ -114,14 +121,21 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 
 		// Calculate start address for tile
 		tile_addr_signed = (int32_t)bg_tdt + (int32_t)tile_number_signed * 16;
+
+		byte_number = (bg_y - tile_pos_y * 8) * 2;
+		bit_number = 7 - (bg_x - tile_pos_x * 8);
+
+		// Load data for tile byte
+		tile_byte1 = mem->get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number);
+		tile_byte2 = mem->get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number + 1);
 	}
 
-	byte_number = (bg_y - tile_pos_y * 8) * 2;
-	bit_number = 7 - (bg_x - tile_pos_x * 8);
+	//byte_number = (bg_y - tile_pos_y * 8) * 2;
+	//bit_number = 7 - (bg_x - tile_pos_x * 8);
 
 	// Load data for tile byte
-	tile_byte1 = mem->get_byte((uint16_t)tile_addr + (uint16_t)byte_number);
-	tile_byte2 = mem->get_byte((uint16_t)tile_addr + (uint16_t)byte_number + 1);
+	//tile_byte1 = mem->get_byte((uint16_t)tile_addr + (uint16_t)byte_number);
+	//tile_byte2 = mem->get_byte((uint16_t)tile_addr + (uint16_t)byte_number + 1);
 
 	return ((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
 		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));

@@ -1,7 +1,7 @@
 #ifndef EMUDEBUG_H
 #define EMUDEBUG_H
 
-#include "memory.h"
+#include "../memory/memory.h"
 #include <stdint.h>
 
 class Emudebug

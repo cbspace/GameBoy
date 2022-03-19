@@ -1,11 +1,11 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include "memory.h"
-#include "render.h"
 #include "displayconst.h"
-#include "interrupt.h"
-#include "clock.h"
+#include "../memory/memory.h"
+#include "../render/render.h"
+#include "../interrupt/interrupt.h"
+#include "../clock/clock.h"
 
 #include <string>
 #include <stdint.h>

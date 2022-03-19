@@ -1,6 +1,10 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include "../display/displayconst.h"
+#include <stdint.h>
+#include <string>
+
 #define MEM_SIZE            0x10000     // Memory size for Gameboy
 #define REG_ARRAY_SIZE      8           // Number of 8 bit registers
 #define BYTE_ARRAY_SIZE     16          // Used in read_rom_title and write_array
@@ -33,9 +37,6 @@
 #define HF     0x20                     // Half carry flag mask
 #define CF     0x10                     // Full carry flag mask
 
-#include "displayconst.h"
-#include <stdint.h>
-#include <string>
 using namespace std;
 
 class Memory

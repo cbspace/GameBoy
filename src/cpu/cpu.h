@@ -1,10 +1,10 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "memory.h"
-#include "clock.h"
-#include "interrupt.h"
-#include "emudebug.h"
+#include "../memory/memory.h"
+#include "../clock/clock.h"
+#include "../interrupt/interrupt.h"
+#include "../emudebug/emudebug.h"
 #include <stdint.h>
 
 class Cpu

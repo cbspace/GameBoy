@@ -1,8 +1,8 @@
 #include "display.h"
 #include "displayconst.h"
-#include "memory.h"
-#include "interrupt.h"
-#include "clock.h"
+#include "../memory/memory.h"
+#include "../interrupt/interrupt.h"
+#include "../clock/clock.h"
 
 #include <iostream>
 #include <stdint.h>

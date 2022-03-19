@@ -1,10 +1,11 @@
 #include "emulator.h"
-#include "display.h"
-#include "render.h"
-#include "cpu.h"
-#include "memory.h"
-#include "interrupt.h"
-#include "emudebug.h"
+#include "../display/display.h"
+#include "../render/render.h"
+#include "../cpu/cpu.h"
+#include "../memory/memory.h"
+#include "../interrupt/interrupt.h"
+#include "../emudebug/emudebug.h"
+#include "../clock/clock.h"
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>

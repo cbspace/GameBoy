@@ -1,8 +1,8 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "memory.h"
-#include "displayconst.h"
+#include "../memory/memory.h"
+#include "../display/displayconst.h"
 
 #include <string>
 #include <stdint.h>
