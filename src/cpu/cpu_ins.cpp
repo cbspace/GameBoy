@@ -175,11 +175,11 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(8);
             break;
         case 0x5f:  // Set register E to register A
-            mem->reg_copy(RE, RE);
+            mem->reg_copy(RE, RA);
             clk->add_cycles(4);
             break;
         case 0x58:  // Set register E to register B
-            mem->reg_copy(RE, RE);
+            mem->reg_copy(RE, RB);
             clk->add_cycles(4);
             break;
         case 0x59:  // Set register E to register C
@@ -211,7 +211,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x60:  // Set register H to register B
-            mem->reg_copy(RH, RH);
+            mem->reg_copy(RH, RB);
             clk->add_cycles(4);
             break;
         case 0x61:  // Set register H to register C
@@ -243,7 +243,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x68:  // Set register L to register B
-            mem->reg_copy(RL, RL);
+            mem->reg_copy(RL, RB);
             clk->add_cycles(4);
             break;
         case 0x69:  // Set register L to register C
@@ -406,7 +406,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             imm16_value = mem->get_sp() + mem->fetch_byte();
             mem->flag_update(ZF,0);
             mem->flag_update(NF,0);                        // NEED TO ADD H AND C FLAG OPERATIONS
-            mem->reg_set(RF,tmp8_value);
+            mem->reg_set(RHL,imm16_value);
             clk->add_cycles(12);
             break;
         case 0x08:  // Set bytes at (nn) to SP value
@@ -605,7 +605,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0xa1:  // Set register A to reg A AND reg C
-            mem->reg_and(mem->reg_get(RB));
+            mem->reg_and(mem->reg_get(RC));
             clk->add_cycles(4);
             break;
         case 0xa2:  // Set register A to reg A AND reg D
@@ -641,7 +641,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0xb1:  // Set register A to reg A OR reg C
-            mem->reg_or(mem->reg_get(RB));
+            mem->reg_or(mem->reg_get(RC));
             clk->add_cycles(4);
             break;
         case 0xb2:  // Set register A to reg A OR reg D
@@ -677,7 +677,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0xa9:  // Set register A to reg A XOR reg C
-            mem->reg_xor(mem->reg_get(RB));
+            mem->reg_xor(mem->reg_get(RC));
             clk->add_cycles(4);
             break;
         case 0xaa:  // Set register A to reg A XOR reg D
@@ -724,7 +724,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             mem->reg_compare(mem->reg_get(RE));
             clk->add_cycles(4);
             break;
-        case 0xbc:  // Compare register A to register F and update flags
+        case 0xbc:  // Compare register A to register H and update flags
             mem->reg_compare(mem->reg_get(RH));
             clk->add_cycles(4);
             break;
@@ -934,7 +934,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -948,7 +948,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -962,7 +962,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;
@@ -976,7 +976,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             else
             {
-                mem->inc_pc(1);
+                //mem->inc_pc(1);
                 clk->add_cycles(12);
             }
             break;

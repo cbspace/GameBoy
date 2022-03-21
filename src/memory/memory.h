@@ -117,12 +117,15 @@ class Memory
         void read_rom_title();                                      // Read rom title and load into string
         string get_rom_title();                                     // Get the current ROM title
         /// Debug
-        void ram_debug(uint16_t start_addr);                        // Copy 256 bytes from start address to debug ram
+        void ram_debug(uint16_t start_addr);                        // Copy 1000 bytes from start address to debug ram
+        void ram_debug(uint16_t start_addr1, uint16_t start_addr2); // Debug 2 ranges
         void debug_insert_logo();                                   // For testing purposes add the N logo into the RAM
+        void debug_sprite_test();									// For testing sprites
 
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
         char rdb[1000];                                             // 1000 bytes of debug ram
+        char rdb2[1000];                                            // 1000 bytes of debug ram
         uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         uint16_t sp, pc;                                            // Stack pointer and program counter
         string rom_title;                                           // Title of the current game ROM file

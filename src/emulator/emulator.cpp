@@ -86,7 +86,7 @@ void Emulator::main_loop()
         // DEBUG - Detect CPU Runaway
         if (edb.detect_runaway())
         {
-        	quit_flag = true;
+        	//quit_flag = true;
         }
 
         if (clk.hblank_cycles_reached())
@@ -96,7 +96,12 @@ void Emulator::main_loop()
 
             // TEMP slow down
             //SDL_Delay(1);
+
+        	// Debug
+        	//mem.ram_debug(A_TDT1, A_OAM);
         }
+
+        mem.debug_sprite_test();
 
         // Check for interrupts and process accordingly
         ir.check_interrupts();

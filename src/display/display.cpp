@@ -126,13 +126,19 @@ void Display::update_line()
 
         // Reset LY register
         update_LY(0x00, 0x00);
+
+        // Clear pixels
+        clear_pixels();
+
+        // Refresh sprites
+        ren->refresh_sprites();
     }
 }
 
 // Update LY register and STAT flags
 void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
 {
-	uint8_t lyc_val;
+	uint8_t lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
 
     // Reset LY register
     mem->write_byte(R_LY, ly_val);
@@ -140,27 +146,48 @@ void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
     // Get LYC value
     lyc_val = mem->get_byte(R_LYC);
 
+    // Get Interrupt select values
+    lyc_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_LYC_IR);
+    mode_10_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_10_IR);
+    mode_01_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_01_IR);
+    mode_00_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_00_IR);
+
     // Update Coincidence flag in STAT register
     if (ly_val == lyc_val)
     {
-    	mem->write_bit(R_LCDSTAT, 2, 1);
+    	mem->write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 1);
+    	if (lyc_sel_val)
+    	{
+        	// Set LCDSTAT interrupt flag
+            ir->if_update(I_LCDSTAT, true);
+    	}
     }
     else
     {
-    	mem->write_bit(R_LCDSTAT, 2, 0);
+    	mem->write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 0);
     }
 
     // Update Mode flags in STAT register
     // Still need to implement mode 2 and 3
     if (mode_val == 0x00)
     {
-    	mem->write_bit(R_LCDSTAT, 1, 0);
-    	mem->write_bit(R_LCDSTAT, 0, 0);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	if (mode_00_sel_val)
+    	{
+        	// Set LCDSTAT interrupt flag
+            ir->if_update(I_LCDSTAT, true);
+    	}
     }
     else if (mode_val == 0x01)
     {
-    	mem->write_bit(R_LCDSTAT, 1, 0);
-    	mem->write_bit(R_LCDSTAT, 0, 1);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
+    	if (mode_01_sel_val)
+    	{
+        	// Set LCDSTAT interrupt flag
+            ir->if_update(I_LCDSTAT, true);
+    	}
     }
 
 }
@@ -219,6 +246,19 @@ void Display::scale()
     }
 }
 
+// Clear pixel array
+void Display::clear_pixels()
+{
+	// Loop through pixels
+	    for (uint16_t y = 0; y < DISP_H; y++)
+	    {
+	        for (uint16_t x = 0; x < DISP_W; x++)
+	        {
+	        	pixels[y * DISP_W + x] = 0;
+	        }
+	    }
+}
+
 // Initialise SDL and create a window
 int8_t Display::init()
 {
@@ -249,6 +289,7 @@ int8_t Display::init()
 
             // The pixel canvas
             pixels = new uint8_t[width*height];
+            clear_pixels();
 
             // Update pixels reference in renderer object
             ren->attach_pixels(pixels);

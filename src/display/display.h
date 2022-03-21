@@ -40,6 +40,7 @@ class Display
         void update_LY(uint8_t ly_val, uint8_t mode_val);  // Update LY register and STAT flags
         void colour();							// Add colour data to pixel
         void scale();							// Scale the pixels to match buffer size
+        void clear_pixels();					// Clear pixel array
 
         // SDl Objects
         SDL_Window* window;

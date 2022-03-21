@@ -2,7 +2,7 @@
 #include "../memory/memory.h"
 #include "../clock/clock.h"
 
-//#include <iostream>
+#include <iostream>
 
 Interrupt::Interrupt()
 {
@@ -58,7 +58,13 @@ void Interrupt::check_interrupts()
             }
             if (I_LCDSTAT & i_current)
             {
+            	cout << "Hello\n";
 
+            	// Push PC onto stack
+            	mem->pc_push();
+
+            	// Jump to starting address
+                mem->set_pc(IV_LCDSTAT);
             }
         }
     }

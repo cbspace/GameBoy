@@ -387,13 +387,18 @@ void Memory::bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number)
 void Memory::dma_transfer()
 {
 	// Get start address for DMA transfer
-	uint8_t dma_start;
-	dma_start = ram[R_DMA];
+	uint16_t dma_start;
+	dma_start = ram[R_DMA] << 8;
+
+	//uint32_t data;
 
 	// Transfer data
-	for (uint8_t i =0; i < 0xA0; i++)
+	for (uint8_t i = 0; i < 0xA0; i += 4)
 	{
 		ram[A_OAM + i] = ram[dma_start + i];
+		ram[A_OAM + i + 1] = ram[dma_start + i+ 1];
+		ram[A_OAM + i + 2] = ram[dma_start + i+ 2];
+		ram[A_OAM + i + 3] = ram[dma_start + i+ 3];
 	}
 }
 

@@ -18,7 +18,7 @@ void Cpu::cycle()
 //        printf("PC: %4X\n", mem->get_pc());
 //        if (mem->get_pc() == 0x006a)
 //        {
-//            SDL_Delay(1); //Dummy put break point here
+ //           SDL_Delay(1); //Dummy put break point here
  //       }
         //edb->dump_reg();
 //        mem->ram_debug(0x8010);
