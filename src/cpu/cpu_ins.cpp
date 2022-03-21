@@ -147,7 +147,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x50:  // Set register D to register B
-            mem->reg_copy(RD, RD);
+            mem->reg_copy(RD, RB);
             clk->add_cycles(4);
             break;
         case 0x51:  // Set register D to register C
