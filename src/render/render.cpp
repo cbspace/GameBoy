@@ -66,10 +66,10 @@ void Render::refresh_sprites()
 	for (uint8_t i = 0; i < SPRITE_TILES_MAX; i++)
 	{
 		oam_data_addr = A_OAM + i * OAM_DATA_LENGTH;
-		// Set x
-		spr_att[i].set_sprite_x(mem->get_byte(oam_data_addr));
 		// Set y
-		spr_att[i].set_sprite_y(mem->get_byte(oam_data_addr + 1));
+		spr_att[i].set_sprite_y(mem->get_byte(oam_data_addr));
+		// Set x
+		spr_att[i].set_sprite_x(mem->get_byte(oam_data_addr + 1));
 		// Set tile number
 		spr_att[i].set_sprite_tile_no(mem->get_byte(oam_data_addr + 2));
 		// Set flags
