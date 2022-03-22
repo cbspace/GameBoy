@@ -393,12 +393,9 @@ void Memory::dma_transfer()
 	//uint32_t data;
 
 	// Transfer data
-	for (uint8_t i = 0; i < 0xA0; i += 4)
+	for (uint8_t i = 0; i < 0xA0; i++)
 	{
 		ram[A_OAM + i] = ram[dma_start + i];
-		ram[A_OAM + i + 1] = ram[dma_start + i+ 1];
-		ram[A_OAM + i + 2] = ram[dma_start + i+ 2];
-		ram[A_OAM + i + 3] = ram[dma_start + i+ 3];
 	}
 }
 

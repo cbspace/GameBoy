@@ -98,10 +98,10 @@ void Emulator::main_loop()
             //SDL_Delay(1);
 
         	// Debug
-        	//mem.ram_debug(A_TDT1, A_OAM);
+        	mem.ram_debug(A_TDT1, A_OAM);
         }
 
-        mem.debug_sprite_test();
+        //mem.debug_sprite_test();
 
         // Check for interrupts and process accordingly
         ir.check_interrupts();

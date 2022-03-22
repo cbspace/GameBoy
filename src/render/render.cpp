@@ -47,13 +47,13 @@ void Render::render_line(uint8_t y)
 //	if (mem->get_bit(R_LCDC, R_LCDC_BG_WIN_DISPLAY))
 //	{
 		// Draw the background tiles - single line
-		//draw_bg_line(y);
+		draw_bg_line(y);
 //	}
 
 //	if (mem->get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
 //	{
 		// Draw the sprites - single line
-		draw_sprites_line(y+1);
+		draw_sprites_line(y);
 //	}
 }
 
@@ -78,13 +78,14 @@ void Render::refresh_sprites()
 }
 
 // Draw sprite tiles into pixel array
+// I am not proud of this code but it works :)
 void Render::draw_sprites_line(uint8_t line_y)
 {
 	SpriteAttrib *current_sprite_attrib;		// Current sprite attributes
 //	uint8_t sprite_size;					// 0 = 8x8 mode, 1 = 8x16 mode (w x h)
 	uint8_t sprite_x, sprite_y;				// Current sprite x and y value
 	uint8_t x_start, x_finish;				// Overlapping x pixels to draw
-	uint8_t pix_val, y_val;
+	uint8_t pix_val, y_val, x_len;
 
 //	sprite_size = mem->get_bit(R_LCDC, R_LCDC_SPRITE_SIZE);
 
@@ -98,40 +99,40 @@ void Render::draw_sprites_line(uint8_t line_y)
     		((sprite_y >= 16) && (sprite_y <= 144) && (line_y <= sprite_y) && (line_y >= sprite_y - 16)) ||
     		((sprite_y > 144) && (sprite_y < 160) && (line_y >= sprite_y - 16)))
     	{
-    		y_val = 7 - (sprite_y - line_y);
+    		y_val = 8 - (sprite_y - line_y);
     		sprite_x = current_sprite_attrib->get_x();
 
-    		if ((sprite_x > 0) && (sprite_x <= 8))
+    		if ((sprite_x > 0) && (sprite_x <= 7))
     		{
-    				x_start = 1;
-    				x_finish = sprite_x;
 
-    				for (uint8_t x = x_start; x < x_finish; x++)
+    				for (uint8_t x = 0; x < sprite_x; x++)
     				{
-    					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x);
-    					pixels[line_y * DISP_W + x - 1] = pix_val;
+    					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x+(8-sprite_x));
+    					pixels[line_y * DISP_W + x] = pix_val;
     				}
     		}
-    		else if ((sprite_x > 8) && (sprite_x <= 160))
+    		else if ((sprite_x >= 8) && (sprite_x <= 160))
     		{
     				x_start = sprite_x - 8;
     				x_finish = sprite_x;
+    				x_len = 8;
 
-    				for (uint8_t x = x_start; x < x_finish; x++)
+    				for (uint8_t x = 0; x < x_len; x++)
     				{
     					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x);
-    					pixels[line_y * DISP_W + x - 1] = pix_val;
+    					pixels[line_y * DISP_W + x_start + x] = pix_val;
     				}
     		}
     		else if ((sprite_x > 160) && (sprite_x <= 168))
     		{
-    				x_start = sprite_x - 160;
+    				x_start = sprite_x - 8;
     				x_finish = 160;
+    				x_len = x_finish - x_start;
 
-    				for (uint8_t x = x_start; x < x_finish; x++)
+    				for (uint8_t x = 0; x < x_len; x++)
     				{
     					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x);
-    					pixels[line_y * DISP_W + x - 1] = pix_val;
+    					pixels[line_y * DISP_W + x_start + x] = pix_val;
     				}
     		}
     	}

@@ -125,6 +125,7 @@ void Memory::ram_debug(uint16_t start_addr1, uint16_t start_addr2)
         rdb[i] = ram[start_addr1 + i];
         rdb2[i] = ram[start_addr2 + i];
     }
+
 }
 
 // For testing purposes add the N logo into the RAM
@@ -146,19 +147,26 @@ void Memory::debug_insert_logo()
 void Memory::debug_sprite_test()
 {
     uint8_t sprite_data[] = {0x7c, 0x7c, 0x00, 0xc6, 0xc6, 0x00, 0x00, 0xfe,
-    						 0xc6, 0xc6, 0x00, 0xc6, 0xc6, 0x00, 0x00, 0x00};
+    						 0xc6, 0xc6, 0x00, 0xc6, 0xc7, 0x01, 0x7c, 0x7c};
 //    uint8_t sprite_data[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 //    		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
     for (uint16_t i = 0; i < 16; i++)
     {
-        ram[i + A_TDT1] = sprite_data[i];
+        ram[i + A_TDT1 + 0x230] = sprite_data[i];
     }
 
-    uint8_t oam_data[] = {0x07, 0x30, 0x00, 0x00};
+    uint8_t oam_data[] = {8, 8, 35, 0x00};
 
     for (uint16_t i = 0; i < 4; i++)
     {
         ram[i + A_OAM] = oam_data[i];
+    }
+
+    uint8_t oam_data2[] = {160, 144, 35, 0x00};
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        ram[i + A_OAM + 4] = oam_data2[i];
     }
 }

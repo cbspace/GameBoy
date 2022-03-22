@@ -16,9 +16,9 @@ bool Emudebug::detect_runaway()
 	if (pc_val == (prev_pc + 1))
 	{
 		cpu_count += 1;
-		if (cpu_count >= 50)
+		if (cpu_count >= 100)
 		{
-			//cout << "CPU Runaway detected!\n";
+			cout << "CPU Runaway detected!\n";
 			return true;
 		}
 	}
