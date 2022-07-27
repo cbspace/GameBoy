@@ -10,17 +10,21 @@ A Gameboy emulator written in C++ using SDL2 rendering. The emulator will be pla
 #### Build using Cmake (Linux):
 1. Install dependencies:
 
-...sudo apt install git cmake g++ libsdl2-dev
+`sudo apt install git cmake g++ libsdl2-dev`
 
 2. Clone the repo:
 
-... git clone https://github.com/cbspace/GameBoy.git
+`git clone https://github.com/cbspace/GameBoy.git`
 
-2. Build the source (when in GameBoy base directory)
+3. `cd GameBoy`
 
-...cmake build
+4. `mkdir build`
+
+5. Build the source (when in GameBoy base directory)
+
+`cmake build`
 
 ### Command line usage:
-gameboy path_to_rom [-dmg]
+`./build/gameboy path_to_rom [-dmg]`
 
-[-dmg] Option used to run the DMG Boot Rom. This ROM is now working
+`[-dmg]` Option used to run the DMG Boot Rom. This ROM is now working
