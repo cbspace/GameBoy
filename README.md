@@ -22,7 +22,7 @@ A Gameboy emulator written in C++ using SDL2 rendering. The emulator will be pla
 
 5. Build the source (when in GameBoy base directory)
 
-   `cmake build`
+   `make --build ./build --config Debug --target all -j 26`
 
 ### Command line usage:
 `./build/gameboy path_to_rom [-dmg]`

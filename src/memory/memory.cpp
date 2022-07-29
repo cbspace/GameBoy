@@ -61,6 +61,7 @@ uint8_t Memory::flag_get(uint8_t flag_id)
 
 // Function to load a ROM file (currently only supporting
 // 16 or 32kb ROMS - cart type 0 or 1)
+// Return 1 on success or 0 on error
 int8_t Memory::load_rom(char* rom_path)
 {
     streampos file_size;
@@ -73,14 +74,15 @@ int8_t Memory::load_rom(char* rom_path)
             file.read(ram, file_size);
             file.close();
             read_rom_title();
+            return 1;
         } else {
             cout << "ROM not supported, up to 32kb support only" << endl;
+            return 0;
         }
     } else {
-        cout << "Unable to open file '" << rom_path << "'" << endl;
+        cout << "Unable to open file " << rom_path << endl;
+        return 0;
     }
-
-    return 0;
 }
 
 // Read rom title and load into string

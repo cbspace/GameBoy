@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
     } else if (argc == 3) {
     	cout << argv[2] << endl;
     	if (strcmp(argv[2], ARG_DMG) == 0) {
-            cout << "Loading DMG Boot Rom" << argv[1] << endl;
+            cout << "Loading DMG Boot Rom " << argv[1] << endl;
             emuboy.start(argv[1], true);
     	} else {
     		emuboy.print_error("Unknown command line argument");
