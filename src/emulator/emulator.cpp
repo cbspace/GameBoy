@@ -92,17 +92,8 @@ void Emulator::main_loop()
         	//quit_flag = true;
         }
 
-        if (clk.hblank_cycles_reached())
-        {
-        	// Draw current line
-        	disp.update_line();
-
-            // TEMP slow down
-            //SDL_Delay(1);
-
-        	// Debug
-        	mem.ram_debug(A_TDT1, A_OAM);
-        }
+        // Update the display
+        disp.display_cycle();
 
         //mem.debug_sprite_test();
 

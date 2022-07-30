@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(gameboy VERSION 0.45.0)
+project(gameboy VERSION 0.45.1)
 
 include(CTest)
 enable_testing()

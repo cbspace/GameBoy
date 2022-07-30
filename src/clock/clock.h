@@ -46,21 +46,32 @@ Total               17,556              70,224
 
 #define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
-#define CLK_CYCLES_LINE          252         // Clock cycles for a single line BG + Sprites
-#define CLK_CYCLES_HBLANK        204         // Clock cycles for a single line HBLANK period
-#define CLK_CYCLES_VBLANK        4560        // Clock cycles for a single line VBLANK period
+#define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
+
+#define CLK_CYCLES_MODE0         204         // Clock cycles for a single line HBLANK period (Mode 0)
+#define CLK_CYCLES_MODE1         4560        // Clock cycles for a single line VBLANK period (Mode 1)
+#define CLK_CYCLES_MODE2         80          // Clock cycles for Mode 2 - OAM being accessed
+#define CLK_CYCLES_MODE3         172         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
+
+#define CLK_DISPLAY_MODE0        0
+#define CLK_DISPLAY_MODE1        1
+#define CLK_DISPLAY_MODE2        2
+#define CLK_DISPLAY_MODE3        3
+
+//const uint32_t CLK_CYLES_MODES[4] = {CLK_CYCLES_HBLANK,CLK_CYCLES_VBLANK,CLK_CYCLES_MODE2,CLK_CYCLES_MODE3};
 
 class Clock
 {
     public:
         Clock();
-        void frame_delay();                 // SDL_Delay for remaining frame time
-        void add_cycles(uint8_t amount);    // Add cycles to frame_clock_cycles
-        bool max_cycles_reached();          // Indicates if max clock cycles for a single frame is reached
-        bool hblank_cycles_reached();       // Indicates if number of cycles before HBLNK is reached
+        void frame_delay();                   // SDL_Delay for remaining frame time
+        void add_cycles(uint8_t amount);      // Add cycles to frame_clock_cycles
+        bool max_cycles_reached();            // Indicates if max clock cycles for a single frame is reached
+        bool cycles_reached(uint8_t display_mode); // Indicates if number of cycles is reached
+        void reset_cycles();                  // Reset line_clock_cycles
     private:
-        uint32_t frame_start_ticks;         // Start time of frame
-        uint32_t line_clock_cycles;         // Number of clk cycles in current line
+        uint32_t frame_start_ticks;           // Start time of frame
+        uint32_t line_clock_cycles;           // Number of clk cycles in current line
 };
 
 #endif // CLOCK_H

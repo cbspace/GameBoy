@@ -26,6 +26,7 @@ class Display
 
         int8_t init();                          // Set up SDL
         void set_title(string title_add);       // Set title of SDL window
+        void display_cycle();                   // Called from the main loop, a single display cycle
         void update_line();                     // Update the current line
         void draw_frame();                      // Draw frame to display
         virtual ~Display();                     // Destructor

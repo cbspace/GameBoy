@@ -64,23 +64,23 @@ void Display::set_title(string title_add)
     }
 }
 
-// Draw frame to display
-void Display::draw_frame()
+// Called from the main loop, a single display cycle
+// Used to update display modes
+void Display::display_cycle()
 {
-    // Scale the pixels to match buffer
-    scale();
 
-    // Add colour data to buffer
-    colour();
+        if (clk->cycles_reached(CLK_DISPLAY_MODE3))
+        {
+        	// Draw current line
+        	update_line();
 
-    // Update texture and display buffer
-    SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(uint32_t));
-    SDL_RenderClear(sdlRenderer);
-    SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
-    SDL_RenderPresent(sdlRenderer);
+            // TEMP slow down
+            //SDL_Delay(1);
 
-    // Delay until next frame
-    clk->frame_delay();
+        	// Debug
+        	//mem->ram_debug(A_TDT1, A_OAM);
+            clk->reset_cycles();
+        }
 }
 
 // Update the current line
@@ -190,6 +190,25 @@ void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
     	}
     }
 
+}
+
+// Draw frame to display
+void Display::draw_frame()
+{
+    // Scale the pixels to match buffer
+    scale();
+
+    // Add colour data to buffer
+    colour();
+
+    // Update texture and display buffer
+    SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(uint32_t));
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
+    SDL_RenderPresent(sdlRenderer);
+
+    // Delay until next frame
+    clk->frame_delay();
 }
 
 // Add colour data to buffer
