@@ -38,7 +38,7 @@ class Display
         Clock* clk;								// Pointer to clock object
         uint32_t* display_buffer;				// Array of pixels for buffer
 
-        void update_LY(uint8_t ly_val, uint8_t mode_val);  // Update LY register and STAT flags
+        void update_stat_reg(uint8_t mode_val); // Update STAT flags
         void colour();							// Add colour data to pixel
         void scale();							// Scale the pixels to match buffer size
         void clear_pixels();					// Clear pixel array

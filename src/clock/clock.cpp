@@ -41,16 +41,9 @@ bool Clock::cycles_reached(uint8_t display_mode)
 
     switch(display_mode)
     {
-        // H-Blank
-        case CLK_DISPLAY_MODE0:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0)
-            {
-                ret_val = true;
-            }
-            break;
-        // V-Blank
-        case CLK_DISPLAY_MODE1:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3 + CLK_CYCLES_MODE1)
+        // OAM and Display RAM being used
+        case CLK_DISPLAY_MODE3:
+            if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3)
             {
                 ret_val = true;
             }
@@ -62,9 +55,9 @@ bool Clock::cycles_reached(uint8_t display_mode)
                 ret_val = true;
             }
             break;
-        // OAM and Display RAM being used
-        case CLK_DISPLAY_MODE3:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3)
+        // H-Blank
+        case CLK_DISPLAY_MODE0:
+            if (line_clock_cycles >= CLK_CYCLES_MODE0)
             {
                 ret_val = true;
             }

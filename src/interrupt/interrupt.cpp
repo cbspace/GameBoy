@@ -46,12 +46,16 @@ void Interrupt::check_interrupts()
         // Check for interrupt
         if (i_current)
         {
+            // Reset IME
+            ime = false;
+
+            // Push PC onto stack
+            mem->pc_push();
+
             if (I_VBLANK & i_current)
             {
-            	//cout << "V-Blank\n";
-
-            	// Push PC onto stack
-            	mem->pc_push();
+            	// Reset Interrupt Flag
+                if_update(I_VBLANK, false);
 
             	// Jump to starting address
                 mem->set_pc(IV_VBLANK);
@@ -60,8 +64,8 @@ void Interrupt::check_interrupts()
             {
             	cout << "Hello\n";
 
-            	// Push PC onto stack
-            	mem->pc_push();
+                // Reset Interrupt Flag
+                if_update(I_LCDSTAT, false);
 
             	// Jump to starting address
                 mem->set_pc(IV_LCDSTAT);

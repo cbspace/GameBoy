@@ -58,8 +58,6 @@ Total               17,556              70,224
 #define CLK_DISPLAY_MODE2        2
 #define CLK_DISPLAY_MODE3        3
 
-//const uint32_t CLK_CYLES_MODES[4] = {CLK_CYCLES_HBLANK,CLK_CYCLES_VBLANK,CLK_CYCLES_MODE2,CLK_CYCLES_MODE3};
-
 class Clock
 {
     public:

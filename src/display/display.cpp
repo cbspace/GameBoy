@@ -68,19 +68,36 @@ void Display::set_title(string title_add)
 // Used to update display modes
 void Display::display_cycle()
 {
+    uint8_t current_modeB0 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B0);
+    uint8_t current_modeB1 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B1);
+    uint8_t current_mode = (current_modeB1 << 1) + current_modeB0;
+    //cout << unsigned(current_mode) << endl;
 
-        if (clk->cycles_reached(CLK_DISPLAY_MODE3))
-        {
-        	// Draw current line
-        	update_line();
+	// Get current LY value from register
+    uint8_t ly_val = mem->get_byte(R_LY);
+    //cout << unsigned(ly_val) << endl;
 
-            // TEMP slow down
-            //SDL_Delay(1);
+    // ISSUE: Mode 1 is not entered
+    if ((clk->cycles_reached(CLK_DISPLAY_MODE3)) && (current_mode != CLK_DISPLAY_MODE3))
+    {
+        update_stat_reg(CLK_DISPLAY_MODE3);
 
-        	// Debug
-        	//mem->ram_debug(A_TDT1, A_OAM);
-            clk->reset_cycles();
-        }
+        // Draw current line
+        update_line();
+
+        // Debug
+        //mem->ram_debug(A_TDT1, A_OAM);
+
+        clk->reset_cycles();
+    }
+    else if ((clk->cycles_reached(CLK_DISPLAY_MODE2)) && (current_mode != CLK_DISPLAY_MODE2))
+    {
+        update_stat_reg(CLK_DISPLAY_MODE2);
+    }
+    else if ((clk->cycles_reached(CLK_DISPLAY_MODE0)) && (current_mode != CLK_DISPLAY_MODE0))
+    {
+        update_stat_reg(CLK_DISPLAY_MODE0);
+    }
 }
 
 // Update the current line
@@ -98,7 +115,7 @@ void Display::update_line()
         ren->render_line(ly_val);
 
         // Update LY register
-        update_LY(ly_val + 1, 0x00);
+        mem->write_byte(R_LY, ly_val + 1);
     }
     // Start of V-Blank, draw frame
     else if (ly_val == DISP_H)
@@ -110,22 +127,19 @@ void Display::update_line()
         ir->if_update(I_VBLANK, true);
 
         // Update LY register
-        update_LY(ly_val + 1, 0x01);
+        mem->write_byte(R_LY, ly_val + 1);
     }
     // During V-Blank
     else if (ly_val < LCD_Y_MAX)
     {
         // Update LY register
-    	update_LY(ly_val + 1, 0x01);
+        mem->write_byte(R_LY, ly_val + 1);
     }
     // After V-Blank
     else
     {
-        // Clear VBLANK interrupt flag
-        ir->if_update(I_VBLANK, false);
-
         // Reset LY register
-        update_LY(0x00, 0x00);
+        mem->write_byte(R_LY, 0x00);
 
         // Clear pixels
         clear_pixels();
@@ -135,13 +149,13 @@ void Display::update_line()
     }
 }
 
-// Update LY register and STAT flags
-void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
+// Update STAT flags
+void Display::update_stat_reg(uint8_t mode_val)
 {
 	uint8_t lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
 
-    // Reset LY register
-    mem->write_byte(R_LY, ly_val);
+	// Get current LY value from register
+    uint8_t ly_val = mem->get_byte(R_LY);
 
     // Get LYC value
     lyc_val = mem->get_byte(R_LYC);
@@ -167,8 +181,7 @@ void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
     	mem->write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 0);
     }
 
-    // Update Mode flags in STAT register
-    // Still need to implement mode 2 and 3
+    // Update Mode flags in STAT register and update IR flags
     if (mode_val == 0x00)
     {
     	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
@@ -188,6 +201,21 @@ void Display::update_LY(uint8_t ly_val, uint8_t mode_val)
         	// Set LCDSTAT interrupt flag
             ir->if_update(I_LCDSTAT, true);
     	}
+    }
+    else if (mode_val == 0x02)
+    {
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	if (mode_10_sel_val)
+    	{
+        	// Set LCDSTAT interrupt flag
+            ir->if_update(I_LCDSTAT, true);
+    	}
+    }
+    else if (mode_val == 0x03)
+    {
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
+    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
     }
 
 }
