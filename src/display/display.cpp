@@ -71,33 +71,59 @@ void Display::display_cycle()
     uint8_t current_modeB0 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B0);
     uint8_t current_modeB1 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B1);
     uint8_t current_mode = (current_modeB1 << 1) + current_modeB0;
-    //cout << unsigned(current_mode) << endl;
 
 	// Get current LY value from register
     uint8_t ly_val = mem->get_byte(R_LY);
-    //cout << unsigned(ly_val) << endl;
 
-    // ISSUE: Mode 1 is not entered
-    if ((clk->cycles_reached(CLK_DISPLAY_MODE3)) && (current_mode != CLK_DISPLAY_MODE3))
+    cout << unsigned(current_mode) << endl;
+    cout << unsigned(ly_val) << endl;
+
+    // ISSUE - 3's appear on LY = 144 then changes to 1
+    if (clk->cycles_reached(CLK_DISPLAY_MODE3))
     {
-        update_stat_reg(CLK_DISPLAY_MODE3);
+        if (current_mode != CLK_DISPLAY_MODE3)
+        {
+            if (ly_val < DISP_H)
+            {
+                update_stat_reg(CLK_DISPLAY_MODE3);
+            } else {
+                update_stat_reg(CLK_DISPLAY_MODE1);
+            }
 
-        // Draw current line
-        update_line();
+            // Draw current line
+            update_line();
 
-        // Debug
-        //mem->ram_debug(A_TDT1, A_OAM);
+            // Debug
+            //mem->ram_debug(A_TDT1, A_OAM);
 
-        clk->reset_cycles();
+            clk->reset_cycles();
+        }
     }
-    else if ((clk->cycles_reached(CLK_DISPLAY_MODE2)) && (current_mode != CLK_DISPLAY_MODE2))
+    else if (clk->cycles_reached(CLK_DISPLAY_MODE2))
     {
-        update_stat_reg(CLK_DISPLAY_MODE2);
+        if (current_mode != CLK_DISPLAY_MODE2)
+        {
+            if (ly_val < DISP_H)
+            {
+                update_stat_reg(CLK_DISPLAY_MODE2);
+            } else {
+                update_stat_reg(CLK_DISPLAY_MODE1);
+            }
+        }
     }
-    else if ((clk->cycles_reached(CLK_DISPLAY_MODE0)) && (current_mode != CLK_DISPLAY_MODE0))
+    else if (clk->cycles_reached(CLK_DISPLAY_MODE0))
     {
-        update_stat_reg(CLK_DISPLAY_MODE0);
+        if (current_mode != CLK_DISPLAY_MODE0)
+        {
+            if (ly_val < DISP_H)
+            {
+                update_stat_reg(CLK_DISPLAY_MODE0);
+            } else {
+                update_stat_reg(CLK_DISPLAY_MODE1);
+            }
+        }
     }
+
 }
 
 // Update the current line
