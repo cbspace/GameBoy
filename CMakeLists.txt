@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(gameboy VERSION 0.45.1)
+project(gameboy VERSION 0.45.2)
 
 include(CTest)
 enable_testing()
@@ -21,6 +21,8 @@ file(GLOB SOURCES
     src/emulator/*.cpp
     src/interrupt/*.h
     src/interrupt/*.cpp
+    src/joypad/*.h
+    src/jpypad/*.cpp
     src/memory/*.h
     src/memory/*.cpp
     src/render/*.h

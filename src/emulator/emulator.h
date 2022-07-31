@@ -8,10 +8,11 @@
 #include "../interrupt/interrupt.h"
 #include "../emudebug/emudebug.h"
 #include "../clock/clock.h"
+#include "../joypad/joypad.h"
 #include <string>
 using namespace std;
 
-static const string RELEASE_VERSION = "0.45.1";
+static const string RELEASE_VERSION = "0.45.2";
 
 class Emulator
 {
@@ -20,7 +21,6 @@ class Emulator
         Emulator();                             // Constructor
         void start(char* rom_path, bool rom_is_dmg); // Init SDL and load the ROM
         void main_loop();                       // The main emulator loop
-        void key_down();                        // Process key press events
         void print_error(string error_string);  // Print error to std_out
     private:
         Display disp;                           // Main SDL display
@@ -30,6 +30,7 @@ class Emulator
         Clock clk;                              // Clock for emulator
         Interrupt ir;                           // Interrupt class object
         Emudebug edb;                           // Emudebug class object
+        Joypad jp;                              // Joypad class object
         bool quit_flag;                         // Flag to signify if the user wishes to quit
 };
 

@@ -6,6 +6,8 @@
 #include "../interrupt/interrupt.h"
 #include "../emudebug/emudebug.h"
 #include "../clock/clock.h"
+#include "../joypad/joypad.h"
+
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
@@ -34,6 +36,9 @@ Emulator::Emulator()
     // Pass pointer to Memory instance to Render instance
     ren.attach_memory(&mem);
 	
+    // Pass pointer to Memory instance to Joypad instance
+    jp.attach_memory(&mem);
+
 	// Pass pointer to Memory instance to Emudebug instance
     edb.attach_memory(&mem);
 
@@ -81,7 +86,7 @@ void Emulator::main_loop()
     while (!quit_flag)
     {
         // Check for key press events
-        key_down();
+        quit_flag = jp.key_down();
 
         // Perform CPU cycles
         cp.cycle();
@@ -99,30 +104,6 @@ void Emulator::main_loop()
 
         // Check for interrupts and process accordingly
         ir.check_interrupts();
-    }
-}
-
-// Process key press events
-void Emulator::key_down()
-{
-    // SDL event handler
-    SDL_Event e;
-
-    // Handle events on the event queue
-    while (SDL_PollEvent(&e) != 0)
-    {
-        // User requests to quit
-        if (e.type == SDL_QUIT)
-        {
-            quit_flag = true;
-        }
-        else if (e.type == SDL_KEYDOWN)
-        {
-            if (e.key.keysym.sym == SDLK_ESCAPE)
-            {
-                quit_flag = true;
-            }
-        }
     }
 }
 
