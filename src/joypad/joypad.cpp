@@ -2,6 +2,7 @@
 #include "../memory/memory.h"
 
 #include <SDL2/SDL.h>
+#include <iostream>
 
 Joypad::Joypad()
 {
@@ -29,13 +30,24 @@ uint8_t Joypad::key_down()
         // User requests to quit
         if (e.type == SDL_QUIT)
         {
-            quit_signal = true;
+            quit_signal = 1;
         }
         else if (e.type == SDL_KEYDOWN)
         {
-            if (e.key.keysym.sym == SDLK_ESCAPE)
+            switch (e.key.keysym.sym)
             {
-                quit_signal = true;
+                case SDLK_ESCAPE:
+                {
+                    quit_signal = 1;
+                }
+                case SDLK_RETURN:
+                {
+                    mem->write_byte(R_P1,JP_START);
+                }
+                default:
+                {
+                    mem->write_byte(R_P1,JP_EMPTY);
+                }
             }
         }
     }

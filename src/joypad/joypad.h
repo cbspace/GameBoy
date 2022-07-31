@@ -15,6 +15,7 @@
 #define JP_UP       0x04
 #define JP_LEFT     0x02
 #define JP_RIGHT    0x01
+#define JP_EMPTY    0x00
 
 class Joypad
 {
