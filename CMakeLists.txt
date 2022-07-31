@@ -22,7 +22,7 @@ file(GLOB SOURCES
     src/interrupt/*.h
     src/interrupt/*.cpp
     src/joypad/*.h
-    src/jpypad/*.cpp
+    src/joypad/*.cpp
     src/memory/*.h
     src/memory/*.cpp
     src/render/*.h

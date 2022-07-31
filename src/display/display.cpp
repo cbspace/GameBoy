@@ -75,8 +75,8 @@ void Display::display_cycle()
 	// Get current LY value from register
     uint8_t ly_val = mem->get_byte(R_LY);
 
-    cout << unsigned(current_mode) << endl;
-    cout << unsigned(ly_val) << endl;
+    //cout << unsigned(current_mode) << endl;
+    //cout << unsigned(ly_val) << endl;
 
     // ISSUE - 3's appear on LY = 144 then changes to 1
     if (clk->cycles_reached(CLK_DISPLAY_MODE3))
