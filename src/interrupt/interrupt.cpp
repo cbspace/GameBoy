@@ -59,16 +59,28 @@ void Interrupt::check_interrupts()
 
             	// Jump to starting address
                 mem->set_pc(IV_VBLANK);
+
+                //cout << "VBlank Interrupt\n";
             }
-            if (I_LCDSTAT & i_current)
+            else if (I_LCDSTAT & i_current)
             {
-            	cout << "Hello\n";
+            	cout << "LCDStat Interrupt\n";
 
                 // Reset Interrupt Flag
                 if_update(I_LCDSTAT, false);
 
             	// Jump to starting address
                 mem->set_pc(IV_LCDSTAT);
+            }
+            else if (I_JOYPAD & i_current)
+            {
+            	cout << "Joypad Interrupt\n";
+
+                // Reset Interrupt Flag
+                if_update(I_JOYPAD, false);
+
+            	// Jump to starting address
+                mem->set_pc(IV_JOYPAD);
             }
         }
     }

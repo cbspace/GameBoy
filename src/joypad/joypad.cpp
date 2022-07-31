@@ -1,8 +1,8 @@
 #include "joypad.h"
 #include "../memory/memory.h"
+#include "../interrupt/interrupt.h"
 
 #include <SDL2/SDL.h>
-#include <iostream>
 
 Joypad::Joypad()
 {
@@ -13,6 +13,12 @@ Joypad::Joypad()
 void Joypad::attach_memory(Memory* mem_in)
 {
     mem = mem_in;
+}
+
+// Set pointer used to access interrupt object
+void Joypad::attach_interrupt(Interrupt* ir_in)
+{
+    ir = ir_in;
 }
 
 // Process key press events, return 1 on quit
@@ -43,6 +49,7 @@ uint8_t Joypad::key_down()
                 case SDLK_RETURN:
                 {
                     mem->write_byte(R_P1,JP_START);
+                    ir->if_update(I_JOYPAD, true);
                 }
                 default:
                 {

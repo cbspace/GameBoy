@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../memory/memory.h"
+#include "../interrupt/interrupt.h"
 
 #define R_P1    0xff00      // Register for reading joy pad info
 
@@ -21,11 +22,13 @@ class Joypad
 {
     public:
         Joypad();
-        void attach_memory(Memory* mem_in);     // Set pointer used to access memory object
-        uint8_t key_down();                     // Process key press events, return 1 on quit
+        void attach_memory(Memory* mem_in);       // Set pointer used to access memory object
+        void attach_interrupt(Interrupt* ir_in);  // Set pointer used to access interrupt object
+        uint8_t key_down();                       // Process key press events, return 1 on quit
 
     private:
         Memory* mem;
+        Interrupt* ir;
 
 };
 

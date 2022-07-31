@@ -39,6 +39,9 @@ Emulator::Emulator()
     // Pass pointer to Memory instance to Joypad instance
     jp.attach_memory(&mem);
 
+    // Pass pointer to Interrupt instance to Joypad instance
+    jp.attach_interrupt(&ir);
+
 	// Pass pointer to Memory instance to Emudebug instance
     edb.attach_memory(&mem);
 
