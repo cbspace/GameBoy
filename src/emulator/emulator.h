@@ -19,7 +19,8 @@ class Emulator
     public:
         string rom_title;                       // Game title stored in the rom
         Emulator();                             // Constructor
-        void start(char* rom_path, bool rom_is_dmg); // Init SDL and load the ROM
+                                                // Init SDL and load the ROM
+        void start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled);
         void main_loop();                       // The main emulator loop
         void print_error(string error_string);  // Print error to std_out
     private:

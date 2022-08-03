@@ -25,6 +25,11 @@ A Gameboy emulator written in C++ using SDL2 rendering. The emulator will be pla
    `make --build ./build --config Debug --target all -j 26`
 
 ### Command line usage:
-`./build/gameboy path_to_rom [-dmg]`
+`./build/gameboy /path/to/rom.gb [-debug]`
+
+Or if you wish to run with the DMG Boot ROM
+
+`./build/gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]`
 
 `[-dmg]` Option used to run the DMG Boot Rom. This ROM is now working
+`[-debug]` Option will run with the Debugger window enabled

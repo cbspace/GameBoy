@@ -50,7 +50,7 @@ Emulator::Emulator()
 }
 
 // Run the emulator
-void Emulator::start(char* rom_path, bool rom_is_dmg)
+void Emulator::start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
     // Load the rom
     uint8_t load_rom_status = mem.load_rom(rom_path);
