@@ -20,9 +20,13 @@ A Gameboy emulator written in C++ using SDL2 rendering. The emulator will be pla
 
 4. `mkdir build`
 
-5. Build the source (when in GameBoy base directory)
+5. Configure CMake
 
-   `make --build ./build --config Debug --target all -j 26`
+`cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ -S./ -B./build -G "Unix Makefiles"`
+
+6. Build the source (when in GameBoy base directory)
+
+   `./run.sh`
 
 ### Command line usage:
 `./build/gameboy /path/to/rom.gb [-debug]`
