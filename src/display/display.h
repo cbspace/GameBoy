@@ -14,6 +14,13 @@
 // Display Class looks after SDL Window
 // Render Class looks after pixel array
 
+enum class ColourValues {
+    C0,
+    C1,
+    C2,
+    C3
+};
+
 class Display
 {
     public:

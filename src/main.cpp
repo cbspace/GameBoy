@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
             emuboy.start(argv[1], false, true);
         } else {
             cout << "Command line argument \"" << argv[2] << "\" not expected" << endl;
+            return 1;
         }
     } else if (argc <= 5) {
     	if (strcmp(argv[2], ARG_DMG) == 0) {
@@ -39,9 +40,11 @@ int main(int argc, char* argv[])
             emuboy.start(argv[3], true, false);
     	} else {
     		emuboy.print_error("Unexpected command line argument");
+            return 1;
     	}
     } else {
         emuboy.print_error("Too many command line arguments");
+        return 1;
     }
 
 	return 0;
