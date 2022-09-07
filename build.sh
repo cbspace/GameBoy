@@ -17,12 +17,12 @@ else
     -G "Unix Makefiles"
   elif [ $1 == '-build' ]
   then
-    cmake --build ./build --config Debug --target clean -j 26
-    cmake --build ./build --config Debug --target all -j 26
+    cmake --build ./build --config Debug --target clean
+    cmake --build ./build --config Debug --target all -j $(nproc)
   elif [ $1 == '-run' ]
   then
-    cmake --build ./build --config Debug --target clean -j 26
-    cmake --build ./build --config Debug --target all -j 26
+    cmake --build ./build --config Debug --target clean
+    cmake --build ./build --config Debug --target all -j $(nproc)
     ./build/gameboy $2 $3 $4 $5 $6
   else
     echo -e $usage_message
