@@ -52,34 +52,29 @@ Emulator::Emulator()
 // Run the emulator
 void Emulator::start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
-    // Load the rom
-    uint8_t load_rom_status = mem.load_rom(rom_path);
-
-    if (load_rom_status > 0)
-    {
-        // Initialise SDL
-        cout << "Loading Window" << endl;
-        disp.init();
-
-        if (rom_is_dmg) {
-            // Set the PC start address at 0
-            mem.set_pc(0x00);
-
-            // Insert logo for dmg rom
-            mem.debug_insert_logo();
-        }
-        else {
-            // Set window title
-            disp.set_title(mem.get_rom_title());
-            cout << "Rom Title: " << mem.get_rom_title() << endl;
-
-            // Initialise LCDC
-            mem.write_byte(R_LCDC, 0x91);
-        }
-
-        // Run the main loop
-        main_loop();
+    if ( auto e = mem.load_rom(rom_path) ) { 
+        cout << e.value().get_error_string() << endl;;
+        return; 
     }
+
+    cout << "Loading Window" << endl;
+    if( auto e = disp.init() ) {
+        cout << e.value().get_error_string() << endl;
+        return;
+    }
+
+    if (rom_is_dmg) {
+        mem.set_pc(0x00);
+        mem.debug_insert_logo();
+    }
+    else {
+        disp.set_title(mem.get_rom_title());
+        cout << "Rom Title: " << mem.get_rom_title() << endl;
+
+        mem.write_byte(R_LCDC, 0x91);
+    }
+
+    main_loop();
 }
 
 // The main emulator loop

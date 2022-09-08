@@ -29,6 +29,8 @@ file(GLOB SOURCES
     src/render/*.cpp
     src/render/spriteattrib/*.h
     src/render/spriteattrib/*.cpp
+    src/lib/*.h
+    src/lib/*.cpp
 )
 
 add_executable(gameboy ${SOURCES})

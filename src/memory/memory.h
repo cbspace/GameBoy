@@ -2,8 +2,10 @@
 #define MEMORY_H
 
 #include "../display/displayconst.h"
+#include "../lib/Error.h"
 #include <stdint.h>
 #include <string>
+#include <optional>
 
 #define MEM_SIZE            0x10000     // Memory size for Gameboy
 #define REG_ARRAY_SIZE      8           // Number of 8 bit registers
@@ -113,7 +115,7 @@ class Memory
         void flag_update(uint8_t flag_id, uint8_t flg_val);         // Set or clear flag
         uint8_t flag_get(uint8_t flag_id);                          // Return flag value
         /// ROM Cartridge and game title
-        int8_t load_rom(char* rom_path);                            // Function to load a ROM file
+        optional<Error> load_rom(char* rom_path);                            // Function to load a ROM file
         void read_rom_title();                                      // Read rom title and load into string
         string get_rom_title();                                     // Get the current ROM title
         /// Debug

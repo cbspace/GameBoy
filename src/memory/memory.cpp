@@ -57,32 +57,22 @@ uint8_t Memory::flag_get(uint8_t flag_id)
     return !(flag_val==0);
 }
 
-/// ROM Cartridge and game title
-
-// Function to load a ROM file (currently only supporting
-// 16 or 32kb ROMS - cart type 0 or 1)
-// Return 1 on success or 0 on error
-int8_t Memory::load_rom(char* rom_path)
+optional<Error> Memory::load_rom(char* rom_path)
 {
     streampos file_size;
 
     ifstream file(rom_path, ios::in|ios::binary|ios::ate);
-    if (file.is_open()) {
-        file_size = file.tellg();
-        if (file_size <= 32*1024) {
-            file.seekg(0, ios::beg);
-            file.read(ram, file_size);
-            file.close();
-            read_rom_title();
-            return 1;
-        } else {
-            cout << "ROM not supported, up to 32kb support only" << endl;
-            return 0;
-        }
-    } else {
-        cout << "Unable to open file " << rom_path << endl;
-        return 0;
-    }
+    if (!file.is_open()) { return Error("Unable to open file",rom_path); }
+
+    file_size = file.tellg();
+    if (file_size > 32*1024) { return Error("ROM not supported, up to 32kb support only"); }
+
+    file.seekg(0, ios::beg);
+    file.read(ram, file_size);
+    file.close();
+    read_rom_title();
+
+    return nullopt;
 }
 
 // Read rom title and load into string

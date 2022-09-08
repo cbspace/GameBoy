@@ -333,45 +333,26 @@ void Display::clear_pixels()
 }
 
 // Initialise SDL and create a window
-int8_t Display::init()
+optional<Error> Display::init()
 {
-    // Initialise SDL
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
-    {
-        cout << "SDL unable to initialise! SDL_Error: " << SDL_GetError() << endl;
-    }
-    else
-    {
-        // Create a new SDL Window
-        window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) { return Error("SDL unable to initialise! SDL_Error", SDL_GetError()); }
 
-        if (window == NULL)
-        {
-            cout << "Unable to create SDL Window! SDL_Error: " << SDL_GetError() << endl;
-        }
-        else
-        {
-            // Create the renderer
-        	sdlRenderer = SDL_CreateRenderer(window, -1, 0);
+    window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+    if (window == NULL) { return Error("Unable to create SDL Window! SDL_Error", SDL_GetError()); }
 
-            // Create the texture
-            texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
+    sdlRenderer = SDL_CreateRenderer(window, -1, 0);
+    if ( sdlRenderer == NULL ) { return Error("Unable to create SDL Renderer! SDL_Error", SDL_GetError()); };
 
-            // Display buffer
-            display_buffer = new uint32_t[width*height];
+    texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
 
-            // The pixel canvas
-            pixels = new uint8_t[width*height];
-            clear_pixels();
+    display_buffer = new uint32_t[width*height];
 
-            // Update pixels reference in renderer object
-            ren->attach_pixels(pixels);
+    pixels = new uint8_t[width*height];
+    clear_pixels();
 
-            // Success
-            return 0;
-        }
-    }
-    return -1;
+    ren->attach_pixels(pixels);
+
+    return nullopt;
 }
 
 // Close the SDL window and close SDL
