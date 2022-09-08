@@ -22,7 +22,6 @@ class Emulator
                                                 // Init SDL and load the ROM
         void start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled);
         void main_loop();                       // The main emulator loop
-        void print_error(string error_string);  // Print error to std_out
     private:
         Display disp;                           // Main SDL display
         Cpu cp;                                 // CPU for the emulator

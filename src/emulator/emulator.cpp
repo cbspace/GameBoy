@@ -104,8 +104,3 @@ void Emulator::main_loop()
         ir.check_interrupts();
     }
 }
-
-// Function to print error message
-void Emulator::print_error(string error_string) {
-    cout << "Error: " << error_string << endl;
-}

@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     // Command line: gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]
     // TODO: Not yet supported running dmg rom and game rom together
     if (argc == 1) {
-        emuboy.print_error("Command line argument not found, expecting path to ROM file");
+        cout << "Command line argument not found, expecting path to ROM file" << endl;
         cout << "Command line usage:" << endl;
         cout << "(1)  gameboy /path/to/rom.gb [-debug]" << endl;
         cout << "(2)  gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]" << endl;
@@ -39,11 +39,11 @@ int main(int argc, char* argv[])
             cout << "Loading DMG Boot Rom " << argv[1] << endl;
             emuboy.start(argv[3], true, false);
     	} else {
-    		emuboy.print_error("Unexpected command line argument");
+    		cout << "Unexpected command line argument" << endl;
             return 1;
     	}
     } else {
-        emuboy.print_error("Too many command line arguments");
+        cout << "Too many command line arguments" << endl;
         return 1;
     }
 
