@@ -14,11 +14,12 @@ using namespace std;
 class Emulator
 {
     public:
-        string rom_title;
         Emulator();
         void start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled);
         void main_loop();
         void print_cl_usage_message();
+        string rom_title;
+
     private:
         Display disp;
         Cpu cp;

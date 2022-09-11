@@ -3,19 +3,12 @@
 #include "../clock/clock.h"
 #include "../interrupt/interrupt.h"
 
-// Process a instruction read from ROM
 void Cpu::process_instruction(uint8_t rom_byte)
 {
-    // Used for temporary 8-bit variable
-    uint8_t tmp8_value;
+    uint8_t temp_8bit_value;
+    int8_t signed_8bit_immediate;
+    uint16_t unsigned_16bit_immediate;
 
-    // Used for signed 8-bit variable
-    int8_t signed8_imm;
-
-    // Used for instructions that use 16-bit immediate value
-    uint16_t imm16_value;
-
-    // switch statement to match opcode and perform operations
     switch(rom_byte)
     {
         case 0x3e:  // Load immediate value n to A register
@@ -307,9 +300,9 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(8);
             break;
         case 0xfa:  // Set register A to immediate value at (nn)
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->reg_set(RA,mem->get_byte(imm16_value));
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->reg_set(RA,mem->get_byte(unsigned_16bit_immediate));
             clk->add_cycles(16);
             break;
         case 0x02:  // Set byte at (BC) to register A
@@ -325,77 +318,77 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(8);
             break;
         case 0xea:  // Set byte at (nn) to register A
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->write_byte(imm16_value,mem->reg_get(RA));
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->write_byte(unsigned_16bit_immediate,mem->reg_get(RA));
             clk->add_cycles(16);
             break;
         case 0xf2:  // Set register A to ($FF00 + register C)
-            imm16_value = 0xff00 + mem->reg_get(RC);
-            mem->reg_set(RA,mem->get_byte(imm16_value));
+            unsigned_16bit_immediate = 0xff00 + mem->reg_get(RC);
+            mem->reg_set(RA,mem->get_byte(unsigned_16bit_immediate));
             clk->add_cycles(8);
             break;
         case 0xe2:  // Set byte at ($FF00 + register C) to register A
-            imm16_value = 0xff00 + mem->reg_get(RC);
-            mem->write_byte(imm16_value,mem->reg_get(RA));
+            unsigned_16bit_immediate = 0xff00 + mem->reg_get(RC);
+            mem->write_byte(unsigned_16bit_immediate,mem->reg_get(RA));
             clk->add_cycles(8);
             break;
         case 0x3a:  // Set register A to value at (HL), decrement HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            imm16_value = mem->reg_get16(RHL) - 1;
-            mem->reg_set(RHL, imm16_value);
+            unsigned_16bit_immediate = mem->reg_get16(RHL) - 1;
+            mem->reg_set(RHL, unsigned_16bit_immediate);
             clk->add_cycles(8);
             break;
         case 0x32:  // Set byte at (HL) to register A, decrement HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            imm16_value = mem->reg_get16(RHL) - 1;
-            mem->reg_set(RHL, imm16_value);
+            unsigned_16bit_immediate = mem->reg_get16(RHL) - 1;
+            mem->reg_set(RHL, unsigned_16bit_immediate);
             clk->add_cycles(8);
             break;
         case 0x2a:  // Set register A to value at (HL), increment HL
             mem->reg_set(RA, mem->get_from_pointer(RHL));
-            imm16_value = mem->reg_get16(RHL) + 1;
-            mem->reg_set(RHL, imm16_value);
+            unsigned_16bit_immediate = mem->reg_get16(RHL) + 1;
+            mem->reg_set(RHL, unsigned_16bit_immediate);
             clk->add_cycles(8);
             break;
         case 0x22:  // Set byte at (HL) to register A, increment HL
             mem->set_from_pointer(RHL,mem->reg_get(RA));
-            imm16_value = mem->reg_get16(RHL) + 1;
-            mem->reg_set(RHL, imm16_value);
+            unsigned_16bit_immediate = mem->reg_get16(RHL) + 1;
+            mem->reg_set(RHL, unsigned_16bit_immediate);
             clk->add_cycles(8);
             break;
         case 0xe0:  // Set byte at ($FF00 + imm8 n) to register A
-            imm16_value = 0xff00 + mem->fetch_byte();
-            mem->write_byte(imm16_value,mem->reg_get(RA));
+            unsigned_16bit_immediate = 0xff00 + mem->fetch_byte();
+            mem->write_byte(unsigned_16bit_immediate,mem->reg_get(RA));
             clk->add_cycles(12);
             break;
         case 0xf0:  // Set register A to ($FF00 + imm8 n)
-            imm16_value = 0xff00 + mem->fetch_byte();
-            mem->reg_set(RA,mem->get_byte(imm16_value));
+            unsigned_16bit_immediate = 0xff00 + mem->fetch_byte();
+            mem->reg_set(RA,mem->get_byte(unsigned_16bit_immediate));
             clk->add_cycles(8);
             break;
         case 0x01:  // Set register BC to 16 bit immediate value nn
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->reg_set(RBC,imm16_value);
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->reg_set(RBC,unsigned_16bit_immediate);
             clk->add_cycles(12);
             break;
         case 0x11:  // Set register DE to 16 bit immediate value nn
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->reg_set(RDE,imm16_value);
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->reg_set(RDE,unsigned_16bit_immediate);
             clk->add_cycles(12);
             break;
         case 0x21:  // Set register HL to 16 bit immediate value nn
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->reg_set(RHL,imm16_value);
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->reg_set(RHL,unsigned_16bit_immediate);
             clk->add_cycles(12);
             break;
         case 0x31:  // Set SP to 16 bit immediate value nn
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->set_sp(imm16_value);
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->set_sp(unsigned_16bit_immediate);
             clk->add_cycles(12);
             break;
         case 0xf9:  // Set SP to value in HL
@@ -403,21 +396,21 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(8);
             break;
         case 0xf8:  // Set HL to SP + imm8 n
-            imm16_value = mem->get_sp() + mem->fetch_byte();
+            unsigned_16bit_immediate = mem->get_sp() + mem->fetch_byte();
             mem->flag_update(ZF,0);
             mem->flag_update(NF,0);                        // NEED TO ADD H AND C FLAG OPERATIONS
-            mem->reg_set(RHL,imm16_value);
+            mem->reg_set(RHL,unsigned_16bit_immediate);
             clk->add_cycles(12);
             break;
         case 0x08:  // Set bytes at (nn) to SP value
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             // sp low byte
-            tmp8_value = mem->get_sp() & 0xff;
-            mem->write_byte(imm16_value,tmp8_value);
+            temp_8bit_value = mem->get_sp() & 0xff;
+            mem->write_byte(unsigned_16bit_immediate,temp_8bit_value);
             // sp high byte
-            tmp8_value = mem->get_sp() >> 8;
-            mem->write_byte(imm16_value + 1,tmp8_value);
+            temp_8bit_value = mem->get_sp() >> 8;
+            mem->write_byte(unsigned_16bit_immediate + 1,temp_8bit_value);
             clk->add_cycles(20);
             break;
         case 0xf5:  // Push AF register onto stack
@@ -864,8 +857,8 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x2f:  // Complement A register and update flags
-            tmp8_value = ~mem->reg_get(RA);
-            mem->reg_set(RA, tmp8_value);
+            temp_8bit_value = ~mem->reg_get(RA);
+            mem->reg_set(RA, temp_8bit_value);
             mem->flag_update(NF,1);
             mem->flag_update(HF,1);
             clk->add_cycles(4);
@@ -919,17 +912,17 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0xc3:  // Jump to subroutine at nn
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
-            mem->set_pc(imm16_value);
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(16);
             break;
         case 0xc2:  // Jump to subroutine at nn if ZF is reset
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             if (!mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(16);
             }
             else
@@ -939,11 +932,11 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xca:  // Jump to subroutine at nn if ZF is set
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             if (mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(16);
             }
             else
@@ -953,11 +946,11 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xd2:  // Jump to subroutine at nn if CF is reset
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             if (!mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(16);
             }
             else
@@ -967,11 +960,11 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xda:  // Jump to subroutine at nn if CF is set
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             if (mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(16);
             }
             else
@@ -985,15 +978,15 @@ void Cpu::process_instruction(uint8_t rom_byte)
             clk->add_cycles(4);
             break;
         case 0x18:  // Jump to address at PC + e (e = signed 8-bit immediate)
-            signed8_imm = mem->fetch_byte();
-            mem->jmp_n(signed8_imm);
+            signed_8bit_immediate = mem->fetch_byte();
+            mem->jmp_n(signed_8bit_immediate);
             clk->add_cycles(12);
             break;
         case 0x20:  // Jump to address at PC + e if ZF is reset (e = signed 8-bit immediate)
-            signed8_imm = mem->fetch_byte();
+            signed_8bit_immediate = mem->fetch_byte();
             if (!mem->flag_get(ZF))
             {
-                mem->jmp_n(signed8_imm);
+                mem->jmp_n(signed_8bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1003,10 +996,10 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0x28:  // Jump to address at PC + e if ZF is set (e = signed 8-bit immediate)
-            signed8_imm = mem->fetch_byte();
+            signed_8bit_immediate = mem->fetch_byte();
             if (mem->flag_get(ZF))
             {
-                mem->jmp_n(signed8_imm);
+                mem->jmp_n(signed_8bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1016,10 +1009,10 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0x30:  // Jump to address at PC + e if CF is reset (e = signed 8-bit immediate)
-            signed8_imm = mem->fetch_byte();
+            signed_8bit_immediate = mem->fetch_byte();
             if (!mem->flag_get(CF))
             {
-                mem->jmp_n(signed8_imm);
+                mem->jmp_n(signed_8bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1029,10 +1022,10 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0x38:  // Jump to address at PC + e if CF is set (e = signed 8-bit immediate)
-            signed8_imm = mem->fetch_byte();
+            signed_8bit_immediate = mem->fetch_byte();
             if (mem->flag_get(CF))
             {
-                mem->jmp_n(signed8_imm);
+                mem->jmp_n(signed_8bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1042,21 +1035,21 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xcd:  // Push PC onto stack and jmp to nn (CALL)
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(24);
             break;
         case 0xc4:  // Push PC onto stack and jmp to nn (CALL) if ZF is reset
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
 
             mem->pc_push();
 
             if (!mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1065,14 +1058,14 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xcc:  // Push PC onto stack and jmp to nn (CALL) if ZF is set
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
 
             mem->pc_push();
 
             if (mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1081,14 +1074,14 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xd4:  // Push PC onto stack and jmp to nn (CALL) if CF is reset
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
 
             mem->pc_push();
 
             if (!mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1097,14 +1090,14 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xdc:  // Push PC onto stack and jmp to nn (CALL) if CF is set
-            imm16_value = mem->fetch_byte();
-            imm16_value += mem->fetch_byte() << 8;
+            unsigned_16bit_immediate = mem->fetch_byte();
+            unsigned_16bit_immediate += mem->fetch_byte() << 8;
 
             mem->pc_push();
 
             if (mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
                 clk->add_cycles(12);
             }
             else
@@ -1113,93 +1106,93 @@ void Cpu::process_instruction(uint8_t rom_byte)
             }
             break;
         case 0xc7:  // Push PC onto stack and jmp to address 0x0000 + 0x00 (RST)
-            imm16_value = 0x0000;
+            unsigned_16bit_immediate = 0x0000;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xcf:  // Push PC onto stack and jmp to address 0x0000 + 0x08 (RST)
-            imm16_value = 0x0008;
+            unsigned_16bit_immediate = 0x0008;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xd7:  // Push PC onto stack and jmp to address 0x0000 + 0x10 (RST)
-            imm16_value = 0x0010;
+            unsigned_16bit_immediate = 0x0010;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xdf:  // Push PC onto stack and jmp to address 0x0000 + 0x18 (RST)
-            imm16_value = 0x0018;
+            unsigned_16bit_immediate = 0x0018;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xe7:  // Push PC onto stack and jmp to address 0x0000 + 0x20 (RST)
-            imm16_value = 0x0020;
+            unsigned_16bit_immediate = 0x0020;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xef:  // Push PC onto stack and jmp to address 0x0000 + 0x28 (RST)
-            imm16_value = 0x0028;
+            unsigned_16bit_immediate = 0x0028;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xf7:  // Push PC onto stack and jmp to address 0x0000 + 0x30 (RST)
-            imm16_value = 0x0030;
+            unsigned_16bit_immediate = 0x0030;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xff:  // Push PC onto stack and jmp to address 0x0000 + 0x38 (RST)
-            imm16_value = 0x0038;
+            unsigned_16bit_immediate = 0x0038;
             mem->pc_push();
-            mem->set_pc(imm16_value);
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(32);
             break;
         case 0xc9:  // Pop 2 bytes from the stack and jump to that address (RET)
-            imm16_value = mem->stack_pop();
-            mem->set_pc(imm16_value);
+            unsigned_16bit_immediate = mem->stack_pop();
+            mem->set_pc(unsigned_16bit_immediate);
             clk->add_cycles(8);
             break;
         case 0xc0:  // Pop 2 bytes from the stack and return if ZF is reset (RET nz)
-        	imm16_value = mem->stack_pop();
+        	unsigned_16bit_immediate = mem->stack_pop();
             if (!mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
             }
             clk->add_cycles(8);
             break;
         case 0xc8:  // Pop 2 bytes from the stack and return if ZF is set (RET z)
-        	imm16_value = mem->stack_pop();
+        	unsigned_16bit_immediate = mem->stack_pop();
             if (mem->flag_get(ZF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
             }
             clk->add_cycles(8);
             break;
         case 0xd0:  // Pop 2 bytes from the stack and return if CF is reset (RET nc)
-        	imm16_value = mem->stack_pop();
+        	unsigned_16bit_immediate = mem->stack_pop();
             if (!mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
             }
             clk->add_cycles(8);
             break;
         case 0xd8:  // Pop 2 bytes from the stack and return if CF is set (RET c)
-        	imm16_value = mem->stack_pop();
+        	unsigned_16bit_immediate = mem->stack_pop();
             if (mem->flag_get(CF))
             {
-                mem->set_pc(imm16_value);
+                mem->set_pc(unsigned_16bit_immediate);
             }
             clk->add_cycles(8);
             break;
         case 0xd9:  // Pop 2 bytes from the stack, jump to that address and enable interrupts (RETI)
-            imm16_value = mem->stack_pop();
-            mem->set_pc(imm16_value);
+            unsigned_16bit_immediate = mem->stack_pop();
+            mem->set_pc(unsigned_16bit_immediate);
             ir->enable_interrupts();
             clk->add_cycles(8);
             break;

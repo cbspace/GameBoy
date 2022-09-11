@@ -1,11 +1,8 @@
-#ifndef ERROR_H
-#define ERROR_H
+#pragma once
 
 #include <string>
 
 using std::string;
-
-namespace Packman {
 
 class Error {
     public:
@@ -16,9 +13,3 @@ class Error {
         string error_text;
         string error_additional_text;
 };
-
-}
-
-using namespace Packman;
-
-#endif // ERROR_H

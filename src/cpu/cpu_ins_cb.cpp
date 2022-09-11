@@ -2,10 +2,8 @@
 #include "../memory/memory.h"
 #include "../clock/clock.h"
 
-// Process a CB prefixed instruction
 void Cpu::process_cb_instruction(uint8_t rom_byte)
 {
-    // switch statement to match opcode and perform operations
     switch(rom_byte)
     {
         case 0x37:  // Swap upper and lower nibbles of register A, flags updated

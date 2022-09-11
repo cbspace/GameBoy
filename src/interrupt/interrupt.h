@@ -1,5 +1,4 @@
-#ifndef INTERRUPT_H
-#define INTERRUPT_H
+#pragma once
 
 #include "../memory/memory.h"
 #include "../clock/clock.h"
@@ -83,5 +82,3 @@ Bit 1 - LCDC (STAT Referenced)
 Bit 0 - Vertical Blanking
 
 */
-
-#endif // INTERRUPT_H

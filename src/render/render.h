@@ -1,5 +1,4 @@
-#ifndef RENDER_H
-#define RENDER_H
+#pragma once
 
 #include "spriteattrib/spriteattrib.h"
 #include "../memory/memory.h"
@@ -45,5 +44,3 @@ class Render
         // Get a bg sprite from a tile
         uint8_t get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t sprite_x);
 };
-
-#endif // RENDER_H

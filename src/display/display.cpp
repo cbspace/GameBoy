@@ -11,10 +11,8 @@
 
 using namespace std;
 
-// Constructor
 Display::Display()
 {
-    // Initialise pointers
     window = NULL;
     drawSurface = NULL;
     sdlRenderer = NULL;
@@ -27,31 +25,26 @@ Display::Display()
     clk = NULL;
 }
 
-// Set pointer used to access memory object
 void Display::attach_memory(Memory* mem_in)
 {
     mem = mem_in;
 }
 
-// Set pointer used to access render object
 void Display::attach_render(Render* ren_in)
 {
     ren = ren_in;
 }
 
-// Set pointer used to access interrupt object
 void Display::attach_interrupt(Interrupt* interrupt_in)
 {
     ir = interrupt_in;
 }
 
-// Set pointer used to access clock object
 void Display::attach_clock(Clock* clock_in)
 {
     clk = clock_in;
 }
 
-// Set the window title
 void Display::set_title(string title_add)
 {
     string window_title_const(WINDOW_TITLE);
@@ -246,31 +239,23 @@ void Display::update_stat_reg(uint8_t mode_val)
 
 }
 
-// Draw frame to display
 void Display::draw_frame()
 {
-    // Scale the pixels to match buffer
     scale();
-
-    // Add colour data to buffer
     colour();
 
-    // Update texture and display buffer
     SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(uint32_t));
     SDL_RenderClear(sdlRenderer);
     SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
 
-    // Delay until next frame
     clk->frame_delay();
 }
 
-// Add colour data to buffer
 void Display::colour()
 {
 	uint32_t current_pixel_ref;
 
-    // Loop through buffer
     for (uint16_t j = 0; j < height; j++)
     {
         for (uint16_t i = 0; i < width; i++)
@@ -299,15 +284,12 @@ void Display::colour()
     }
 }
 
-// Scale the pixels to match buffer size
 void Display::scale()
 {
-    // Loop through pixels
     for (uint16_t y = 0; y < DISP_H; y++)
     {
         for (uint16_t x = 0; x < DISP_W; x++)
         {
-        	// Loop through scaled pixels
             for (uint16_t y1 = 0; y1 < SCALING_FACTOR; y1++)
             {
                 for (uint16_t x1 = 0; x1 < SCALING_FACTOR; x1++)
@@ -319,20 +301,17 @@ void Display::scale()
     }
 }
 
-// Clear pixel array
 void Display::clear_pixels()
 {
-	// Loop through pixels
-	    for (uint16_t y = 0; y < DISP_H; y++)
-	    {
-	        for (uint16_t x = 0; x < DISP_W; x++)
-	        {
-	        	pixels[y * DISP_W + x] = 0;
-	        }
-	    }
+    for (uint16_t y = 0; y < DISP_H; y++)
+    {
+        for (uint16_t x = 0; x < DISP_W; x++)
+        {
+            pixels[y * DISP_W + x] = 0;
+        }
+    }
 }
 
-// Initialise SDL and create a window
 optional<Error> Display::init()
 {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) { return Error("SDL unable to initialise! SDL_Error", SDL_GetError()); }
@@ -346,7 +325,6 @@ optional<Error> Display::init()
     texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
 
     display_buffer = new uint32_t[width*height];
-
     pixels = new uint8_t[width*height];
     clear_pixels();
 
@@ -355,10 +333,8 @@ optional<Error> Display::init()
     return nullopt;
 }
 
-// Close the SDL window and close SDL
 Display::~Display()
 {
-    // Destroy the window, texture and renderer and deallocate references
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(sdlRenderer);
     SDL_DestroyWindow(window);
@@ -367,9 +343,7 @@ Display::~Display()
 	sdlRenderer = NULL;
 	window = NULL;
 
-	// Free up dynamically allocated memory
 	delete[] display_buffer;
 
-	// Tidy up
 	SDL_Quit();
 }

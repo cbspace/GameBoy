@@ -1,5 +1,4 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#pragma once
 
 #include "displayconst.h"
 #include "../memory/memory.h"
@@ -52,12 +51,9 @@ class Display
         void scale();
         void clear_pixels();
 
-        // SDl Objects
         SDL_Window* window;
         SDL_Surface* drawSurface;
         SDL_Renderer* sdlRenderer;
         SDL_Texture* texture;
 
 };
-
-#endif // DISPLAY_H
