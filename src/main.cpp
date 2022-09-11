@@ -4,25 +4,18 @@
 
 using namespace std;
 
-// Program Entry Point
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
-    // Create an emulator object
     Emulator emuboy;
 
-    // Print welcome message to console
-    cout << "EmuBoy V " << RELEASE_VERSION << endl;
+    cout << "EmuBoy V0.45.2" << endl;
 
-    // Load ROM from command line argument
     // Command line: gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]
     // TODO: Not yet supported running dmg rom and game rom together
     if (argc == 1) {
         cout << "Command line argument not found, expecting path to ROM file" << endl;
-        cout << "Command line usage:" << endl;
-        cout << "(1)  gameboy /path/to/rom.gb [-debug]" << endl;
-        cout << "(2)  gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]" << endl;
-    }
-    else if (argc == 2) {
+        emuboy.print_cl_usage_message();
+    } else if (argc == 2) {
         cout << "Loading ROM " << argv[1] << endl;
         emuboy.start(argv[1], false, false);
     } else if (argc == 3) {
@@ -43,6 +36,7 @@ int main(int argc, char* argv[])
     	}
     } else {
         cout << "Too many command line arguments" << endl;
+        emuboy.print_cl_usage_message();
         return 1;
     }
 
