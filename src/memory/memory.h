@@ -1,5 +1,4 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
 
 #include "../display/displayconst.h"
 #include "../lib/Error.h"
@@ -242,5 +241,3 @@ class Memory
     */
 
 };
-
-#endif // MEMORY_H

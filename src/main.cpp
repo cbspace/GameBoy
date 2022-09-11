@@ -1,4 +1,3 @@
-#include "main.h"
 #include "emulator/emulator.h"
 #include <iostream>
 #include <string>
@@ -27,7 +26,7 @@ int main(int argc, char* argv[])
         cout << "Loading ROM " << argv[1] << endl;
         emuboy.start(argv[1], false, false);
     } else if (argc == 3) {
-        if (strcmp(argv[2], ARG_DEBUG) == 0) {
+        if (strcmp(argv[2], "-debug") == 0) {
             cout << "Loading ROM in debug mode " << argv[1] << endl;
             emuboy.start(argv[1], false, true);
         } else {
@@ -35,7 +34,7 @@ int main(int argc, char* argv[])
             return 1;
         }
     } else if (argc <= 5) {
-    	if (strcmp(argv[2], ARG_DMG) == 0) {
+    	if (strcmp(argv[2], "-dmg") == 0) {
             cout << "Loading DMG Boot Rom " << argv[1] << endl;
             emuboy.start(argv[3], true, false);
     	} else {

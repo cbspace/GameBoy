@@ -1,5 +1,4 @@
-#ifndef CPU_H
-#define CPU_H
+#pragma once
 
 #include "../memory/memory.h"
 #include "../clock/clock.h"
@@ -28,5 +27,3 @@ class Cpu
         void process_instruction(uint8_t rom_byte);     // Process a single instruction read from ROM
         void process_cb_instruction(uint8_t rom_byte);  // Process a CB prefixed instruction
 };
-
-#endif // CPU_H

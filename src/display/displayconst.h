@@ -1,5 +1,4 @@
-#ifndef DISPLAYCONST_H
-#define DISPLAYCONST_H
+#pragma once
 
 #define SCALING_FACTOR      3                  // Scale display size by this amount
 #define WINDOW_TITLE        "EmuBoy"           // Title to display on SDL Window
@@ -59,5 +58,3 @@
 
 static const int width = DISP_W * SCALING_FACTOR;    // Screen width in pixels
 static const int height = DISP_H * SCALING_FACTOR;   // Screen height in pixels
-
-#endif // DISPLAYCONST_H

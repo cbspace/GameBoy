@@ -1,5 +1,4 @@
-#ifndef CLOCK_H
-#define CLOCK_H
+#pragma once
 
 #include <stdint.h>
 
@@ -71,5 +70,3 @@ class Clock
         uint32_t frame_start_ticks;           // Start time of frame
         uint32_t line_clock_cycles;           // Number of clk cycles in current line
 };
-
-#endif // CLOCK_H

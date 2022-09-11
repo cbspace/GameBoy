@@ -1,5 +1,4 @@
-#ifndef EMULATOR_H
-#define EMULATOR_H
+#pragma once
 
 #include "../display/display.h"
 #include "../render/render.h"
@@ -33,5 +32,3 @@ class Emulator
         Joypad jp;                              // Joypad class object
         bool quit_flag;                         // Flag to signify if the user wishes to quit
 };
-
-#endif // EMULATOR_H

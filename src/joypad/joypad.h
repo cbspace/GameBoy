@@ -1,5 +1,4 @@
-#ifndef JOYPAD_H
-#define JOYPAD_H
+#pragma once
 
 #include <SDL2/SDL.h>
 #include "../memory/memory.h"
@@ -31,5 +30,3 @@ class Joypad
         Interrupt* ir;
 
 };
-
-#endif // JOYPAD_H

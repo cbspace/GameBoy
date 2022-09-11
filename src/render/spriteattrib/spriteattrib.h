@@ -1,5 +1,4 @@
-#ifndef SPRITEATTRIB_H
-#define SPRITEATTRIB_H
+#pragma once
 
 #include <stdint.h>
 
@@ -49,5 +48,3 @@ class SpriteAttrib
       	uint8_t flag_y_flip;		// Sptrite flag y flip
       	uint8_t flag_palette;		// Sptrite flag palette
 };
-
-#endif // SPRITEATTRIB_H
