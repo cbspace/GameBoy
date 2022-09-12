@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "../memory/memory.h"
-#include "../interrupt/interrupt.h"
+#include "memory.h"
+#include "interrupt.h"
 
 #define R_P1    0xff00      // Register for reading joy pad info
 

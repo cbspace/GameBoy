@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../memory/memory.h"
-#include "../clock/clock.h"
-#include "../interrupt/interrupt.h"
-#include "../emudebug/emudebug.h"
+#include "memory.h"
+#include "clock.h"
+#include "interrupt.h"
+#include "emudebug.h"
 #include <stdint.h>
 
 class Cpu

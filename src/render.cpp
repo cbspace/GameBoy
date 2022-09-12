@@ -1,7 +1,7 @@
 #include "render.h"
-#include "spriteattrib/spriteattrib.h"
-#include "../display/displayconst.h"
-#include "../memory/memory.h"
+#include "spriteattrib.h"
+#include "displayconst.h"
+#include "memory.h"
 
 #include <iostream>
 #include <stdint.h>

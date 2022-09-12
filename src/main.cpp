@@ -1,4 +1,4 @@
-#include "emulator/emulator.h"
+#include "emulator.h"
 #include <iostream>
 #include <string>
 

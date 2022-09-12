@@ -1,7 +1,7 @@
 #include "cpu.h"
-#include "../memory/memory.h"
-#include "../clock/clock.h"
-#include "../interrupt/interrupt.h"
+#include "memory.h"
+#include "clock.h"
+#include "interrupt.h"
 
 void Cpu::process_instruction(uint8_t rom_byte)
 {

@@ -1,5 +1,5 @@
 #include "emudebug.h"
-#include "../memory/memory.h"
+#include "memory.h"
 #include <stdint.h>
 #include <iostream>
 #include <iomanip>

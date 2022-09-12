@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../display/display.h"
-#include "../render/render.h"
-#include "../cpu/cpu.h"
-#include "../memory/memory.h"
-#include "../interrupt/interrupt.h"
-#include "../emudebug/emudebug.h"
-#include "../clock/clock.h"
-#include "../joypad/joypad.h"
+#include "display.h"
+#include "render.h"
+#include "cpu.h"
+#include "memory.h"
+#include "interrupt.h"
+#include "emudebug.h"
+#include "clock.h"
+#include "joypad.h"
 #include <string>
 using namespace std;
 

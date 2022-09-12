@@ -1,11 +1,11 @@
 #pragma once
 
 #include "displayconst.h"
-#include "../memory/memory.h"
-#include "../render/render.h"
-#include "../interrupt/interrupt.h"
-#include "../clock/clock.h"
-#include "../lib/Error.h"
+#include "memory.h"
+#include "render.h"
+#include "interrupt.h"
+#include "clock.h"
+#include "lib/Error.h"
 
 #include <string>
 #include <stdint.h>

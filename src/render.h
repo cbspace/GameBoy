@@ -1,8 +1,8 @@
 #pragma once
 
-#include "spriteattrib/spriteattrib.h"
-#include "../memory/memory.h"
-#include "../display/displayconst.h"
+#include "spriteattrib.h"
+#include "memory.h"
+#include "displayconst.h"
 
 #include <string>
 #include <stdint.h>

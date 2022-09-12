@@ -1,6 +1,6 @@
 #include "interrupt.h"
-#include "../memory/memory.h"
-#include "../clock/clock.h"
+#include "memory.h"
+#include "clock.h"
 
 #include <iostream>
 

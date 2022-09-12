@@ -1,6 +1,6 @@
 #include "cpu.h"
-#include "../memory/memory.h"
-#include "../clock/clock.h"
+#include "memory.h"
+#include "clock.h"
 
 void Cpu::process_cb_instruction(uint8_t rom_byte)
 {

@@ -9,26 +9,6 @@ include_directories(gameboy ${SDL2_INCLUDE_DIRS})
 file(GLOB SOURCES
     src/*.h
     src/*.cpp
-    src/clock/*.h
-    src/clock/*.cpp
-    src/cpu/*.h
-    src/cpu/*.cpp
-    src/display/*.h
-    src/display/*.cpp
-    src/emudebug/*.h
-    src/emudebug/*.cpp
-    src/emulator/*.h
-    src/emulator/*.cpp
-    src/interrupt/*.h
-    src/interrupt/*.cpp
-    src/joypad/*.h
-    src/joypad/*.cpp
-    src/memory/*.h
-    src/memory/*.cpp
-    src/render/*.h
-    src/render/*.cpp
-    src/render/spriteattrib/*.h
-    src/render/spriteattrib/*.cpp
     src/lib/*.h
     src/lib/*.cpp
 )

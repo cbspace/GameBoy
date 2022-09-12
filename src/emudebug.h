@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../memory/memory.h"
+#include "memory.h"
 #include <stdint.h>
 
 class Emudebug

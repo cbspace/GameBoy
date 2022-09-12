@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../display/displayconst.h"
-#include "../lib/Error.h"
+#include "displayconst.h"
+#include "lib/Error.h"
 #include <stdint.h>
 #include <string>
 #include <optional>
