@@ -26,7 +26,6 @@ Render::Render(Memory& mem_in) :
 {
     // Initialise pointers
 	pixels = NULL;
-	spr_att = new SpriteAttrib[SPRITE_TILES_MAX];
 }
 
 // Set pointer to pixel array

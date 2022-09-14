@@ -37,7 +37,7 @@ class Render
         void draw_sprites_line(uint8_t line_y);
 
         Memory& mem;
-        SpriteAttrib* spr_att;
+        SpriteAttrib spr_att[SPRITE_TILES_MAX];
 
         uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_t bg_tm);
         uint8_t get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t sprite_x);
