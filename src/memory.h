@@ -45,7 +45,7 @@ class Memory
     public:
         Memory();                                                   // Constructor
         void init();                                                // Initialise registers
-        /// Registers - memory_reg.cpp
+        // Registers
         uint8_t reg_get(uint8_t reg_id);                            // Get contents of 8 bit register
         uint16_t reg_get16(uint8_t reg_id);                         // Get contents of 16 bit register
         void reg_set(uint8_t reg_id, uint8_t reg_value);            // Set value in 8 bit register
@@ -55,7 +55,7 @@ class Memory
         void reg_dec(uint8_t reg_id);                               // Decrement 8-bit register, flags updated
         void reg_inc16(uint8_t reg_id);                             // Increment 16-bit register, flags not updated
         void reg_dec16(uint8_t reg_id);                             // Decrement 16-bit register, flags not updated
-        /// Math - memory_math.cpp
+        // Math
         void reg_add(uint8_t reg_id, uint8_t add_value, bool = 0);  // Add value to 8-bit register and update flags, bool parameter is add with carry
         void reg_sub(uint8_t reg_id, uint8_t sub_value, bool borrow = 0);   // Subtract value from 8-bit register and update flags, bool param is borrow with carry
         void reg_add16(uint8_t reg_id, uint16_t reg_n_val);         // Add 2 16-bit registers and update flags
@@ -67,7 +67,7 @@ class Memory
         void reg_sla(uint8_t reg_id);                               // Shift contents of register n left and store bit 7 in CF, bit0 = 0, flags updated
         void reg_sra(uint8_t reg_id);                               // Shift contents of register A right and store bit 0 in CF, bit7 unchanged, flags updated
         void reg_srl(uint8_t reg_id);                               // Shift contents of register A right and store bit 0 in CF, bit7 = 0, flags updated
-        /// Logical - memory_logic.cpp
+        // Logical
         void reg_and(uint8_t and_value);                            // Register A is ANDed with and_value, result stored in register A - flags updated
         void reg_or(uint8_t or_value);                              // Register A is ORed with and_value, result stored in register A - flags updated
         void reg_xor(uint8_t xor_value);                            // Register A is XORed with and_value, result stored in register A - flags updated
@@ -76,7 +76,7 @@ class Memory
         void bit_test(uint8_t reg_id, uint8_t bit_number);          // Test bit b in register and set flags accordingly
         void bit_set(uint8_t reg_id, uint8_t bit_number);           // Set bit in register, flags not affected
         void bit_res(uint8_t reg_id, uint8_t bit_number);           // Reset bit in register, flags not affected
-        /// RAM/ROM - memory_access.cpp
+        // RAM/ROM
         uint8_t get_byte(uint16_t address);                         // Read byte from RAM/ROM
         uint8_t get_bit(uint16_t address, uint8_t bit_number);      // Read a bit from an byte in RAM/ROM
         uint8_t fetch_byte();                                       // Read byte from ROM and increment PC
@@ -96,7 +96,7 @@ class Memory
         void bit_set_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Set bit in in byte at (n), flags not affected
         void bit_res_from_pointer(uint8_t reg_id, uint8_t bit_number);  // Reset bit in in byte at (n), flags not affected
         void dma_transfer();										// Perform DMA transfer from ROM/RAM to OAM
-        /// Stack pointer and Program Counter - memory_stack.cpp
+        // Stack pointer and Program Counter
         void set_pc(uint16_t pc_value);                             // Set pc value
         uint16_t get_pc();                                          // Get pc value
         void set_sp(uint16_t sp_value);                             // Set sp value
@@ -110,18 +110,13 @@ class Memory
         void pc_push();                                             // Push PC value on to stack and decrement sp
         uint16_t stack_pop();                                       // Pop 16-bit value from stack and increment sp
         void jmp_n(int8_t jmp_amount);                              // Jump to address at PC + e (e = signed 8-bit immediate)
-        /// Flags
+        // Flags
         void flag_update(uint8_t flag_id, uint8_t flg_val);         // Set or clear flag
         uint8_t flag_get(uint8_t flag_id);                          // Return flag value
-        /// ROM Cartridge and game title
-        optional<Error> load_rom(char* rom_path);                            // Function to load a ROM file
+        // ROM Cartridge and game title
+        optional<Error> load_rom(char* rom_path);                   // Function to load a ROM file
         void read_rom_title();                                      // Read rom title and load into string
         string get_rom_title();                                     // Get the current ROM title
-        /// Debug
-        void ram_debug(uint16_t start_addr);                        // Copy 1000 bytes from start address to debug ram
-        void ram_debug(uint16_t start_addr1, uint16_t start_addr2); // Debug 2 ranges
-        void debug_insert_logo();                                   // For testing purposes add the N logo into the RAM
-        void debug_sprite_test();									// For testing sprites
 
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
