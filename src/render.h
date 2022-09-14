@@ -24,23 +24,21 @@ using namespace std;
 class Render
 {
     public:
-	    uint8_t* pixels;					   		// Array of pixels to display
+	    Render(Memory& mem_in);
+        void attach_pixels(uint8_t* pix_in);
+        void render_line(uint8_t y);
+        void refresh_sprites();
+        virtual ~Render();
 
-        Render();                              		// Constructor
-        void attach_memory(Memory* mem_in);    		// Set pointer used to access memory object
-        void attach_pixels(uint8_t* pix_in);   		// Set pointer to pixel array
-        void render_line(uint8_t y);           		// Render a single line
-        void refresh_sprites();						// Refresh sprites
-        virtual ~Render();                     		// Destructor
+        uint8_t* pixels;	
 
     private:
-        Memory* mem;                            	// Pointer to memory object
-        SpriteAttrib *spr_att;	    				// Array of sprite attributes
+        void draw_bg_line(uint8_t line_y);
+        void draw_sprites_line(uint8_t line_y);
 
-        void draw_bg_line(uint8_t line_y);      	// Draw bg tiles into pixel array
-        void draw_sprites_line(uint8_t line_y); 	// Draw sprite tiles into pixel array
-        // Get a bg pixel from a tile
+        Memory& mem;
+        SpriteAttrib* spr_att;
+
         uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_t bg_tm);
-        // Get a bg sprite from a tile
         uint8_t get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t sprite_x);
 };

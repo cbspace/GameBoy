@@ -25,12 +25,8 @@ enum class ColourValues {
 class Display
 {
     public:
-        Display();        
+        Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in);  
         uint8_t* pixels;
-        void attach_memory(Memory* mem_in);
-        void attach_render(Render* ren_in);
-        void attach_interrupt(Interrupt* interrupt_in);
-        void attach_clock(Clock* clk_in);
 
         optional<Error> init();
         void set_title(string title_add);
@@ -40,16 +36,17 @@ class Display
         virtual ~Display();
 
     private:
-        Memory* mem;
-        Render* ren;
-        Interrupt* ir;
-        Clock* clk;
-        uint32_t* display_buffer;
-
         void update_stat_reg(uint8_t mode_val);
         void colour();
         void scale();
         void clear_pixels();
+
+        Memory& mem;
+        Render& ren;
+        Interrupt& ir;
+        Clock& clk;
+
+        uint32_t* display_buffer;
 
         SDL_Window* window;
         SDL_Surface* drawSurface;

@@ -14,22 +14,14 @@
 
 using namespace std;
 
-Emulator::Emulator()
+Emulator::Emulator() : 
+cp(mem, clk, ir, edb),
+disp(mem, ren, ir, clk),
+ren(mem),
+ir(mem, clk),
+jp(mem, ir),
+edb(mem)
 {
-    cp.attach_memory(&mem);
-    cp.attach_clock(&clk);
-    cp.attach_interrupt(&ir);
-    cp.attach_emudebug(&edb);
-    ir.attach_memory(&mem);
-    ir.attach_clock(&clk);
-    disp.attach_memory(&mem);
-    disp.attach_render(&ren);
-    disp.attach_interrupt(&ir);
-    disp.attach_clock(&clk);
-    ren.attach_memory(&mem);
-    jp.attach_memory(&mem);
-    jp.attach_interrupt(&ir);
-    edb.attach_memory(&mem);
     quit_flag = false;
 }
 

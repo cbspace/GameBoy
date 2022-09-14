@@ -20,13 +20,13 @@
 class Joypad
 {
     public:
-        Joypad();
-        void attach_memory(Memory* mem_in);       // Set pointer used to access memory object
-        void attach_interrupt(Interrupt* ir_in);  // Set pointer used to access interrupt object
+        Joypad(Memory& mem_in, Interrupt& ir_in);
+        //void attach_memory(Memory* mem_in);       // Set pointer used to access memory object
+        //void attach_interrupt(Interrupt* ir_in);  // Set pointer used to access interrupt object
         uint8_t key_down();                       // Process key press events, return 1 on quit
 
     private:
-        Memory* mem;
-        Interrupt* ir;
+        Memory& mem;
+        Interrupt& ir;
 
 };

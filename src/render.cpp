@@ -21,18 +21,12 @@ using namespace std;
  */
 
 // Constructor
-Render::Render()
+Render::Render(Memory& mem_in) :
+	mem(mem_in)
 {
     // Initialise pointers
-	mem = NULL;
 	pixels = NULL;
 	spr_att = new SpriteAttrib[SPRITE_TILES_MAX];
-}
-
-// Set pointer used to access memory object
-void Render::attach_memory(Memory* mem_in)
-{
-    mem = mem_in;
 }
 
 // Set pointer to pixel array
@@ -44,13 +38,13 @@ void Render::attach_pixels(uint8_t* pix_in)
 // Render a single frame
 void Render::render_line(uint8_t y)
 {
-//	if (mem->get_bit(R_LCDC, R_LCDC_BG_WIN_DISPLAY))
+//	if (mem.get_bit(R_LCDC, R_LCDC_BG_WIN_DISPLAY))
 //	{
 		// Draw the background tiles - single line
 		draw_bg_line(y);
 //	}
 
-//	if (mem->get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
+//	if (mem.get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
 //	{
 		// Draw the sprites - single line
 		draw_sprites_line(y);
@@ -67,13 +61,13 @@ void Render::refresh_sprites()
 	{
 		oam_data_addr = A_OAM + i * OAM_DATA_LENGTH;
 		// Set y
-		spr_att[i].set_sprite_y(mem->get_byte(oam_data_addr));
+		spr_att[i].set_sprite_y(mem.get_byte(oam_data_addr));
 		// Set x
-		spr_att[i].set_sprite_x(mem->get_byte(oam_data_addr + 1));
+		spr_att[i].set_sprite_x(mem.get_byte(oam_data_addr + 1));
 		// Set tile number
-		spr_att[i].set_sprite_tile_no(mem->get_byte(oam_data_addr + 2));
+		spr_att[i].set_sprite_tile_no(mem.get_byte(oam_data_addr + 2));
 		// Set flags
-		spr_att[i].set_sprite_flags(mem->get_byte(oam_data_addr + 3));
+		spr_att[i].set_sprite_flags(mem.get_byte(oam_data_addr + 3));
 	}
 }
 
@@ -87,7 +81,7 @@ void Render::draw_sprites_line(uint8_t line_y)
 	uint8_t x_start, x_finish;				// Overlapping x pixels to draw
 	uint8_t pix_val, y_val, x_len;
 
-//	sprite_size = mem->get_bit(R_LCDC, R_LCDC_SPRITE_SIZE);
+//	sprite_size = mem.get_bit(R_LCDC, R_LCDC_SPRITE_SIZE);
 
     // Loop through sprites in OAM memory (Assuming 8x8 mode)
     for (uint8_t s = 0; s < SPRITE_TILES_MAX; s++)
@@ -153,8 +147,8 @@ uint8_t Render::get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t spri
 	bit_number = 7 - sprite_x;
 
 	// Load data for tile byte
-	tile_byte1 = mem->get_byte(tile_addr + byte_number);
-	tile_byte2 = mem->get_byte(tile_addr + byte_number + 1);
+	tile_byte1 = mem.get_byte(tile_addr + byte_number);
+	tile_byte2 = mem.get_byte(tile_addr + byte_number + 1);
 
 	return ((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
 		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));
@@ -176,14 +170,14 @@ void Render::draw_bg_line(uint8_t line_y)
     uint8_t pix_x, pix_y;
 
     // Get BG Tile Map Number (0=BGTM1, 1=BGTM2)
-    bg_tm = mem->get_bit(R_LCDC, 3);
+    bg_tm = mem.get_bit(R_LCDC, 3);
 
     // Get BG Tile Data Table Address (TDT1 or TDT2)
-    bg_tdt = (mem->get_bit(R_LCDC, 4) == 1) ? A_TDT1 : A_TDT2;
+    bg_tdt = (mem.get_bit(R_LCDC, 4) == 1) ? A_TDT1 : A_TDT2;
 
     // Get value of Scroll X and Y registers
-    scroll_x = mem->get_byte(R_SCX);
-    scroll_y = mem->get_byte(R_SCY);
+    scroll_x = mem.get_byte(R_SCX);
+    scroll_y = mem.get_byte(R_SCY);
 
     // Set Y value of pixel
     pix_y = scroll_y + line_y;
@@ -213,7 +207,7 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 
 	if (bg_tm == 0) {
 		// Read tile number from bg tile map
-		tile_number = mem->get_byte(A_BGTM1 + tile_pos_y*32 + tile_pos_x);
+		tile_number = mem.get_byte(A_BGTM1 + tile_pos_y*32 + tile_pos_x);
 
 		// Calculate start address for tile
 		tile_addr = bg_tdt + tile_number * 16;
@@ -222,12 +216,12 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 		bit_number = 7 - (bg_x - tile_pos_x * 8);
 
 		// Load data for tile byte
-		tile_byte1 = mem->get_byte(tile_addr + byte_number);
-		tile_byte2 = mem->get_byte(tile_addr + byte_number + 1);
+		tile_byte1 = mem.get_byte(tile_addr + byte_number);
+		tile_byte2 = mem.get_byte(tile_addr + byte_number + 1);
 	}
 	else {
 		// Read tile number from bg tile map
-		tile_number_signed = mem->get_byte(A_BGTM2 + tile_pos_y*32 + tile_pos_x);
+		tile_number_signed = mem.get_byte(A_BGTM2 + tile_pos_y*32 + tile_pos_x);
 
 		// Calculate start address for tile
 		tile_addr_signed = (int32_t)bg_tdt + (int32_t)tile_number_signed * 16;
@@ -236,8 +230,8 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 		bit_number = 7 - (bg_x - tile_pos_x * 8);
 
 		// Load data for tile byte
-		tile_byte1 = mem->get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number);
-		tile_byte2 = mem->get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number + 1);
+		tile_byte1 = mem.get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number);
+		tile_byte2 = mem.get_byte((uint16_t)tile_addr_signed + (uint16_t)byte_number + 1);
 	}
 
 	return ((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)

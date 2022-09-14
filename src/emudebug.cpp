@@ -6,9 +6,9 @@
 
 using namespace std;
 
-Emudebug::Emudebug()
+Emudebug::Emudebug(Memory& mem_in) :
+	mem(mem_in)
 {
-    mem = NULL;
     cpu_count = 0;
     prev_pc = 0;
 }
@@ -17,7 +17,7 @@ bool Emudebug::detect_runaway()
 {
 	uint16_t pc_val;
 
-	pc_val = mem->get_pc();
+	pc_val = mem.get_pc();
 
 	if (pc_val == (prev_pc + 1))
 	{
@@ -42,15 +42,10 @@ void Emudebug::dump_reg()
 {
     cout << endl;
     cout << " --- REG DUMP ---" << uppercase << endl;
-    cout << "PC: " << hex << setfill('0') << setw (4) << mem->get_pc() << endl;
-    cout << "A/F: " << hex << setfill('0') << setw (4) << mem->reg_get16(RAF) << endl;
-    cout << "B/C: " << hex << setfill('0') << setw (4) << mem->reg_get16(RBC) << endl;
-    cout << "D/E: " << hex << setfill('0') << setw (4) << mem->reg_get16(RDE) << endl;
-    cout << "H/L: " << hex << setfill('0') << setw (4) << mem->reg_get16(RHL) << endl;
+    cout << "PC: " << hex << setfill('0') << setw (4) << mem.get_pc() << endl;
+    cout << "A/F: " << hex << setfill('0') << setw (4) << mem.reg_get16(RAF) << endl;
+    cout << "B/C: " << hex << setfill('0') << setw (4) << mem.reg_get16(RBC) << endl;
+    cout << "D/E: " << hex << setfill('0') << setw (4) << mem.reg_get16(RDE) << endl;
+    cout << "H/L: " << hex << setfill('0') << setw (4) << mem.reg_get16(RHL) << endl;
     cout << endl;
-}
-
-void Emudebug::attach_memory(Memory* mem_in)
-{
-    mem = mem_in;
 }

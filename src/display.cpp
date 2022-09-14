@@ -11,38 +11,18 @@
 
 using namespace std;
 
-Display::Display()
+Display::Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in) :
+    mem(mem_in),
+    ren(ren_in),
+    ir(ir_in),
+    clk(clk_in)
 {
     window = NULL;
     drawSurface = NULL;
     sdlRenderer = NULL;
     display_buffer = NULL;
     pixels = NULL;
-    ren = NULL;
-    mem = NULL;
     texture = NULL;
-    ir = NULL;
-    clk = NULL;
-}
-
-void Display::attach_memory(Memory* mem_in)
-{
-    mem = mem_in;
-}
-
-void Display::attach_render(Render* ren_in)
-{
-    ren = ren_in;
-}
-
-void Display::attach_interrupt(Interrupt* interrupt_in)
-{
-    ir = interrupt_in;
-}
-
-void Display::attach_clock(Clock* clock_in)
-{
-    clk = clock_in;
 }
 
 void Display::set_title(string title_add)
@@ -61,18 +41,18 @@ void Display::set_title(string title_add)
 // Used to update display modes
 void Display::display_cycle()
 {
-    uint8_t current_modeB0 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B0);
-    uint8_t current_modeB1 = mem->get_bit(R_LCDSTAT, R_STAT_MODE_B1);
+    uint8_t current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
+    uint8_t current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
     uint8_t current_mode = (current_modeB1 << 1) + current_modeB0;
 
 	// Get current LY value from register
-    uint8_t ly_val = mem->get_byte(R_LY);
+    uint8_t ly_val = mem.get_byte(R_LY);
 
     //cout << unsigned(current_mode) << endl;
     //cout << unsigned(ly_val) << endl;
 
     // ISSUE - 3's appear on LY = 144 then changes to 1
-    if (clk->cycles_reached(CLK_DISPLAY_MODE3))
+    if (clk.cycles_reached(CLK_DISPLAY_MODE3))
     {
         if (current_mode != CLK_DISPLAY_MODE3)
         {
@@ -87,12 +67,12 @@ void Display::display_cycle()
             update_line();
 
             // Debug
-            //mem->ram_debug(A_TDT1, A_OAM);
+            //mem.ram_debug(A_TDT1, A_OAM);
 
-            clk->reset_cycles();
+            clk.reset_cycles();
         }
     }
-    else if (clk->cycles_reached(CLK_DISPLAY_MODE2))
+    else if (clk.cycles_reached(CLK_DISPLAY_MODE2))
     {
         if (current_mode != CLK_DISPLAY_MODE2)
         {
@@ -104,7 +84,7 @@ void Display::display_cycle()
             }
         }
     }
-    else if (clk->cycles_reached(CLK_DISPLAY_MODE0))
+    else if (clk.cycles_reached(CLK_DISPLAY_MODE0))
     {
         if (current_mode != CLK_DISPLAY_MODE0)
         {
@@ -125,16 +105,16 @@ void Display::update_line()
 	uint8_t ly_val;
 
 	// Get current LY value from register
-    ly_val = mem->get_byte(R_LY);
+    ly_val = mem.get_byte(R_LY);
 
     // Draw line on display
     if (ly_val < DISP_H)
     {
         // Render line
-        ren->render_line(ly_val);
+        ren.render_line(ly_val);
 
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+        mem.write_byte(R_LY, ly_val + 1);
     }
     // Start of V-Blank, draw frame
     else if (ly_val == DISP_H)
@@ -143,28 +123,28 @@ void Display::update_line()
     	draw_frame();
 
     	// Set VBLANK interrupt flag
-        ir->if_update(I_VBLANK, true);
+        ir.if_update(I_VBLANK, true);
 
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+        mem.write_byte(R_LY, ly_val + 1);
     }
     // During V-Blank
     else if (ly_val < LCD_Y_MAX)
     {
         // Update LY register
-        mem->write_byte(R_LY, ly_val + 1);
+        mem.write_byte(R_LY, ly_val + 1);
     }
     // After V-Blank
     else
     {
         // Reset LY register
-        mem->write_byte(R_LY, 0x00);
+        mem.write_byte(R_LY, 0x00);
 
         // Clear pixels
         clear_pixels();
 
         // Refresh sprites
-        ren->refresh_sprites();
+        ren.refresh_sprites();
     }
 }
 
@@ -174,67 +154,67 @@ void Display::update_stat_reg(uint8_t mode_val)
 	uint8_t lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
 
 	// Get current LY value from register
-    uint8_t ly_val = mem->get_byte(R_LY);
+    uint8_t ly_val = mem.get_byte(R_LY);
 
     // Get LYC value
-    lyc_val = mem->get_byte(R_LYC);
+    lyc_val = mem.get_byte(R_LYC);
 
     // Get Interrupt select values
-    lyc_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_LYC_IR);
-    mode_10_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_10_IR);
-    mode_01_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_01_IR);
-    mode_00_sel_val = mem->get_bit(R_LCDSTAT, R_STAT_MODE_00_IR);
+    lyc_sel_val = mem.get_bit(R_LCDSTAT, R_STAT_LYC_IR);
+    mode_10_sel_val = mem.get_bit(R_LCDSTAT, R_STAT_MODE_10_IR);
+    mode_01_sel_val = mem.get_bit(R_LCDSTAT, R_STAT_MODE_01_IR);
+    mode_00_sel_val = mem.get_bit(R_LCDSTAT, R_STAT_MODE_00_IR);
 
     // Update Coincidence flag in STAT register
     if (ly_val == lyc_val)
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 1);
     	if (lyc_sel_val)
     	{
         	// Set LCDSTAT interrupt flag
-            ir->if_update(I_LCDSTAT, true);
+            ir.if_update(I_LCDSTAT, true);
     	}
     }
     else
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 0);
     }
 
     // Update Mode flags in STAT register and update IR flags
     if (mode_val == 0x00)
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
     	if (mode_00_sel_val)
     	{
         	// Set LCDSTAT interrupt flag
-            ir->if_update(I_LCDSTAT, true);
+            ir.if_update(I_LCDSTAT, true);
     	}
     }
     else if (mode_val == 0x01)
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
     	if (mode_01_sel_val)
     	{
         	// Set LCDSTAT interrupt flag
-            ir->if_update(I_LCDSTAT, true);
+            ir.if_update(I_LCDSTAT, true);
     	}
     }
     else if (mode_val == 0x02)
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
     	if (mode_10_sel_val)
     	{
         	// Set LCDSTAT interrupt flag
-            ir->if_update(I_LCDSTAT, true);
+            ir.if_update(I_LCDSTAT, true);
     	}
     }
     else if (mode_val == 0x03)
     {
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
-    	mem->write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
     }
 
 }
@@ -249,7 +229,7 @@ void Display::draw_frame()
     SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
 
-    clk->frame_delay();
+    clk.frame_delay();
 }
 
 void Display::colour()
@@ -328,7 +308,7 @@ optional<Error> Display::init()
     pixels = new uint8_t[width*height];
     clear_pixels();
 
-    ren->attach_pixels(pixels);
+    ren.attach_pixels(pixels);
 
     return nullopt;
 }

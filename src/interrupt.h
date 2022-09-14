@@ -3,8 +3,6 @@
 #include "memory.h"
 #include "clock.h"
 
-// Constants
-
 // Interrupt flags and interrupt enable mask values
 #define I_VBLANK    0x01
 #define I_LCDSTAT   0x02
@@ -26,32 +24,29 @@
 class Interrupt
 {
     public:
-        Interrupt();
-        void attach_memory(Memory* mem_in);     // Set pointer used to access memory object
-        void attach_clock(Clock* clk_in);       // Set pointer used to access clock object
+        Interrupt(Memory& mem_in, Clock& clk_in);        
+        void check_interrupts();
+        void cpu_halt();
+        void cpu_stop();
+        bool get_halt();
+        bool get_stop();
+        void disable_interrupts();
+        void enable_interrupts();
+        void if_update(uint8_t int_flag, bool flg_val);
 
-        void check_interrupts();                // Perform interrupt checks each cycle
-        void cpu_halt();                        // Halt the CPU until an interrupt occurs (HALT)
-        void cpu_stop();                        // Stop the CPU and LCD until a button is pressed (STOP)
-        bool get_halt();                        // Get value of CPU halt flag
-        bool get_stop();                        // Get value of CPU stop flag
-        void disable_interrupts();              // Disable interrupts
-        void enable_interrupts();               // Enable Interrupts
-        void if_update(uint8_t int_flag, bool flg_val);   // Update interrupt flag
-
-        uint8_t ei_count;                       // Counter used to delay EI instruction by 1 cycle
+        uint8_t ei_count;
 
     private:
-        void cancel_stop();                     // Cancel CPU stop
-        void process_ei_count();                // Process ei_count
-        bool if_get(uint8_t int_flag);          // Get interrupt flag
+        void cancel_stop();
+        void process_ei_count();
+        bool if_get(uint8_t int_flag);
 
-        Memory* mem;                            // Pointer to memory object
-        Clock* clk;                             // Pointer to clock object
-        bool ime;                               // Interrupt master enable
-        bool halt_flag;                         // CPU halt flag (true = halted)
-        bool stop_flag;                         // CPU stop flag (true = halted)
-        uint8_t i_flags;
+        Memory& mem;
+        Clock& clk;
+        bool ime;
+        bool halt_flag;
+        bool stop_flag;
+        uint8_t i_flags;        
         uint8_t i_enable;
 };
 
