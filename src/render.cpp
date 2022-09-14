@@ -20,40 +20,26 @@ using namespace std;
  *  c) V-Blank ISR
  */
 
-// Constructor
-Render::Render(Memory& mem_in) :
-	mem(mem_in)
-{
-    // Initialise pointers
-	pixels = NULL;
-}
+Render::Render(Memory& mem_in, uint8_t (&pix_in)[width*height]) :
+	mem(mem_in),
+	pixels(pix_in)
+{}
 
-// Set pointer to pixel array
-void Render::attach_pixels(uint8_t* pix_in)
-{
-	pixels = pix_in;
-}
-
-// Render a single frame
 void Render::render_line(uint8_t y)
 {
 //	if (mem.get_bit(R_LCDC, R_LCDC_BG_WIN_DISPLAY))
 //	{
-		// Draw the background tiles - single line
 		draw_bg_line(y);
 //	}
 
 //	if (mem.get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
 //	{
-		// Draw the sprites - single line
 		draw_sprites_line(y);
 //	}
 }
 
-// Refresh sprites
 void Render::refresh_sprites()
 {
-	// OAM Data byte
 	uint16_t oam_data_addr;
 
 	for (uint8_t i = 0; i < SPRITE_TILES_MAX; i++)
@@ -70,8 +56,6 @@ void Render::refresh_sprites()
 	}
 }
 
-// Draw sprite tiles into pixel array
-// I am not proud of this code but it works :)
 void Render::draw_sprites_line(uint8_t line_y)
 {
 	SpriteAttrib *current_sprite_attrib;		// Current sprite attributes
@@ -132,7 +116,6 @@ void Render::draw_sprites_line(uint8_t line_y)
     }
 }
 
-// Get a sprite pixel from a tile
 uint8_t Render::get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t sprite_x)
 {
 	uint8_t byte_number, bit_number;
@@ -153,7 +136,6 @@ uint8_t Render::get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t spri
 		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));
 }
 
-// Draw bg tiles into pixel array
 void Render::draw_bg_line(uint8_t line_y)
 {
     // BG Tile Data Table Address

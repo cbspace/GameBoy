@@ -13,7 +13,7 @@ using namespace std;
 
 Display::Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     mem(mem_in),
-    ren(mem_in),
+    ren(mem_in, pixels),
     ir(ir_in),
     clk(clk_in),
     window(NULL),
@@ -261,7 +261,6 @@ optional<Error> Display::init()
     texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
 
     clear_pixels();
-    ren.attach_pixels(pixels);
 
     return nullopt;
 }

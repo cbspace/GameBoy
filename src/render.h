@@ -24,19 +24,17 @@ using namespace std;
 class Render
 {
     public:
-	    Render(Memory& mem_in);
-        void attach_pixels(uint8_t* pix_in);
+	    Render(Memory& mem_in, uint8_t (&pix_in)[width*height]);
         void render_line(uint8_t y);
         void refresh_sprites();
         virtual ~Render();
-
-        uint8_t* pixels;	
 
     private:
         void draw_bg_line(uint8_t line_y);
         void draw_sprites_line(uint8_t line_y);
 
         Memory& mem;
+        uint8_t (&pixels)[width*height];
         SpriteAttrib spr_att[SPRITE_TILES_MAX];
 
         uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_t bg_tm);
