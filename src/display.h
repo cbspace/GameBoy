@@ -26,7 +26,6 @@ class Display
 {
     public:
         Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in);  
-        uint8_t* pixels;
 
         optional<Error> init();
         void set_title(string title_add);
@@ -47,6 +46,7 @@ class Display
         Clock& clk;
 
         uint32_t display_buffer[width*height];
+        uint8_t pixels[width*height];
 
         SDL_Window* window;
         SDL_Surface* drawSurface;
