@@ -5,27 +5,22 @@
 #include <string>
 using namespace std;
 
-// Constructor
 Memory::Memory()
 {
     rom_title = "";
     init();
 }
 
-// Initialise memory
 void Memory::init()
 {
-    // Initialise sp and pc
     set_sp(SP_INITIAL_VALUE);    // sp initialised to fffe (gameboy default)
     set_pc(ROM_START_ADDRESS);   // pc initialised to 0x100 (start address)
 
-    // Initialise registers
     for (uint8_t i = 0; i < REG_ARRAY_SIZE; i++)
     {
         reg[i] = 0;
     }
 
-    // Initialise RAM
     for (uint32_t i = 0; i < MEM_SIZE; i++)
     {
         ram[i] = 0;
@@ -39,12 +34,10 @@ void Memory::flag_update(uint8_t flag_id, uint8_t flg_val)
 {
     if (flg_val!=0)
     {
-        // Set flag to 1
         reg[RF] |= flag_id;
     }
     else
     {
-        // Clear flag to 0
         reg[RF] &= ~flag_id;
     }
 }

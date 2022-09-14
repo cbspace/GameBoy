@@ -18,8 +18,8 @@
 #define IV_JOYPAD    0x060
 
 // Special Memory Locations
-#define A_IFLAGS    0xff0f              // Interrupt Flags location
-#define A_IENABLE   0xffff              // Interrupt Enable location
+#define A_IFLAGS    0xff0f
+#define A_IENABLE   0xffff
 
 class Interrupt
 {

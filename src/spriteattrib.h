@@ -29,22 +29,22 @@ class SpriteAttrib
 {
     public:
 		SpriteAttrib();
-      	void set_sprite_x(uint8_t sprite_x);			// Set x position
-      	void set_sprite_y(uint8_t sprite_y);			// Set y position
-      	void set_sprite_tile_no(uint8_t tile_no_in);	// Set tile number
-      	void set_sprite_flags(uint8_t flag_data);		// Set flag data
-      	uint8_t get_x();								// Get x position
-      	uint8_t get_y();                    			// Get y position
-      	uint8_t get_tile_no();              			// Get tile number
-      	uint8_t get_flag(uint8_t flag);     			// Get flag
+      	void set_sprite_x(uint8_t sprite_x);
+      	void set_sprite_y(uint8_t sprite_y);
+      	void set_sprite_tile_no(uint8_t tile_no_in);
+      	void set_sprite_flags(uint8_t flag_data);
+      	uint8_t get_x();
+      	uint8_t get_y();
+      	uint8_t get_tile_no();
+      	uint8_t get_flag(uint8_t flag);
 
     private:
-      	uint8_t x_pos;				// Sptrite x position
-      	uint8_t y_pos;				// Sptrite y position
-      	uint8_t tile_no;			// Sptrite tile number
+      	uint8_t x_pos;
+      	uint8_t y_pos;
+      	uint8_t tile_no;
 
-      	uint8_t flag_priority;		// Sptrite flag priority
-      	uint8_t flag_x_flip;		// Sptrite flag x flip
-      	uint8_t flag_y_flip;		// Sptrite flag y flip
-      	uint8_t flag_palette;		// Sptrite flag palette
+      	uint8_t flag_priority;
+      	uint8_t flag_x_flip;
+      	uint8_t flag_y_flip;
+      	uint8_t flag_palette;
 };

@@ -61,12 +61,12 @@ class Clock
 {
     public:
         Clock();
-        void frame_delay();                   // SDL_Delay for remaining frame time
-        void add_cycles(uint8_t amount);      // Add cycles to frame_clock_cycles
-        bool max_cycles_reached();            // Indicates if max clock cycles for a single frame is reached
-        bool cycles_reached(uint8_t display_mode); // Indicates if number of cycles is reached
-        void reset_cycles();                  // Reset line_clock_cycles
+        void frame_delay();
+        void add_cycles(uint8_t amount);
+        bool max_cycles_reached();
+        bool cycles_reached(uint8_t display_mode);
+        void reset_cycles();
     private:
-        uint32_t frame_start_ticks;           // Start time of frame
-        uint32_t line_clock_cycles;           // Number of clk cycles in current line
+        uint32_t frame_start_ticks;
+        uint32_t line_clock_cycles;
 };

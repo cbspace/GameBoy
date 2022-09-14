@@ -1,43 +1,43 @@
 #pragma once
 
-#define SCALING_FACTOR      3                  // Scale display size by this amount
-#define WINDOW_TITLE        "EmuBoy"           // Title to display on SDL Window
+#define SCALING_FACTOR      3               // Scale display size by this amount
+#define WINDOW_TITLE        "EmuBoy"        // Title to display on SDL Wind
 
-#define COLOUR_BG_ARGB      0xFF92AD26         // Background colour
-#define COLOUR_C1_ARGB      0xFF6D811C         // Colour 1
-#define COLOUR_C2_ARGB      0xFF485612         // Colour 2
-#define COLOUR_C3_ARGB      0xFF242B09         // Colour 3
+#define COLOUR_BG_ARGB      0xFF92AD26      // Background colour
+#define COLOUR_C1_ARGB      0xFF6D811C      // Colour 1
+#define COLOUR_C2_ARGB      0xFF485612      // Colour 2
+#define COLOUR_C3_ARGB      0xFF242B09      // Colour
 
-#define DISP_W   160            // Gameboy display width (Usually 160 pixels)
-#define DISP_H   144            // Gameboy display height (Usually 144 pixels)
+#define DISP_W              160             // Gameboy display width (Usually 160 pixels)
+#define DISP_H              144             // Gameboy display height (Usually 144 pixels)
 
-#define BG_TILES_MAX        32	// BG is 32 x 32 tiles
-#define SPRITE_TILES_MAX    40  // Sprite OAM memory for 40 sprites
-#define OAM_DATA_LENGTH		4   // OAM memory data is 4 bytes long
+#define BG_TILES_MAX        32	            // BG is 32 x 32 tiles
+#define SPRITE_TILES_MAX    40              // Sprite OAM memory for 40 sprites
+#define OAM_DATA_LENGTH		4               // OAM memory data is 4 bytes long
 
-#define LCD_Y_MAX			153 // Max Value of LY register
+#define LCD_Y_MAX			153             // Max Value of LY register
 
 // Memory Locations - Video
-#define A_TDT1      0x8000      // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)
-#define A_TDT2      0x8800      // Tile Data Table 2 start address (BG, Window: -128->127)
-#define A_BGTM1     0x9800      // Background Tile Map 1 start address
-#define A_BGTM2     0x9C00      // Background Tile Map 2 start address
+#define A_TDT1              0x8000          // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)
+#define A_TDT2              0x8800          // Tile Data Table 2 start address (BG, Window: -128->127)
+#define A_BGTM1             0x9800          // Background Tile Map 1 start address
+#define A_BGTM2             0x9C00          // Background Tile Map 2 start address
 
-#define A_OAM       0xfe00      // Start address of OAM memory (Sprite Atrribute Table)
+#define A_OAM               0xfe00          // Start address of OAM memory (Sprite Atrribute Table)
 
 // Special Registers - Video
-#define R_LCDC      0xff40      // LCD Control
-#define R_LCDSTAT   0xff41      // LCD Status
-#define R_SCY       0xff42      // Scroll Y
-#define R_SCX       0xff43      // Scroll X
-#define R_LY        0xff44      // LCD Y coordinate
-#define R_LYC       0xff45      // LY Compare
-#define R_DMA       0xff46      // Direct Memory Access
-#define R_BGP       0xff47      // Background Palette
-#define R_OBP0      0xff48      // Object Palette 0
-#define R_OBP1      0xff49      // Object Palette 1
-#define R_WY        0xff4a      // Window Y Position
-#define R_WX        0xff4b      // Window X Position
+#define R_LCDC              0xff40          // LCD Control
+#define R_LCDSTAT           0xff41          // LCD Status
+#define R_SCY               0xff42          // Scroll Y
+#define R_SCX               0xff43          // Scroll X
+#define R_LY                0xff44          // LCD Y coordinate
+#define R_LYC               0xff45          // LY Compare
+#define R_DMA               0xff46          // Direct Memory Access
+#define R_BGP               0xff47          // Background Palette
+#define R_OBP0              0xff48          // Object Palette 0
+#define R_OBP1              0xff49          // Object Palette 1
+#define R_WY                0xff4a          // Window Y Position
+#define R_WX                0xff4b          // Window X Position
 
 #define R_LCDC_LCD_CONTROL				7	// LCD Control
 #define R_LCDC_WIN_MAP_SEL				6	// Window tile map select
