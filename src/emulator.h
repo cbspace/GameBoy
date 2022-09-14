@@ -23,7 +23,6 @@ class Emulator
     private:
         Display disp;
         Cpu cp;
-        Render ren;
         Memory mem;
         Clock clk;
         Interrupt ir;

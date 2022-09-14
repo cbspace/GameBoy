@@ -25,7 +25,7 @@ enum class ColourValues {
 class Display
 {
     public:
-        Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in);  
+        Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in);  
 
         optional<Error> init();
         void set_title(string title_add);
@@ -40,8 +40,8 @@ class Display
         void scale();
         void clear_pixels();
 
+        Render ren;
         Memory& mem;
-        Render& ren;
         Interrupt& ir;
         Clock& clk;
 

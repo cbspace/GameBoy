@@ -16,8 +16,7 @@ using namespace std;
 
 Emulator::Emulator() : 
     cp(mem, clk, ir, edb),
-    disp(mem, ren, ir, clk),
-    ren(mem),
+    disp(mem, ir, clk),
     ir(mem, clk),
     jp(mem, ir),
     edb(mem),

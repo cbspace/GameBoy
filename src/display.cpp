@@ -11,9 +11,9 @@
 
 using namespace std;
 
-Display::Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in) :
+Display::Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     mem(mem_in),
-    ren(ren_in),
+    ren(mem_in),
     ir(ir_in),
     clk(clk_in),
     window(NULL),
