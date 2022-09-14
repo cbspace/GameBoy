@@ -46,7 +46,7 @@ class Display
         Interrupt& ir;
         Clock& clk;
 
-        uint32_t* display_buffer;
+        uint32_t display_buffer[width*height];
 
         SDL_Window* window;
         SDL_Surface* drawSurface;

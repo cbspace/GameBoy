@@ -2,6 +2,34 @@
 
 #include <stdint.h>
 
+#define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
+#define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
+
+#define CLK_CYCLES_MODE0         204         // Clock cycles for a single line HBLANK period (Mode 0)
+#define CLK_CYCLES_MODE1         4560        // Clock cycles for a single line VBLANK period (Mode 1)
+#define CLK_CYCLES_MODE2         80          // Clock cycles for Mode 2 - OAM being accessed
+#define CLK_CYCLES_MODE3         172         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
+
+#define CLK_DISPLAY_MODE0        0
+#define CLK_DISPLAY_MODE1        1
+#define CLK_DISPLAY_MODE2        2
+#define CLK_DISPLAY_MODE3        3
+
+class Clock
+{
+    public:
+        Clock();
+        void frame_delay();
+        void add_cycles(uint8_t amount);
+        bool max_cycles_reached();
+        bool cycles_reached(uint8_t display_mode);
+        void reset_cycles();
+    private:
+        uint32_t frame_start_ticks;
+        uint32_t line_clock_cycles;
+};
+
 /*
 The machine clock for a gameboy is 1.050 MHz and the base clock is 4.19 MHz.
 It is not practical to reliably clock the emulator at such high clock rates on a PC.
@@ -42,31 +70,3 @@ V-Blank             1,140               4,560
 Total               17,556              70,224
 
 */
-
-#define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
-#define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
-#define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
-
-#define CLK_CYCLES_MODE0         204         // Clock cycles for a single line HBLANK period (Mode 0)
-#define CLK_CYCLES_MODE1         4560        // Clock cycles for a single line VBLANK period (Mode 1)
-#define CLK_CYCLES_MODE2         80          // Clock cycles for Mode 2 - OAM being accessed
-#define CLK_CYCLES_MODE3         172         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
-
-#define CLK_DISPLAY_MODE0        0
-#define CLK_DISPLAY_MODE1        1
-#define CLK_DISPLAY_MODE2        2
-#define CLK_DISPLAY_MODE3        3
-
-class Clock
-{
-    public:
-        Clock();
-        void frame_delay();
-        void add_cycles(uint8_t amount);
-        bool max_cycles_reached();
-        bool cycles_reached(uint8_t display_mode);
-        void reset_cycles();
-    private:
-        uint32_t frame_start_ticks;
-        uint32_t line_clock_cycles;
-};

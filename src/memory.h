@@ -125,8 +125,6 @@ class Memory
 
     private:
         char ram[MEM_SIZE];                                         // 64kB RAM
-        char rdb[1000];                                             // 1000 bytes of debug ram
-        char rdb2[1000];                                            // 1000 bytes of debug ram
         uint8_t reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         uint16_t sp, pc;                                            // Stack pointer and program counter
         string rom_title;                                           // Title of the current game ROM file

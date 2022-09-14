@@ -15,15 +15,14 @@
 using namespace std;
 
 Emulator::Emulator() : 
-cp(mem, clk, ir, edb),
-disp(mem, ren, ir, clk),
-ren(mem),
-ir(mem, clk),
-jp(mem, ir),
-edb(mem)
-{
-    quit_flag = false;
-}
+    cp(mem, clk, ir, edb),
+    disp(mem, ren, ir, clk),
+    ren(mem),
+    ir(mem, clk),
+    jp(mem, ir),
+    edb(mem),
+    quit_flag(false)
+{}
 
 void Emulator::start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
@@ -40,7 +39,7 @@ void Emulator::start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 
     if (rom_is_dmg) {
         mem.set_pc(0x00);
-        mem.debug_insert_logo();
+        edb.insert_logo();
     } else {
         disp.set_title(mem.get_rom_title());
         cout << "Rom Title: " << mem.get_rom_title() << endl;
@@ -58,7 +57,6 @@ void Emulator::main_loop()
 
         cp.cycle();
         disp.display_cycle();
-        //mem.debug_sprite_test();
         ir.check_interrupts();
     }
 }

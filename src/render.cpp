@@ -238,9 +238,4 @@ uint8_t Render::get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_
 		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));
 }
 
-// Destructor
-Render::~Render()
-{
-
-
-}
+Render::~Render() {}

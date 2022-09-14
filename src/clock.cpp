@@ -2,10 +2,9 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-Clock::Clock()
+Clock::Clock() : line_clock_cycles(0)
 {
 	frame_start_ticks = SDL_GetTicks();
-	line_clock_cycles = 0;
 }
 
 void Clock::frame_delay()

@@ -15,14 +15,13 @@ Display::Display(Memory& mem_in, Render& ren_in, Interrupt& ir_in, Clock& clk_in
     mem(mem_in),
     ren(ren_in),
     ir(ir_in),
-    clk(clk_in)
+    clk(clk_in),
+    window(NULL),
+    drawSurface(NULL),
+    sdlRenderer(NULL),
+    texture(NULL)
 {
-    window = NULL;
-    drawSurface = NULL;
-    sdlRenderer = NULL;
-    display_buffer = NULL;
     pixels = NULL;
-    texture = NULL;
 }
 
 void Display::set_title(string title_add)
@@ -263,7 +262,6 @@ optional<Error> Display::init()
 
     texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
 
-    display_buffer = new uint32_t[width*height];
     pixels = new uint8_t[width*height];
     clear_pixels();
 
@@ -281,8 +279,6 @@ Display::~Display()
 	texture = NULL;
 	sdlRenderer = NULL;
 	window = NULL;
-
-	delete[] display_buffer;
 
 	SDL_Quit();
 }
