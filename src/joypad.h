@@ -1,27 +1,41 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <map>
 #include "memory.h"
 #include "interrupt.h"
 
 #define R_P1    0xff00      // Register for reading joy pad info
 
-// Button Values
-#define JP_START    0x80
-#define JP_SELECT   0x40
-#define JP_B        0x20
-#define JP_A        0x10
-#define JP_DOWN     0x08
-#define JP_UP       0x04
-#define JP_LEFT     0x02
-#define JP_RIGHT    0x01
-#define JP_EMPTY    0x00
+enum class JoypadButton {
+    Start,
+    Select,
+    B,
+    A,
+    Down,
+    Up,
+    Left,
+    Right,
+    Nothing
+};
 
 class Joypad
 {
     public:
         Joypad(Memory& mem_in, Interrupt& ir_in);
         uint8_t key_down();
+
+        map<JoypadButton, int> joypad_button_values{
+            {JoypadButton::Start, 0x80},
+            {JoypadButton::Select, 0x40},
+            {JoypadButton::B, 0x20},
+            {JoypadButton::A, 0x10},
+            {JoypadButton::Down, 0x08},
+            {JoypadButton::Up, 0x04},
+            {JoypadButton::Left, 0x02},
+            {JoypadButton::Right, 0x01},
+            {JoypadButton::Nothing, 0x00}
+        };
 
     private:
         Memory& mem;
