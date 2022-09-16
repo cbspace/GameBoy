@@ -1353,39 +1353,39 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x0e:  // Rotate contents of byte at (HL) right and store bit 0 in CF, flags updated
-            mem.rr_from_pointer(Register16Bit::HL, true); // Carry = true (Rotate right with carry RRC L)
+            mem.rr_from_pointer(Register16Bit::HL, true); // Carry = true (Rotate right with carry RRC (HL))
             clk.add_cycles(16);
             break;
         case 0x1f:  // Rotate contents of A register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RA, false); // Carry = false (Rotate right RL A)
+            mem.reg_rr(RA, false); // Carry = false (Rotate right RR A)
             clk.add_cycles(8);
             break;
         case 0x18:  // Rotate contents of B register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RB, false); // Carry = false (Rotate right with carry RL B)
+            mem.reg_rr(RB, false); // Carry = false (Rotate right with carry RR B)
             clk.add_cycles(8);
             break;
         case 0x19:  // Rotate contents of C register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RC, false); // Carry = false (Rotate right with carry RL C)
+            mem.reg_rr(RC, false); // Carry = false (Rotate right with carry RR C)
             clk.add_cycles(8);
             break;
         case 0x1a:  // Rotate contents of D register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RD, false); // Carry = false (Rotate right with carry RL D)
+            mem.reg_rr(RD, false); // Carry = false (Rotate right with carry RR D)
             clk.add_cycles(8);
             break;
         case 0x1b:  // Rotate contents of E register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RE, false); // Carry = false (Rotate right with carry RL E)
+            mem.reg_rr(RE, false); // Carry = false (Rotate right with carry RR E)
             clk.add_cycles(8);
             break;
         case 0x1c:  // Rotate contents of H register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RH, false); // Carry = false (Rotate right with carry RL H)
+            mem.reg_rr(RH, false); // Carry = false (Rotate right with carry RR H)
             clk.add_cycles(8);
             break;
         case 0x1d:  // Rotate contents of L register right and store bit 0 in CF, flags updated
-            mem.reg_rr(RL, false); // Carry = false (Rotate right with carry RL L)
+            mem.reg_rr(RL, false); // Carry = false (Rotate right with carry RR L)
             clk.add_cycles(8);
             break;
         case 0x1e:  // Rotate contents of byte at (HL) right and store bit 0 in CF, flags updated
-            mem.rr_from_pointer(Register16Bit::HL, false); // Carry = false (Rotate right with carry RL L)
+            mem.rr_from_pointer(Register16Bit::HL, false); // Carry = false (Rotate right with carry RR (HL))
             clk.add_cycles(16);
             break;
         case 0x27:  // Shift contents of register A left and store bit 7 in CF, bit0 = 0, flags updated
