@@ -34,7 +34,7 @@ void Render::render_line(u8 y)
 
 //	if (mem.get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
 //	{
-		draw_sprites_line(y);
+		//draw_sprites_line(y);
 //	}
 }
 
@@ -58,7 +58,7 @@ void Render::refresh_sprites()
 
 void Render::draw_sprites_line(u8 line_y)
 {
-	SpriteAttrib *current_sprite_attrib;		// Current sprite attributes
+	SpriteAttrib current_sprite_attrib;		// Current sprite attributes
 //	u8 sprite_size;					// 0 = 8x8 mode, 1 = 8x16 mode (w x h)
 	u8 sprite_x, sprite_y;				// Current sprite x and y value
 	u8 x_start, x_finish;				// Overlapping x pixels to draw
@@ -70,22 +70,22 @@ void Render::draw_sprites_line(u8 line_y)
     // Loop through sprites in OAM memory (Assuming 8x8 mode)
     for (u8 s = 0; s < SPRITE_TILES_MAX; s++)
     {
-    	current_sprite_attrib = &spr_att[s];
-    	sprite_y = current_sprite_attrib->get_y();
+    	current_sprite_attrib = spr_att[s];
+    	sprite_y = current_sprite_attrib.get_y();
 
     	if (((sprite_y > 0) && (sprite_y < 16) && (line_y <= sprite_y)) ||
     		((sprite_y >= 16) && (sprite_y <= 144) && (line_y <= sprite_y) && (line_y >= sprite_y - 16)) ||
     		((sprite_y > 144) && (sprite_y < 160) && (line_y >= sprite_y - 16)))
     	{
     		y_val = 8 - (sprite_y - line_y);
-    		sprite_x = current_sprite_attrib->get_x();
+    		sprite_x = current_sprite_attrib.get_x();
 
     		if ((sprite_x > 0) && (sprite_x <= 7))
     		{
 
     				for (u8 x = 0; x < sprite_x; x++)
     				{
-    					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x+(8-sprite_x));
+    					pix_val = get_sprite_pixel(current_sprite_attrib.get_tile_no(),y_val,x+(8-sprite_x));
     					pixels[line_y * DISP_W + x] = pix_val;
     				}
     		}
@@ -97,7 +97,7 @@ void Render::draw_sprites_line(u8 line_y)
 
     				for (u8 x = 0; x < x_len; x++)
     				{
-    					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x);
+    					pix_val = get_sprite_pixel(current_sprite_attrib.get_tile_no(),y_val,x);
     					pixels[line_y * DISP_W + x_start + x] = pix_val;
     				}
     		}
@@ -109,7 +109,7 @@ void Render::draw_sprites_line(u8 line_y)
 
     				for (u8 x = 0; x < x_len; x++)
     				{
-    					pix_val = get_sprite_pixel(current_sprite_attrib->get_tile_no(),y_val,x);
+    					pix_val = get_sprite_pixel(current_sprite_attrib.get_tile_no(),y_val,x);
     					pixels[line_y * DISP_W + x_start + x] = pix_val;
     				}
     		}
