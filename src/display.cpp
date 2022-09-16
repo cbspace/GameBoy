@@ -5,7 +5,7 @@
 #include "clock.h"
 
 #include <iostream>
-#include <stdint.h>
+#include "lib/Types.h"
 #include <string>
 #include <SDL2/SDL.h>
 
@@ -36,11 +36,11 @@ void Display::set_title(string title_add)
 
 void Display::display_cycle()
 {
-    uint8_t current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
-    uint8_t current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
-    uint8_t current_mode = (current_modeB1 << 1) + current_modeB0;
+    u8 current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
+    u8 current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
+    u8 current_mode = (current_modeB1 << 1) + current_modeB0;
 
-    uint8_t ly_val = mem.get_byte(R_LY);
+    u8 ly_val = mem.get_byte(R_LY);
 
     if (clk.cycles_reached(CLK_DISPLAY_MODE3))
     {
@@ -86,7 +86,7 @@ void Display::display_cycle()
 
 void Display::update_line()
 {
-	uint8_t ly_val;
+	u8 ly_val;
 
     ly_val = mem.get_byte(R_LY);
 
@@ -115,10 +115,10 @@ void Display::update_line()
     }
 }
 
-void Display::update_stat_reg(uint8_t mode_val)
+void Display::update_stat_reg(u8 mode_val)
 {
-	uint8_t lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
-    uint8_t ly_val = mem.get_byte(R_LY);
+	u8 lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
+    u8 ly_val = mem.get_byte(R_LY);
 
     lyc_val = mem.get_byte(R_LYC);
 
@@ -180,7 +180,7 @@ void Display::draw_frame()
     scale();
     colour();
 
-    SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(uint32_t));
+    SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(u32));
     SDL_RenderClear(sdlRenderer);
     SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
@@ -190,11 +190,11 @@ void Display::draw_frame()
 
 void Display::colour()
 {
-	uint32_t current_pixel_ref;
+	u32 current_pixel_ref;
 
-    for (uint16_t j = 0; j < height; j++)
+    for (u16 j = 0; j < height; j++)
     {
-        for (uint16_t i = 0; i < width; i++)
+        for (u16 i = 0; i < width; i++)
         {
         	current_pixel_ref = j*width + i;
         	switch(display_buffer[current_pixel_ref])
@@ -222,13 +222,13 @@ void Display::colour()
 
 void Display::scale()
 {
-    for (uint16_t y = 0; y < DISP_H; y++)
+    for (u16 y = 0; y < DISP_H; y++)
     {
-        for (uint16_t x = 0; x < DISP_W; x++)
+        for (u16 x = 0; x < DISP_W; x++)
         {
-            for (uint16_t y1 = 0; y1 < SCALING_FACTOR; y1++)
+            for (u16 y1 = 0; y1 < SCALING_FACTOR; y1++)
             {
-                for (uint16_t x1 = 0; x1 < SCALING_FACTOR; x1++)
+                for (u16 x1 = 0; x1 < SCALING_FACTOR; x1++)
                 {
                 	display_buffer[(y * SCALING_FACTOR + y1) * width + x * SCALING_FACTOR + x1] = pixels[y * DISP_W + x];
                 }
@@ -239,9 +239,9 @@ void Display::scale()
 
 void Display::clear_pixels()
 {
-    for (uint16_t y = 0; y < DISP_H; y++)
+    for (u16 y = 0; y < DISP_H; y++)
     {
-        for (uint16_t x = 0; x < DISP_W; x++)
+        for (u16 x = 0; x < DISP_W; x++)
         {
             pixels[y * DISP_W + x] = 0;
         }

@@ -8,7 +8,7 @@
 #include "lib/Error.h"
 
 #include <string>
-#include <stdint.h>
+#include "lib/Types.h"
 #include <SDL2/SDL.h>
 #include <optional>
 
@@ -35,7 +35,7 @@ class Display
         virtual ~Display();
 
     private:
-        void update_stat_reg(uint8_t mode_val);
+        void update_stat_reg(u8 mode_val);
         void colour();
         void scale();
         void clear_pixels();
@@ -45,8 +45,8 @@ class Display
         Interrupt& ir;
         Clock& clk;
 
-        uint32_t display_buffer[width*height];
-        uint8_t pixels[width*height];
+        i32 display_buffer[width*height];
+        u8 pixels[width*height];
 
         SDL_Window* window;
         SDL_Surface* drawSurface;

@@ -9,10 +9,10 @@ Joypad::Joypad(Memory& mem_in, Interrupt& ir_in) :
     ir(ir_in) 
 {}
 
-uint8_t Joypad::key_down()
+u8 Joypad::key_down()
 {
     SDL_Event e;
-    uint8_t quit_signal = 0;
+    u8 quit_signal = 0;
 
     while (SDL_PollEvent(&e) != 0)
     {

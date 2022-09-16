@@ -20,12 +20,12 @@ void Clock::frame_delay()
     frame_start_ticks = SDL_GetTicks();
 }
 
-void Clock::add_cycles(uint8_t amount)
+void Clock::add_cycles(u8 amount)
 {
     line_clock_cycles += amount;
 }
 
-bool Clock::cycles_reached(uint8_t display_mode)
+bool Clock::cycles_reached(u8 display_mode)
 {
     bool ret_val = false;
 

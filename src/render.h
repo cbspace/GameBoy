@@ -5,7 +5,7 @@
 #include "displayconst.h"
 
 #include <string>
-#include <stdint.h>
+#include "lib/Types.h"
 
 // Display Class looks after SDL Window
 // Render Class looks after pixel array
@@ -24,19 +24,19 @@ using namespace std;
 class Render
 {
     public:
-	    Render(Memory& mem_in, uint8_t (&pix_in)[width*height]);
-        void render_line(uint8_t y);
+	    Render(Memory& mem_in, u8 (&pix_in)[width*height]);
+        void render_line(u8 y);
         void refresh_sprites();
         virtual ~Render();
 
     private:
-        void draw_bg_line(uint8_t line_y);
-        void draw_sprites_line(uint8_t line_y);
+        void draw_bg_line(u8 line_y);
+        void draw_sprites_line(u8 line_y);
 
         Memory& mem;
-        uint8_t (&pixels)[width*height];
+        u8 (&pixels)[width*height];
         SpriteAttrib spr_att[SPRITE_TILES_MAX];
 
-        uint8_t get_bg_pixel(uint8_t bg_y, uint8_t bg_x, uint16_t bg_tdt, uint8_t bg_tm);
-        uint8_t get_sprite_pixel(uint8_t tile_no, uint8_t sprite_y, uint8_t sprite_x);
+        u8 get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm);
+        u8 get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x);
 };

@@ -1,5 +1,5 @@
 #include "spriteattrib.h"
-#include <stdint.h>
+#include "lib/Types.h"
 
 
 SpriteAttrib::SpriteAttrib()
@@ -13,26 +13,26 @@ SpriteAttrib::SpriteAttrib()
   	flag_palette = 0;
 }
 
-void SpriteAttrib::set_sprite_x(uint8_t sprite_x)
+void SpriteAttrib::set_sprite_x(u8 sprite_x)
 {
 	x_pos = sprite_x;
 }
 
-void SpriteAttrib::set_sprite_y(uint8_t sprite_y)
+void SpriteAttrib::set_sprite_y(u8 sprite_y)
 {
 	y_pos = sprite_y;
 }
 
-void SpriteAttrib::set_sprite_tile_no(uint8_t tile_no_in)
+void SpriteAttrib::set_sprite_tile_no(u8 tile_no_in)
 {
 	tile_no = tile_no_in;
 }
 
-void SpriteAttrib::set_sprite_flags(uint8_t flag_data)
+void SpriteAttrib::set_sprite_flags(u8 flag_data)
 {
-	uint8_t mask_val,flag_val;
+	u8 mask_val,flag_val;
 
-	for (uint8_t i = SPRITE_ATTRIB_FLAG_PALETTE; i <= SPRITE_ATTRIB_FLAG_PRIORITY; i++)
+	for (u8 i = SPRITE_ATTRIB_FLAG_PALETTE; i <= SPRITE_ATTRIB_FLAG_PRIORITY; i++)
 	{
 		mask_val = 1 << i;
 		flag_val = (flag_data & mask_val) >> 1;
@@ -55,17 +55,17 @@ void SpriteAttrib::set_sprite_flags(uint8_t flag_data)
 	}
 }
 
-uint8_t SpriteAttrib::get_x()
+u8 SpriteAttrib::get_x()
 {
 	return x_pos;
 }
 
-uint8_t SpriteAttrib::get_y()
+u8 SpriteAttrib::get_y()
 {
 	return y_pos;
 }
 
-uint8_t SpriteAttrib::get_tile_no()
+u8 SpriteAttrib::get_tile_no()
 {
 	return tile_no;
 }

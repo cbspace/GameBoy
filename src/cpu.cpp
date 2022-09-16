@@ -15,7 +15,7 @@ Cpu::Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in, Emudebug& edb_in) :
 
 void Cpu::cycle()
 {
-    uint8_t byte_in;
+    u8 byte_in;
 
     if (!ir.get_halt() && !ir.get_stop())
     {
@@ -28,11 +28,11 @@ void Cpu::cycle()
     }
 }
 
-void Cpu::process_instruction(uint8_t rom_byte)
+void Cpu::process_instruction(u8 rom_byte)
 {
-    uint8_t temp_8bit_value;
-    int8_t signed_8bit_immediate;
-    uint16_t unsigned_16bit_immediate;
+    u8 temp_8bit_value;
+    i8 signed_8bit_immediate;
+    u16 unsigned_16bit_immediate;
 
     switch(rom_byte)
     {
@@ -1224,7 +1224,7 @@ void Cpu::process_instruction(uint8_t rom_byte)
     }
 }
 
-void Cpu::process_cb_instruction(uint8_t rom_byte)
+void Cpu::process_cb_instruction(u8 rom_byte)
 {
     switch(rom_byte)
     {

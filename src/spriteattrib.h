@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "lib/Types.h"
 
 #define SPRITE_ATTRIB_FLAG_PRIORITY		7
 #define SPRITE_ATTRIB_FLAG_Y_FLIP		6
@@ -29,22 +29,22 @@ class SpriteAttrib
 {
     public:
 		SpriteAttrib();
-      	void set_sprite_x(uint8_t sprite_x);
-      	void set_sprite_y(uint8_t sprite_y);
-      	void set_sprite_tile_no(uint8_t tile_no_in);
-      	void set_sprite_flags(uint8_t flag_data);
-      	uint8_t get_x();
-      	uint8_t get_y();
-      	uint8_t get_tile_no();
-      	uint8_t get_flag(uint8_t flag);
+      	void set_sprite_x(u8 sprite_x);
+      	void set_sprite_y(u8 sprite_y);
+      	void set_sprite_tile_no(u8 tile_no_in);
+      	void set_sprite_flags(u8 flag_data);
+      	u8 get_x();
+      	u8 get_y();
+      	u8 get_tile_no();
+      	u8 get_flag(u8 flag);
 
     private:
-      	uint8_t x_pos;
-      	uint8_t y_pos;
-      	uint8_t tile_no;
+      	u8 x_pos;
+      	u8 y_pos;
+      	u8 tile_no;
 
-      	uint8_t flag_priority;
-      	uint8_t flag_x_flip;
-      	uint8_t flag_y_flip;
-      	uint8_t flag_palette;
+      	u8 flag_priority;
+      	u8 flag_x_flip;
+      	u8 flag_y_flip;
+      	u8 flag_palette;
 };

@@ -18,7 +18,7 @@ Interrupt::Interrupt(Memory& mem_in, Clock& clk_in) :
 
 void Interrupt::check_interrupts()
 {
-    uint8_t i_current;
+    u8 i_current;
 
     if (ime)
     {
@@ -128,14 +128,14 @@ void Interrupt::process_ei_count()
     }
 }
 
-bool Interrupt::if_get(uint8_t int_flag)
+bool Interrupt::if_get(u8 int_flag)
 {
-    uint8_t flag_val;
+    u8 flag_val;
     flag_val = mem.get_byte(A_IFLAGS) & int_flag;
     return !(flag_val==0);
 }
 
-void Interrupt::if_update(uint8_t int_flag, bool flg_val)
+void Interrupt::if_update(u8 int_flag, bool flg_val)
 {
     if (flg_val)
     {

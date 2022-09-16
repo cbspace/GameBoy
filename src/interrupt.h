@@ -32,22 +32,22 @@ class Interrupt
         bool get_stop();
         void disable_interrupts();
         void enable_interrupts();
-        void if_update(uint8_t int_flag, bool flg_val);
+        void if_update(u8 int_flag, bool flg_val);
 
-        uint8_t ei_count;
+        u8 ei_count;
 
     private:
         void cancel_stop();
         void process_ei_count();
-        bool if_get(uint8_t int_flag);
+        bool if_get(u8 int_flag);
 
         Memory& mem;
         Clock& clk;
         bool ime;
         bool halt_flag;
         bool stop_flag;
-        uint8_t i_flags;        
-        uint8_t i_enable;
+        u8 i_flags;        
+        u8 i_enable;
 };
 
 /* Interrupt Registers

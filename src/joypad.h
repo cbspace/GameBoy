@@ -23,7 +23,7 @@ class Joypad
 {
     public:
         Joypad(Memory& mem_in, Interrupt& ir_in);
-        uint8_t key_down();
+        u8 key_down();
 
         map<JoypadButton, int> joypad_button_values{
             {JoypadButton::Start, 0x80},
