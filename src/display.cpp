@@ -37,46 +37,46 @@ void Display::display_cycle()
 {
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
-    u8 current_mode = (current_modeB1 << 1) + current_modeB0;
+    DisplayMode current_mode = static_cast<DisplayMode>((current_modeB1 << 1) + current_modeB0);
 
     u8 ly_val = mem.get_byte(R_LY);
 
-    if (clk.cycles_reached(CLK_DISPLAY_MODE3))
+    if (clk.cycles_reached(DisplayMode::Mode3))
     {
-        if (current_mode != CLK_DISPLAY_MODE3)
+        if (current_mode != DisplayMode::Mode3)
         {
             if (ly_val < DISP_H)
             {
-                update_stat_reg(CLK_DISPLAY_MODE3);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
             } else {
-                update_stat_reg(CLK_DISPLAY_MODE1);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
             }
 
             update_line();
             clk.reset_cycles();
         }
     }
-    else if (clk.cycles_reached(CLK_DISPLAY_MODE2))
+    else if (clk.cycles_reached(DisplayMode::Mode2))
     {
-        if (current_mode != CLK_DISPLAY_MODE2)
+        if (current_mode != DisplayMode::Mode2)
         {
             if (ly_val < DISP_H)
             {
-                update_stat_reg(CLK_DISPLAY_MODE2);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
             } else {
-                update_stat_reg(CLK_DISPLAY_MODE1);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
             }
         }
     }
-    else if (clk.cycles_reached(CLK_DISPLAY_MODE0))
+    else if (clk.cycles_reached(DisplayMode::Mode0))
     {
-        if (current_mode != CLK_DISPLAY_MODE0)
+        if (current_mode != DisplayMode::Mode0)
         {
             if (ly_val < DISP_H)
             {
-                update_stat_reg(CLK_DISPLAY_MODE0);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode0));
             } else {
-                update_stat_reg(CLK_DISPLAY_MODE1);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
             }
         }
     }

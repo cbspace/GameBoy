@@ -2,7 +2,7 @@
 
 #include "lib/Types.h"
 
-#define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_FRAME_DELAY          500          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 #define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
 
@@ -11,10 +11,12 @@
 #define CLK_CYCLES_MODE2         80          // Clock cycles for Mode 2 - OAM being accessed
 #define CLK_CYCLES_MODE3         172         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
 
-#define CLK_DISPLAY_MODE0        0
-#define CLK_DISPLAY_MODE1        1
-#define CLK_DISPLAY_MODE2        2
-#define CLK_DISPLAY_MODE3        3
+enum class DisplayMode {
+  Mode0,
+  Mode1,
+  Mode2,
+  Mode3
+};
 
 class Clock
 {
@@ -23,7 +25,7 @@ class Clock
         void frame_delay();
         void add_cycles(u8 amount);
         bool max_cycles_reached();
-        bool cycles_reached(u8 display_mode);
+        bool cycles_reached(DisplayMode display_mode);
         void reset_cycles();
     private:
         u32 frame_start_ticks;

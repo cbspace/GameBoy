@@ -2,7 +2,8 @@
 #include "lib/Types.h"
 #include <SDL2/SDL.h>
 
-Clock::Clock() : line_clock_cycles(0)
+Clock::Clock() : 
+    line_clock_cycles(0)
 {
 	frame_start_ticks = SDL_GetTicks();
 }
@@ -25,35 +26,33 @@ void Clock::add_cycles(u8 amount)
     line_clock_cycles += amount;
 }
 
-bool Clock::cycles_reached(u8 display_mode)
+bool Clock::cycles_reached(DisplayMode display_mode)
 {
-    bool ret_val = false;
-
     switch(display_mode)
     {
         // OAM and Display RAM being used
-        case CLK_DISPLAY_MODE3:
+        case DisplayMode::Mode3:
             if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3)
             {
-                ret_val = true;
+                return true;
             }
             break;
         // OAM being used
-        case CLK_DISPLAY_MODE2:
+        case DisplayMode::Mode2:
             if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2)
             {
-                ret_val = true;
+                return true;
             }
             break;
         // H-Blank
-        case CLK_DISPLAY_MODE0:
+        case DisplayMode::Mode0:
             if (line_clock_cycles >= CLK_CYCLES_MODE0)
             {
-                ret_val = true;
+                return true;
             }
             break;
     }
-    return ret_val;
+    return false;
 }
 
 void Clock::reset_cycles()

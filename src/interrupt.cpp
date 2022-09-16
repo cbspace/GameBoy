@@ -37,11 +37,12 @@ void Interrupt::check_interrupts()
                 if_update(I_VBLANK, false);
 
                 mem.set_pc(IV_VBLANK);
+                cout << "Entering V-Blank" << endl;
 
             }
             else if (I_LCDSTAT & i_current)
             {
-            	cout << "LCDStat Interrupt\n";
+            	cout << "LCDStat Interrupt" << endl;
 
                 if_update(I_LCDSTAT, false);
 
@@ -49,7 +50,7 @@ void Interrupt::check_interrupts()
             }
             else if (I_JOYPAD & i_current)
             {
-            	cout << "Joypad Interrupt\n";
+            	cout << "Joypad Interrupt" << endl;
 
                 if_update(I_JOYPAD, false);
 
