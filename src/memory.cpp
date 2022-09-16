@@ -91,36 +91,32 @@ string Memory::get_rom_title()
 
 /// Register Functions
 
-// Get contents of 8 bit register
 u8 Memory::reg_get(u8 reg_id)
 {
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
         return reg[reg_id];
-    }
-    else
-    {
-        throw "Invalid register id";
-        return 0; // invalid register
+    } else {
+        cout << "Invalid 16 bitregister id" << endl;
+        return 0;
     }
 }
 
-// Get contents of 16 bit register
-u16 Memory::reg_get16(u8 reg_id)
+u16 Memory::reg_get16(Register16Bit reg_id)
 {
     switch(reg_id)
     {
-        case RAF:   // AF register
+        case Register16Bit::AF:
             return (reg[RA] << 8) + reg[RF];
-        case RBC:   // BC register
+        case Register16Bit::BC:
             return (reg[RB] << 8) + reg[RC];
-        case RDE:   // DE register
+        case Register16Bit::DE:
             return (reg[RD] << 8) + reg[RE];
-        case RHL:   // HL register
+        case Register16Bit::HL:
             return (reg[RH] << 8) + reg[RL];
-        default:    // Invalid register
-            throw "Invalid register id";
+        default:
+            cout << "Invalid 16 bitregister id" << endl;
             return 0;
     }
 }
@@ -133,44 +129,35 @@ void Memory::reg_set(u8 reg_id, u8 reg_value)
     {
         reg[reg_id] = reg_value;
     }
-    else
-    {
-        throw "Invalid register id";
-    }
-    ///temp
-    //printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
 }
 
 // Set value in 16 bit register
-void Memory::reg_set(u8 reg_id, u16 reg_value)
+void Memory::reg_set(Register16Bit reg_id, u16 reg_value)
 {
     u8 high_byte;
     u8 low_byte;
 
     high_byte = reg_value >> 8;
     low_byte = reg_value & 0xff;
-///temp
-//printf("register %i set to %.2X\n", reg_id, reg_value); // Debug message
+    
     switch(reg_id)
     {
-        case RAF:   // AF register
+        case Register16Bit::AF:
             reg[RA] = high_byte;
             reg[RF] = low_byte;
             break;
-        case RBC:   // BC register
+        case Register16Bit::BC:
             reg[RB] = high_byte;
             reg[RC] = low_byte;
             break;
-        case RDE:   // DE register
+        case Register16Bit::DE:
             reg[RD] = high_byte;
             reg[RE] = low_byte;
             break;
-        case RHL:   // HL register
+        case Register16Bit::HL:
             reg[RH] = high_byte;
             reg[RL] = low_byte;
             break;
-        default:    // Invalid register
-            throw "Invalid register id";
     }
 }
 
@@ -182,10 +169,6 @@ void Memory::reg_copy(u8 to_reg_id, u8 from_reg_id)
     {
         // use reg_get and reg_set to copy data
         reg_set(to_reg_id, reg_get(from_reg_id));
-    }
-    else
-    {
-        throw "Invalid register id";
     }
 }
 
@@ -207,46 +190,26 @@ void Memory::reg_inc(u8 reg_id)
         // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
-    else
-    {
-        throw "Invalid register id";
-    }
 }
 
 // Increment 16-bit register, flags not updated
-void Memory::reg_inc16(u8 reg_id)
+void Memory::reg_inc16(Register16Bit reg_id)
 {
     u16 reg_val;
 
-    // Check if valid 16-bit register used
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        reg_val = reg_get16(reg_id);
-        reg_val++;
-        reg_set(reg_id,reg_val);
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
+    reg_val = reg_get16(reg_id);
+    reg_val++;
+    reg_set(reg_id,reg_val);
 }
 
 // Decrement 16-bit register, flags not updated
-void Memory::reg_dec16(u8 reg_id)
+void Memory::reg_dec16(Register16Bit reg_id)
 {
     u16 reg_val;
 
-    // Check if valid 16-bit register used
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        reg_val = reg_get16(reg_id);
-        reg_val--;
-        reg_set(reg_id,reg_val);
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
+    reg_val = reg_get16(reg_id);
+    reg_val--;
+    reg_set(reg_id,reg_val);
 }
 
 // Decrement register, flags updated
@@ -272,10 +235,6 @@ void Memory::reg_dec(u8 reg_id)
 
         ///temp
         //printf("reg %i now equals %i ", reg_id, reg[reg_id]);
-    }
-    else
-    {
-        throw "Invalid register id";
     }
 }
 
@@ -314,10 +273,6 @@ void Memory::reg_add(u8 reg_id, u8 add_value, bool carry)
         // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
-    else
-    {
-        throw "Invalid register id";
-    }
 }
 
 // Subtract value from 8-bit register and flags updated, bool brrow used for sub with borrow
@@ -353,18 +308,12 @@ void Memory::reg_sub(u8 reg_id, u8 sub_value, bool borrow)
         // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
-    else
-    {
-        throw "Invalid register id";
-    }
 }
 
-// Add 2 16-bit registers and update flags
-void Memory::reg_add16(u8 reg_id, u16 reg_n_val)
+void Memory::reg_add16(Register16Bit reg_id, u16 reg_n_val)
 {
     u32 total;
 
-    // The total sum
     total = reg_get16(reg_id) + reg_n_val;
 
     // Update H flag (half carry from bit 11)
@@ -376,7 +325,6 @@ void Memory::reg_add16(u8 reg_id, u16 reg_n_val)
     // Clear N flag
     flag_update(NF,0);
 
-    // Update 16 bit register
     reg_set(reg_id,(u16)total);
 
 }
@@ -797,30 +745,15 @@ u8 Memory::fetch_byte()
 }
 
 // Read byte from RAM/ROM pointed to by 16-bit register
-u8 Memory::get_from_pointer(u8 reg_id)
+u8 Memory::get_from_pointer(Register16Bit reg_id)
 {
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        return get_byte(reg_get16(reg_id));
-    }
-    else
-    {
-        throw "Invalid register id";
-        return 0;
-    }
+    return get_byte(reg_get16(reg_id));
 }
 
 // Set byte at RAM address pointed to by 16-bit register to byte value
-void Memory::set_from_pointer(u8 reg_id, u8 byte_value)
+void Memory::set_from_pointer(Register16Bit reg_id, u8 byte_value)
 {
-    if ((reg_id > REG_16_START) && (reg_id < REG_16_END))
-    {
-        write_byte(reg_get16(reg_id), byte_value);
-    }
-    else
-    {
-        throw "Invalid register id";
-    }
+    write_byte(reg_get16(reg_id), byte_value);
 }
 
 // Write byte to RAM/ROM
@@ -855,7 +788,7 @@ void Memory::write_bit(u16 address, u8 bit_number, u8 bit_val)
 }
 
 // Increment byte and update flags
-void Memory::inc_from_pointer(u8 reg_id)
+void Memory::inc_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in;
     byte_in = get_from_pointer(reg_id);
@@ -864,13 +797,13 @@ void Memory::inc_from_pointer(u8 reg_id)
     flag_update(NF,0);
 
     byte_in++;
-    set_from_pointer(RHL,byte_in);
+    set_from_pointer(Register16Bit::HL,byte_in);
 
     flag_update(ZF,(byte_in==0));
 }
 
 // Decrement byte and update flags
-void Memory::dec_from_pointer(u8 reg_id)
+void Memory::dec_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in;
     byte_in = get_from_pointer(reg_id);
@@ -879,19 +812,19 @@ void Memory::dec_from_pointer(u8 reg_id)
     flag_update(NF,0);
 
     byte_in--;
-    set_from_pointer(RHL,byte_in);
+    set_from_pointer(Register16Bit::HL,byte_in);
     flag_update(ZF,(byte_in==0));
 }
 
 // Swap upper and lower nibbles of register, flags updated
-void Memory::swap_from_pointer(u8 reg_id)
+void Memory::swap_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in, new_val;
     byte_in = get_from_pointer(reg_id);
 
     new_val = (byte_in >> 4) | ((byte_in & 0xf) << 4);
 
-    set_from_pointer(RHL, new_val);
+    set_from_pointer(Register16Bit::HL, new_val);
     flag_update(HF,0);
     flag_update(CF,0);
     flag_update(ZF,(new_val==0));
@@ -899,71 +832,71 @@ void Memory::swap_from_pointer(u8 reg_id)
 }
 
 // Rotate contents of byte at (n) left and store bit 7 in CF, flags updated
-// When carry is true, bit 0 = previous bit 7
-// When carry is false, bit 0 = previous CF
+// When with_carry is true, bit 0 = previous bit 7 (RLC)
+// When with_carry is false, bit 0 = previous CF (RL)
 // Flags Z 0 0 C
-void Memory::rl_from_pointer(u8 reg_id, bool carry)
+void Memory::rl_from_pointer(Register16Bit reg_id, bool with_carry)
 {
-    u8 byte_in, a_value, bit7;
+    u8 byte_in, new_value, bit7;
 
     byte_in = get_from_pointer(reg_id);
 
     bit7 = (byte_in & 0x80) >> 7;
 
-    a_value = byte_in << 1;
+    new_value = byte_in << 1;
 
-    if (carry)
+    if (with_carry)
     {
-        a_value += bit7;
-        set_from_pointer(reg_id, a_value);
+        new_value += bit7;
+        set_from_pointer(reg_id, new_value);
     }
     else
     {
-        a_value += flag_get(CF);
-        set_from_pointer(reg_id, a_value);
+        new_value += flag_get(CF);
+        set_from_pointer(reg_id, new_value);
     }
 
     flag_update(HF,0);
     flag_update(NF,0);
-    flag_update(ZF,(a_value==0));
+    flag_update(ZF,(new_value==0));
     flag_update(CF,(bool)bit7);
 }
 
 // Rotate contents of byte at (n) right and store bit 0 in CF, flags updated
-// When carry is true, bit 7 = previous bit 0
-// When carry is false, bit 7 = previous CF
+// When with_carry is true, bit 7 = previous bit 0 (RRC)
+// When with_carry is false, bit 7 = previous CF (RR)
 // Flags Z 0 0 C
-void Memory::rr_from_pointer(u8 reg_id, bool carry)
+void Memory::rr_from_pointer(Register16Bit reg_id, bool with_carry)
 {
-    u8 byte_in, a_value, bit0;
+    u8 byte_in, new_value, bit0;
 
     byte_in = get_from_pointer(reg_id);
 
     bit0 = byte_in & 0x01;
 
     // Shift register right by 1
-    a_value = byte_in >> 1;
+    new_value = byte_in >> 1;
 
-    if (carry)
+    if (with_carry)
     {
-        a_value += (bit0 << 7);
-        set_from_pointer(reg_id, a_value);
+        new_value += (bit0 << 7);
+        set_from_pointer(reg_id, new_value);
     }
     else
     {
-        a_value += (flag_get(CF) << 7);
-        set_from_pointer(reg_id, a_value);
+        new_value += (flag_get(CF) << 7);
+        set_from_pointer(reg_id, new_value);
     }
 
     flag_update(HF,0);
     flag_update(NF,0);
-    flag_update(ZF,(a_value==0));
+    flag_update(ZF,(new_value==0));
     flag_update(CF,(bool)bit0);
 }
 
 // Shift contents of byte at (n) left and store bit 7 in CF, bit0 = 0, flags updated
 // Flags Z 0 0 C
-void Memory::sla_from_pointer(u8 reg_id)
+void Memory::sla_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in, byte_val, bit7;
 
@@ -982,7 +915,7 @@ void Memory::sla_from_pointer(u8 reg_id)
 
 // Shift contents of byte at (n) right and store bit 0 in CF, bit7 unchanged, flags updated
 // Flags Z 0 0 C
-void Memory::sra_from_pointer(u8 reg_id)
+void Memory::sra_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in, byte_val, bit0, bit7;
 
@@ -1003,7 +936,7 @@ void Memory::sra_from_pointer(u8 reg_id)
 
 // Shift contents of byte at (n) right and store bit 0 in CF, bit7 = 0, flags updated
 // Flags Z 0 0 C
-void Memory::srl_from_pointer(u8 reg_id)
+void Memory::srl_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in, byte_val, bit0;
 
@@ -1022,7 +955,7 @@ void Memory::srl_from_pointer(u8 reg_id)
 
 // Test bit b in byte at (n) and set flags accordingly
 // Flags Z 0 1 -
-void Memory::bit_test_from_pointer(u8 reg_id, u8 bit_number)
+void Memory::bit_test_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
     u8 bit_val;
 
@@ -1034,7 +967,7 @@ void Memory::bit_test_from_pointer(u8 reg_id, u8 bit_number)
 }
 
 // Set bit in in byte at (n), flags not affected
-void Memory::bit_set_from_pointer(u8 reg_id, u8 bit_number)
+void Memory::bit_set_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
     u8 byte_val, new_val, bit_mask;
 
@@ -1046,7 +979,7 @@ void Memory::bit_set_from_pointer(u8 reg_id, u8 bit_number)
 }
 
 // Reset bit in in byte at (n), flags not affected
-void Memory::bit_res_from_pointer(u8 reg_id, u8 bit_number)
+void Memory::bit_res_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
     u8 byte_val, new_val, bit_mask;
 

@@ -93,7 +93,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x7e:  // Set register A to value at (HL)
-            mem.reg_set(RA, mem.get_from_pointer(RHL));
+            mem.reg_set(RA, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x47:  // Set register B to register A
@@ -125,7 +125,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x46:  // Set register B to value at (HL)
-            mem.reg_set(RB, mem.get_from_pointer(RHL));
+            mem.reg_set(RB, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x4f:  // Set register C to register A
@@ -157,7 +157,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x4e:  // Set register C to value at (HL)
-            mem.reg_set(RC, mem.get_from_pointer(RHL));
+            mem.reg_set(RC, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x57:  // Set register D to register A
@@ -189,7 +189,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x56:  // Set register D to value at (HL)
-            mem.reg_set(RD, mem.get_from_pointer(RHL));
+            mem.reg_set(RD, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x5f:  // Set register E to register A
@@ -221,7 +221,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x5e:  // Set register E to value at (HL)
-            mem.reg_set(RE, mem.get_from_pointer(RHL));
+            mem.reg_set(RE, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x67:  // Set register H to register A
@@ -253,7 +253,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x66:  // Set register H to value at (HL)
-            mem.reg_set(RH, mem.get_from_pointer(RHL));
+            mem.reg_set(RH, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x6f:  // Set register L to register A
@@ -285,43 +285,43 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x6e:  // Set register L to value at (HL)
-            mem.reg_set(RL, mem.get_from_pointer(RHL));
+            mem.reg_set(RL, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x70:  // Set byte at (HL) to register B
-            mem.set_from_pointer(RHL,mem.reg_get(RB));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RB));
             clk.add_cycles(8);
             break;
         case 0x71:  // Set byte at (HL) to register C
-            mem.set_from_pointer(RHL,mem.reg_get(RC));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RC));
             clk.add_cycles(8);
             break;
         case 0x72:  // Set byte at (HL) to register D
-            mem.set_from_pointer(RHL,mem.reg_get(RD));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RD));
             clk.add_cycles(8);
             break;
         case 0x73:  // Set byte at (HL) to register E
-            mem.set_from_pointer(RHL,mem.reg_get(RE));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RE));
             clk.add_cycles(8);
             break;
         case 0x74:  // Set byte at (HL) to register H
-            mem.set_from_pointer(RHL,mem.reg_get(RH));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RH));
             clk.add_cycles(8);
             break;
         case 0x75:  // Set byte at (HL) to register L
-            mem.set_from_pointer(RHL,mem.reg_get(RL));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RL));
             clk.add_cycles(8);
             break;
         case 0x36:  // Set byte at (HL) to immediate byte n
-            mem.set_from_pointer(RHL,mem.fetch_byte());
+            mem.set_from_pointer(Register16Bit::HL,mem.fetch_byte());
             clk.add_cycles(12);
             break;
         case 0x0a:  // Set register A to value at (BC)
-            mem.reg_set(RA, mem.get_from_pointer(RBC));
+            mem.reg_set(RA, mem.get_from_pointer(Register16Bit::BC));
             clk.add_cycles(8);
             break;
         case 0x1a:  // Set register A to value at (DE)
-            mem.reg_set(RA, mem.get_from_pointer(RDE));
+            mem.reg_set(RA, mem.get_from_pointer(Register16Bit::DE));
             clk.add_cycles(8);
             break;
         case 0xfa:  // Set register A to immediate value at (nn)
@@ -331,15 +331,15 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(16);
             break;
         case 0x02:  // Set byte at (BC) to register A
-            mem.set_from_pointer(RBC,mem.reg_get(RA));
+            mem.set_from_pointer(Register16Bit::BC,mem.reg_get(RA));
             clk.add_cycles(8);
             break;
         case 0x12:  // Set byte at (DE) to register A
-            mem.set_from_pointer(RDE,mem.reg_get(RA));
+            mem.set_from_pointer(Register16Bit::DE,mem.reg_get(RA));
             clk.add_cycles(8);
             break;
         case 0x77:  // Set byte at (HL) to register A
-            mem.set_from_pointer(RHL,mem.reg_get(RA));
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RA));
             clk.add_cycles(8);
             break;
         case 0xea:  // Set byte at (nn) to register A
@@ -359,27 +359,27 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x3a:  // Set register A to value at (HL), decrement HL
-            mem.reg_set(RA, mem.get_from_pointer(RHL));
-            unsigned_16bit_immediate = mem.reg_get16(RHL) - 1;
-            mem.reg_set(RHL, unsigned_16bit_immediate);
+            mem.reg_set(RA, mem.get_from_pointer(Register16Bit::HL));
+            unsigned_16bit_immediate = mem.reg_get16(Register16Bit::HL) - 1;
+            mem.reg_set(Register16Bit::HL, unsigned_16bit_immediate);
             clk.add_cycles(8);
             break;
         case 0x32:  // Set byte at (HL) to register A, decrement HL
-            mem.set_from_pointer(RHL,mem.reg_get(RA));
-            unsigned_16bit_immediate = mem.reg_get16(RHL) - 1;
-            mem.reg_set(RHL, unsigned_16bit_immediate);
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RA));
+            unsigned_16bit_immediate = mem.reg_get16(Register16Bit::HL) - 1;
+            mem.reg_set(Register16Bit::HL, unsigned_16bit_immediate);
             clk.add_cycles(8);
             break;
         case 0x2a:  // Set register A to value at (HL), increment HL
-            mem.reg_set(RA, mem.get_from_pointer(RHL));
-            unsigned_16bit_immediate = mem.reg_get16(RHL) + 1;
-            mem.reg_set(RHL, unsigned_16bit_immediate);
+            mem.reg_set(RA, mem.get_from_pointer(Register16Bit::HL));
+            unsigned_16bit_immediate = mem.reg_get16(Register16Bit::HL) + 1;
+            mem.reg_set(Register16Bit::HL, unsigned_16bit_immediate);
             clk.add_cycles(8);
             break;
         case 0x22:  // Set byte at (HL) to register A, increment HL
-            mem.set_from_pointer(RHL,mem.reg_get(RA));
-            unsigned_16bit_immediate = mem.reg_get16(RHL) + 1;
-            mem.reg_set(RHL, unsigned_16bit_immediate);
+            mem.set_from_pointer(Register16Bit::HL,mem.reg_get(RA));
+            unsigned_16bit_immediate = mem.reg_get16(Register16Bit::HL) + 1;
+            mem.reg_set(Register16Bit::HL, unsigned_16bit_immediate);
             clk.add_cycles(8);
             break;
         case 0xe0:  // Set byte at ($FF00 + imm8 n) to register A
@@ -395,19 +395,19 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0x01:  // Set register BC to 16 bit immediate value nn
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
-            mem.reg_set(RBC,unsigned_16bit_immediate);
+            mem.reg_set(Register16Bit::BC,unsigned_16bit_immediate);
             clk.add_cycles(12);
             break;
         case 0x11:  // Set register DE to 16 bit immediate value nn
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
-            mem.reg_set(RDE,unsigned_16bit_immediate);
+            mem.reg_set(Register16Bit::DE,unsigned_16bit_immediate);
             clk.add_cycles(12);
             break;
         case 0x21:  // Set register HL to 16 bit immediate value nn
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
-            mem.reg_set(RHL,unsigned_16bit_immediate);
+            mem.reg_set(Register16Bit::HL,unsigned_16bit_immediate);
             clk.add_cycles(12);
             break;
         case 0x31:  // Set SP to 16 bit immediate value nn
@@ -417,14 +417,14 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(12);
             break;
         case 0xf9:  // Set SP to value in HL
-            mem.set_sp(mem.reg_get16(RHL));
+            mem.set_sp(mem.reg_get16(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xf8:  // Set HL to SP + imm8 n
             unsigned_16bit_immediate = mem.get_sp() + mem.fetch_byte();
             mem.flag_update(ZF,0);
             mem.flag_update(NF,0);                        // NEED TO ADD H AND C FLAG OPERATIONS
-            mem.reg_set(RHL,unsigned_16bit_immediate);
+            mem.reg_set(Register16Bit::HL,unsigned_16bit_immediate);
             clk.add_cycles(12);
             break;
         case 0x08:  // Set bytes at (nn) to SP value
@@ -439,35 +439,35 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(20);
             break;
         case 0xf5:  // Push AF register onto stack
-            mem.stack_push(mem.reg_get16(RAF));
+            mem.stack_push(mem.reg_get16(Register16Bit::AF));
             clk.add_cycles(16);
             break;
         case 0xc5:  // Push BC register onto stack
-            mem.stack_push(mem.reg_get16(RBC));
+            mem.stack_push(mem.reg_get16(Register16Bit::BC));
             clk.add_cycles(16);
             break;
         case 0xd5:  // Push DE register onto stack
-            mem.stack_push(mem.reg_get16(RDE));
+            mem.stack_push(mem.reg_get16(Register16Bit::DE));
             clk.add_cycles(16);
             break;
         case 0xe5:  // Push HL register onto stack
-            mem.stack_push(mem.reg_get16(RHL));
+            mem.stack_push(mem.reg_get16(Register16Bit::HL));
             clk.add_cycles(16);
             break;
         case 0xf1:  // Pop stack 16-bit value to AF register
-            mem.reg_set(RAF,mem.stack_pop());
+            mem.reg_set(Register16Bit::AF,mem.stack_pop());
             clk.add_cycles(12);
             break;
         case 0xc1:  // Pop stack 16-bit value to BC register
-            mem.reg_set(RBC,mem.stack_pop());
+            mem.reg_set(Register16Bit::BC,mem.stack_pop());
             clk.add_cycles(12);
             break;
         case 0xd1:  // Pop stack 16-bit value to DE register
-            mem.reg_set(RDE,mem.stack_pop());
+            mem.reg_set(Register16Bit::DE,mem.stack_pop());
             clk.add_cycles(12);
             break;
         case 0xe1:  // Pop stack 16-bit value to HL register
-            mem.reg_set(RHL,mem.stack_pop());
+            mem.reg_set(Register16Bit::HL,mem.stack_pop());
             clk.add_cycles(12);
             break;
         case 0x87:  // Set register A to reg A + reg A
@@ -499,7 +499,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x86:  // Set register A to reg A + value at (HL)
-            mem.reg_add(RA, mem.get_from_pointer(RHL));
+            mem.reg_add(RA, mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xc6:  // Set register A to reg A + imm8 n
@@ -535,7 +535,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x8e:  // Set register A to reg A + (HL) + carry
-            mem.reg_add(RA,mem.get_from_pointer(RHL),true);
+            mem.reg_add(RA,mem.get_from_pointer(Register16Bit::HL),true);
             clk.add_cycles(8);
             break;
         case 0xce:  // Set register A to reg A + imm8 n + carry
@@ -571,7 +571,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x96:  // Set register A to reg A minus (HL)
-            mem.reg_sub(RA,mem.get_from_pointer(RHL));
+            mem.reg_sub(RA,mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xd6:  // Set register A to reg A minus imm8 n
@@ -607,7 +607,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x9e:  // Set register A to reg A minus (HL) - carry
-            mem.reg_sub(RA,mem.get_from_pointer(RHL),true);
+            mem.reg_sub(RA,mem.get_from_pointer(Register16Bit::HL),true);
             clk.add_cycles(8);
             break;
         case 0xde:  // Set register A to reg A minus imm8 n - carry
@@ -643,7 +643,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0xa6:  // Set register A to reg A AND (HL)
-            mem.reg_and(mem.get_from_pointer(RHL));
+            mem.reg_and(mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xe6:  // Set register A to reg A AND imm8 n
@@ -679,7 +679,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0xb6:  // Set register A to reg A OR (HL)
-            mem.reg_or(mem.get_from_pointer(RHL));
+            mem.reg_or(mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xf6:  // Set register A to reg A OR imm8 n
@@ -715,7 +715,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0xae:  // Set register A to reg A XOR (HL)
-            mem.reg_xor(mem.get_from_pointer(RHL));
+            mem.reg_xor(mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xee:  // Set register A to reg A XOR imm8 n
@@ -751,7 +751,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0xbe:  // Compare register A to (HL) and update flags
-            mem.reg_compare(mem.get_from_pointer(RHL));
+            mem.reg_compare(mem.get_from_pointer(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0xfe:  // Compare register A to imm8 n and update flags
@@ -787,7 +787,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x34:  // Increment byte at (HL) by 1 and update flags
-            mem.inc_from_pointer(RHL);
+            mem.inc_from_pointer(Register16Bit::HL);
             clk.add_cycles(12);
             break;
         case 0x3d:  // Decrement register A by 1 and update flags
@@ -819,23 +819,23 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x35:  // Decrement byte at (HL) by 1 and update flags
-            mem.dec_from_pointer(RHL);
+            mem.dec_from_pointer(Register16Bit::HL);
             clk.add_cycles(12);
             break;
         case 0x09:  // Register HL is set to register HL + register BC, flags updated
-            mem.reg_add16(RHL,mem.reg_get16(RBC));
+            mem.reg_add16(Register16Bit::HL,mem.reg_get16(Register16Bit::BC));
             clk.add_cycles(8);
             break;
         case 0x19:  // Register HL is set to register HL + register DE, flags updated
-            mem.reg_add16(RHL,mem.reg_get16(RDE));
+            mem.reg_add16(Register16Bit::HL,mem.reg_get16(Register16Bit::DE));
             clk.add_cycles(8);
             break;
         case 0x29:  // Register HL is set to register HL + register HL, flags updated
-            mem.reg_add16(RHL,mem.reg_get16(RHL));
+            mem.reg_add16(Register16Bit::HL,mem.reg_get16(Register16Bit::HL));
             clk.add_cycles(8);
             break;
         case 0x39:  // Register HL is set to register HL + SP, flags updated
-            mem.reg_add16(RHL,mem.get_sp());
+            mem.reg_add16(Register16Bit::HL,mem.get_sp());
             clk.add_cycles(8);
             break;
         case 0xe8:  // SP is set to SP + imm8 n, flags updated
@@ -843,15 +843,15 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(16);
             break;
         case 0x03:  // Increment BC register by 1, flags not updated
-            mem.reg_inc16(RBC);
+            mem.reg_inc16(Register16Bit::BC);
             clk.add_cycles(8);
             break;
         case 0x13:  // Increment DE register by 1, flags not updated
-            mem.reg_inc16(RDE);
+            mem.reg_inc16(Register16Bit::DE);
             clk.add_cycles(8);
             break;
         case 0x23:  // Increment HL register by 1, flags not updated
-            mem.reg_inc16(RHL);
+            mem.reg_inc16(Register16Bit::HL);
             clk.add_cycles(8);
             break;
         case 0x33:  // Increment SP register by 1, flags not updated
@@ -859,15 +859,15 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x0b:  // Decrement BC register by 1, flags not updated
-            mem.reg_dec16(RBC);
+            mem.reg_dec16(Register16Bit::BC);
             clk.add_cycles(8);
             break;
         case 0x1b:  // Decrement DE register by 1, flags not updated
-            mem.reg_dec16(RDE);
+            mem.reg_dec16(Register16Bit::DE);
             clk.add_cycles(8);
             break;
         case 0x2b:  // Decrement HL register by 1, flags not updated
-            mem.reg_dec16(RHL);
+            mem.reg_dec16(Register16Bit::HL);
             clk.add_cycles(8);
             break;
         case 0x3b:  // Decrement SP register by 1, flags not updated
@@ -999,7 +999,7 @@ void Cpu::process_instruction(u8 rom_byte)
             }
             break;
         case 0xe9:  // Jump to address contained in HL
-            mem.set_pc(mem.reg_get16(RHL));
+            mem.set_pc(mem.reg_get16(Register16Bit::HL));
             clk.add_cycles(4);
             break;
         case 0x18:  // Jump to address at PC + e (e = signed 8-bit immediate)
@@ -1257,7 +1257,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x36:  // Swap upper and lower nibbles of byte at (HL), flags updated
-            mem.swap_from_pointer(RHL);
+            mem.swap_from_pointer(Register16Bit::HL);
             clk.add_cycles(16);
             break;
         case 0x07:  // Rotate contents of A register left and store bit 7 in CF, flags updated
@@ -1289,39 +1289,39 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x06:  // Rotate contents of byte at (HL) left and store bit 7 in CF, flags updated
-            mem.rl_from_pointer(RL, true); // Carry = true (Rotate left with carry RLC L)
+            mem.rl_from_pointer(Register16Bit::HL, true); // Carry = true (Rotate left with carry RLC L)
             clk.add_cycles(16);
             break;
-        case 0x17:  // Rotate contents of A register left and store bit 7 in CF, flags updated
+        case 0x17:  // Rotate contents of A register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RA, false); // Carry = false (Rotate left RL A)
             clk.add_cycles(8);
             break;
-        case 0x10:  // Rotate contents of B register left and store bit 7 in CF, flags updated
+        case 0x10:  // Rotate contents of B register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RB, false); // Carry = false (Rotate left with carry RL B)
             clk.add_cycles(8);
             break;
-        case 0x11:  // Rotate contents of C register left and store bit 7 in CF, flags updated
+        case 0x11:  // Rotate contents of C register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RC, false); // Carry = false (Rotate left with carry RL C)
             clk.add_cycles(8);
             break;
-        case 0x12:  // Rotate contents of D register left and store bit 7 in CF, flags updated
+        case 0x12:  // Rotate contents of D register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RD, false); // Carry = false (Rotate left with carry RL D)
             clk.add_cycles(8);
             break;
-        case 0x13:  // Rotate contents of E register left and store bit 7 in CF, flags updated
+        case 0x13:  // Rotate contents of E register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RE, false); // Carry = false (Rotate left with carry RL E)
             clk.add_cycles(8);
             break;
-        case 0x14:  // Rotate contents of H register left and store bit 7 in CF, flags updated
+        case 0x14:  // Rotate contents of H register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RH, false); // Carry = false (Rotate left with carry RL H)
             clk.add_cycles(8);
             break;
-        case 0x15:  // Rotate contents of L register left and store bit 7 in CF, flags updated
+        case 0x15:  // Rotate contents of L register left through carry flag and store bit 7 in CF, flags updated
             mem.reg_rl(RL, false); // Carry = false (Rotate left with carry RL L)
             clk.add_cycles(8);
             break;
-        case 0x16:  // Rotate contents of byte at (HL) left and store bit 7 in CF, flags updated
-            mem.rl_from_pointer(RL, false); // Carry = false (Rotate left with carry RL L)
+        case 0x16:  // Rotate contents of byte at (HL) lef through carry flag and store bit 7 in CF, flags updated
+            mem.rl_from_pointer(Register16Bit::HL, false); // Carry = false (Rotate left with carry RL L)
             clk.add_cycles(16);
             break;
         case 0x0f:  // Rotate contents of A register right and store bit 0 in CF, flags updated
@@ -1353,7 +1353,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x0e:  // Rotate contents of byte at (HL) right and store bit 0 in CF, flags updated
-            mem.rr_from_pointer(RL, true); // Carry = true (Rotate right with carry RRC L)
+            mem.rr_from_pointer(Register16Bit::HL, true); // Carry = true (Rotate right with carry RRC L)
             clk.add_cycles(16);
             break;
         case 0x1f:  // Rotate contents of A register right and store bit 0 in CF, flags updated
@@ -1385,7 +1385,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x1e:  // Rotate contents of byte at (HL) right and store bit 0 in CF, flags updated
-            mem.rr_from_pointer(RL, false); // Carry = false (Rotate right with carry RL L)
+            mem.rr_from_pointer(Register16Bit::HL, false); // Carry = false (Rotate right with carry RL L)
             clk.add_cycles(16);
             break;
         case 0x27:  // Shift contents of register A left and store bit 7 in CF, bit0 = 0, flags updated
@@ -1417,7 +1417,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x26:  // Shift contents of byte at (HL) left and store bit 7 in CF, bit0 = 0, flags updated
-            mem.sla_from_pointer(RHL);
+            mem.sla_from_pointer(Register16Bit::HL);
             clk.add_cycles(16);
             break;
         case 0x2f:  // Shift contents of register A right and store bit 0 in CF, bit7 unchanged, flags updated
@@ -1449,7 +1449,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x2e:  // Shift contents byte at (HL) right and store bit 0 in CF, bit7 unchanged, flags updated
-            mem.sra_from_pointer(RHL);
+            mem.sra_from_pointer(Register16Bit::HL);
             clk.add_cycles(16);
             break;
         case 0x3f:  // Shift contents of register A right and store bit 0 in CF, bit7 = 0, flags updated
@@ -1481,7 +1481,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x3e:  // Shift contents byte at (HL) right and store bit 0 in CF, bit7 = 0, flags updated
-            mem.srl_from_pointer(RHL);
+            mem.srl_from_pointer(Register16Bit::HL);
             clk.add_cycles(16);
             break;
         case 0x47:  // Test bit 0 in register A and set flags accordingly
@@ -1513,7 +1513,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x46:  // Test bit 0 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 0);
+            mem.bit_test_from_pointer(Register16Bit::HL, 0);
             clk.add_cycles(16);
             break;
         case 0x4f:  // Test bit 1 in register A and set flags accordingly
@@ -1545,7 +1545,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x4e:  // Test bit 1 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 1);
+            mem.bit_test_from_pointer(Register16Bit::HL, 1);
             clk.add_cycles(16);
             break;
         case 0x57:  // Test bit 2 in register A and set flags accordingly
@@ -1577,7 +1577,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x56:  // Test bit 2 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 2);
+            mem.bit_test_from_pointer(Register16Bit::HL, 2);
             clk.add_cycles(16);
             break;
         case 0x5f:  // Test bit 3 in register A and set flags accordingly
@@ -1609,7 +1609,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x5e:  // Test bit 3 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 3);
+            mem.bit_test_from_pointer(Register16Bit::HL, 3);
             clk.add_cycles(16);
             break;
         case 0x67:  // Test bit 4 in register A and set flags accordingly
@@ -1641,7 +1641,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x66:  // Test bit 4 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 4);
+            mem.bit_test_from_pointer(Register16Bit::HL, 4);
             clk.add_cycles(16);
             break;
         case 0x6f:  // Test bit 5 in register A and set flags accordingly
@@ -1673,7 +1673,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x6e:  // Test bit 5 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 5);
+            mem.bit_test_from_pointer(Register16Bit::HL, 5);
             clk.add_cycles(16);
             break;
         case 0x77:  // Test bit 6 in register A and set flags accordingly
@@ -1705,7 +1705,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x76:  // Test bit 6 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 6);
+            mem.bit_test_from_pointer(Register16Bit::HL, 6);
             clk.add_cycles(16);
             break;
         case 0x7f:  // Test bit 7 in register A and set flags accordingly
@@ -1737,7 +1737,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x7e:  // Test bit 7 in byte at (HL) and set flags accordingly
-            mem.bit_test_from_pointer(RHL, 7);
+            mem.bit_test_from_pointer(Register16Bit::HL, 7);
             clk.add_cycles(16);
             break;
         case 0xc7:  // Set bit 0 in register A, flags not affected
@@ -1769,7 +1769,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xc6:  // Set bit 0 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 0);
+            mem.bit_set_from_pointer(Register16Bit::HL, 0);
             clk.add_cycles(16);
             break;
         case 0xcf:  // Set bit 1 in register A, flags not affected
@@ -1801,7 +1801,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xce:  // Set bit 1 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 1);
+            mem.bit_set_from_pointer(Register16Bit::HL, 1);
             clk.add_cycles(16);
             break;
         case 0xd7:  // Set bit 2 in register A, flags not affected
@@ -1833,7 +1833,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xd6:  // Set bit 2 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 2);
+            mem.bit_set_from_pointer(Register16Bit::HL, 2);
             clk.add_cycles(16);
             break;
         case 0xdf:  // Set bit 3 in register A, flags not affected
@@ -1865,7 +1865,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xde:  // Set bit 3 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 3);
+            mem.bit_set_from_pointer(Register16Bit::HL, 3);
             clk.add_cycles(16);
             break;
         case 0xe7:  // Set bit 4 in register A, flags not affected
@@ -1897,7 +1897,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xe6:  // Set bit 4 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 4);
+            mem.bit_set_from_pointer(Register16Bit::HL, 4);
             clk.add_cycles(16);
             break;
         case 0xef:  // Set bit 5 in register A, flags not affected
@@ -1929,7 +1929,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xee:  // Set bit 5 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 5);
+            mem.bit_set_from_pointer(Register16Bit::HL, 5);
             clk.add_cycles(16);
             break;
        case 0xf7:  // Set bit 6 in register A, flags not affected
@@ -1961,7 +1961,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xf6:  // Set bit 6 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 6);
+            mem.bit_set_from_pointer(Register16Bit::HL, 6);
             clk.add_cycles(16);
             break;
         case 0xff:  // Set bit 7 in register A, flags not affected
@@ -1993,7 +1993,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xfe:  // Set bit 7 in byte at (HL), flags not affected
-            mem.bit_set_from_pointer(RHL, 7);
+            mem.bit_set_from_pointer(Register16Bit::HL, 7);
             clk.add_cycles(16);
             break;
         case 0x87:  // Reset bit 0 in register A, flags not affected
@@ -2025,7 +2025,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x86:  // Reset bit 0 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 0);
+            mem.bit_res_from_pointer(Register16Bit::HL, 0);
             clk.add_cycles(16);
             break;
         case 0x8f:  // Reset bit 1 in register A, flags not affected
@@ -2057,7 +2057,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x8e:  // Reset bit 1 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 1);
+            mem.bit_res_from_pointer(Register16Bit::HL, 1);
             clk.add_cycles(16);
             break;
         case 0x97:  // Reset bit 2 in register A, flags not affected
@@ -2089,7 +2089,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x96:  // Reset bit 2 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 2);
+            mem.bit_res_from_pointer(Register16Bit::HL, 2);
             clk.add_cycles(16);
             break;
         case 0x9f:  // Reset bit 3 in register A, flags not affected
@@ -2121,7 +2121,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x9e:  // Reset bit 3 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 3);
+            mem.bit_res_from_pointer(Register16Bit::HL, 3);
             clk.add_cycles(16);
             break;
         case 0xa7:  // Reset bit 4 in register A, flags not affected
@@ -2153,7 +2153,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xa6:  // Reset bit 4 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 4);
+            mem.bit_res_from_pointer(Register16Bit::HL, 4);
             clk.add_cycles(16);
             break;
         case 0xaf:  // Reset bit 5 in register A, flags not affected
@@ -2185,7 +2185,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xae:  // Reset bit 5 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 5);
+            mem.bit_res_from_pointer(Register16Bit::HL, 5);
             clk.add_cycles(16);
             break;
         case 0xb7:  // Reset bit 6 in register A, flags not affected
@@ -2217,7 +2217,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xb6:  // Reset bit 6 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 6);
+            mem.bit_res_from_pointer(Register16Bit::HL, 6);
             clk.add_cycles(16);
             break;
         case 0xbf:  // Reset bit 7 in register A, flags not affected
@@ -2249,7 +2249,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xbe:  // Reset bit 7 in byte at (HL), flags not affected
-            mem.bit_res_from_pointer(RHL, 7);
+            mem.bit_res_from_pointer(Register16Bit::HL, 7);
             clk.add_cycles(16);
             break;
     }

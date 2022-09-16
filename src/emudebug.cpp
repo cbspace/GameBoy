@@ -43,10 +43,10 @@ void Emudebug::dump_reg()
     cout << endl;
     cout << " --- REG DUMP ---" << uppercase << endl;
     cout << "PC: " << hex << setfill('0') << setw (4) << mem.get_pc() << endl;
-    cout << "A/F: " << hex << setfill('0') << setw (4) << mem.reg_get16(RAF) << endl;
-    cout << "B/C: " << hex << setfill('0') << setw (4) << mem.reg_get16(RBC) << endl;
-    cout << "D/E: " << hex << setfill('0') << setw (4) << mem.reg_get16(RDE) << endl;
-    cout << "H/L: " << hex << setfill('0') << setw (4) << mem.reg_get16(RHL) << endl;
+    cout << "A/F: " << hex << setfill('0') << setw (4) << mem.reg_get16(Register16Bit::AF) << endl;
+    cout << "B/C: " << hex << setfill('0') << setw (4) << mem.reg_get16(Register16Bit::BC) << endl;
+    cout << "D/E: " << hex << setfill('0') << setw (4) << mem.reg_get16(Register16Bit::DE) << endl;
+    cout << "H/L: " << hex << setfill('0') << setw (4) << mem.reg_get16(Register16Bit::HL) << endl;
     cout << endl;
 }
 
