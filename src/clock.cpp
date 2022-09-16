@@ -28,30 +28,19 @@ void Clock::add_cycles(u8 amount)
 
 bool Clock::cycles_reached(DisplayMode display_mode)
 {
-    switch(display_mode)
-    {
         // OAM and Display RAM being used
-        case DisplayMode::Mode3:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3)
-            {
+        if ((display_mode == DisplayMode::Mode3) &&
+            (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2 + CLK_CYCLES_MODE3))
                 return true;
-            }
-            break;
         // OAM being used
-        case DisplayMode::Mode2:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2)
-            {
+        else if ((display_mode == DisplayMode::Mode2) &&
+            (line_clock_cycles >= CLK_CYCLES_MODE0 + CLK_CYCLES_MODE2))
                 return true;
-            }
-            break;
         // H-Blank
-        case DisplayMode::Mode0:
-            if (line_clock_cycles >= CLK_CYCLES_MODE0)
-            {
+        else if ((display_mode == DisplayMode::Mode0) &&
+            (line_clock_cycles >= CLK_CYCLES_MODE0))
                 return true;
-            }
-            break;
-    }
+
     return false;
 }
 
