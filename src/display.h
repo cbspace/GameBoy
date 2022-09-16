@@ -21,7 +21,7 @@ class Display
         Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in);  
 
         optional<Error> init();
-        void set_title(string title_add);
+        void set_window_title(string title_add);
         void display_cycle();
         void update_line();
         void draw_frame();

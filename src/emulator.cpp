@@ -40,7 +40,7 @@ void Emulator::start(char* rom_path, bool rom_is_dmg, bool debug_mode_enabled)
         mem.set_pc(0x00);
         edb.insert_logo();
     } else {
-        disp.set_title(mem.get_rom_title());
+        disp.set_window_title(mem.get_rom_title());
         cout << "Rom Title: " << mem.get_rom_title() << endl;
         mem.write_byte(R_LCDC, 0x91);
     }

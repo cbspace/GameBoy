@@ -22,16 +22,15 @@ Display::Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     texture(NULL)
 {}
 
-void Display::set_title(string title_add)
+void Display::set_window_title(string title_add)
 {
+    if (title_add.empty()) {
+        return;
+    }
+
     string window_title_const(WINDOW_TITLE);
-    if (title_add.length() > 0) {
-    	string new_window_title = window_title_const + " - " + title_add;
-    	SDL_SetWindowTitle(window, new_window_title.c_str());
-    }
-    else {
-    	SDL_SetWindowTitle(window, window_title_const.c_str());
-    }
+    string new_window_title = window_title_const + " - " + title_add;
+    SDL_SetWindowTitle(window, new_window_title.c_str());
 }
 
 void Display::display_cycle()
