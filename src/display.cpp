@@ -41,6 +41,33 @@ void Display::display_cycle()
 
     u8 ly_val = mem.get_byte(R_LY);
 
+    // if (current_mode == DisplayMode::Mode0) {
+    //     if (clk.cycles_reached(DisplayMode::Mode0)) {
+    //         if (ly_val == DISP_H)
+    //         {
+    //             update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
+    //         } else {
+    //             update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
+    //         }
+    //     }
+    // } else if (current_mode == DisplayMode::Mode1) {
+    //     if (clk.cycles_reached(DisplayMode::Mode1)) {
+    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
+    //     }
+    // } else if (current_mode == DisplayMode::Mode2) {
+    //     if (clk.cycles_reached(DisplayMode::Mode2)) {
+    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
+    //         update_line();
+    //     }
+    // } else if (current_mode == DisplayMode::Mode3) {
+    //     if (clk.cycles_reached(DisplayMode::Mode3)) {
+    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode0));
+    //         clk.reset_cycles();
+    //     }
+    // }
+
+
+
     if (clk.cycles_reached(DisplayMode::Mode3))
     {
         if (current_mode != DisplayMode::Mode3)
