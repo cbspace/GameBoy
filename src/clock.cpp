@@ -1,5 +1,5 @@
 #include "clock.h"
-#include <stdint.h>
+#include "lib/Types.h"
 #include <SDL2/SDL.h>
 
 Clock::Clock() : line_clock_cycles(0)
@@ -9,7 +9,7 @@ Clock::Clock() : line_clock_cycles(0)
 
 void Clock::frame_delay()
 {
-    uint32_t frame_elap_ticks;
+    u32 frame_elap_ticks;
     frame_elap_ticks = SDL_GetTicks() - frame_start_ticks ;
 
     if (frame_elap_ticks < CLK_FRAME_DELAY)

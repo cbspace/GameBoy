@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "lib/Types.h"
 
 #define CLK_FRAME_DELAY          16          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
@@ -21,13 +21,13 @@ class Clock
     public:
         Clock();
         void frame_delay();
-        void add_cycles(uint8_t amount);
+        void add_cycles(u8 amount);
         bool max_cycles_reached();
-        bool cycles_reached(uint8_t display_mode);
+        bool cycles_reached(u8 display_mode);
         void reset_cycles();
     private:
-        uint32_t frame_start_ticks;
-        uint32_t line_clock_cycles;
+        u32 frame_start_ticks;
+        u32 line_clock_cycles;
 };
 
 /*
