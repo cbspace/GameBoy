@@ -15,13 +15,6 @@
 // Display Class looks after SDL Window
 // Render Class looks after pixel array
 
-enum class ColourValues {
-    C0,
-    C1,
-    C2,
-    C3
-};
-
 class Display
 {
     public:
@@ -45,8 +38,9 @@ class Display
         Interrupt& ir;
         Clock& clk;
 
-        i32 display_buffer[width*height];
-        u8 pixels[width*height];
+        u32 display_buffer[width*height];
+        ColourValue pixels[DISP_W*DISP_H];
+        u32 pixels_coloured[DISP_W*DISP_H];
 
         SDL_Window* window;
         SDL_Surface* drawSurface;

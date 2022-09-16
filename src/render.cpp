@@ -20,7 +20,7 @@ using namespace std;
  *  c) V-Blank ISR
  */
 
-Render::Render(Memory& mem_in, u8 (&pix_in)[width*height]) :
+Render::Render(Memory& mem_in, ColourValue (&pix_in)[DISP_W*DISP_H]) :
 	mem(mem_in),
 	pixels(pix_in)
 {}
@@ -62,7 +62,8 @@ void Render::draw_sprites_line(u8 line_y)
 //	u8 sprite_size;					// 0 = 8x8 mode, 1 = 8x16 mode (w x h)
 	u8 sprite_x, sprite_y;				// Current sprite x and y value
 	u8 x_start, x_finish;				// Overlapping x pixels to draw
-	u8 pix_val, y_val, x_len;
+	u8 y_val, x_len;
+	ColourValue pix_val;
 
 //	sprite_size = mem.get_bit(R_LCDC, R_LCDC_SPRITE_SIZE);
 
@@ -116,7 +117,7 @@ void Render::draw_sprites_line(u8 line_y)
     }
 }
 
-u8 Render::get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x)
+ColourValue Render::get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x)
 {
 	u8 byte_number, bit_number;
 	u8 tile_byte1, tile_byte2;
@@ -132,8 +133,8 @@ u8 Render::get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x)
 	tile_byte1 = mem.get_byte(tile_addr + byte_number);
 	tile_byte2 = mem.get_byte(tile_addr + byte_number + 1);
 
-	return ((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
-		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));
+	return static_cast<ColourValue>(((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
+		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number)));
 }
 
 void Render::draw_bg_line(u8 line_y)
@@ -172,7 +173,7 @@ void Render::draw_bg_line(u8 line_y)
 }
 
 // Get a bg pixel from a tile
-u8 Render::get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm)
+ColourValue Render::get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm)
 {
 	u8 tile_number, tile_pos_x, tile_pos_y;
 	u8 byte_number, bit_number;
@@ -215,8 +216,8 @@ u8 Render::get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm)
 		tile_byte2 = mem.get_byte((u16)tile_addr_signed + (u16)byte_number + 1);
 	}
 
-	return ((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
-		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number));
+	return static_cast<ColourValue>(((tile_byte2 & (1<<(bit_number))) >> (bit_number) << 1)
+		   + ((tile_byte1 & (1<<(bit_number))) >> (bit_number)));
 }
 
 Render::~Render() {}

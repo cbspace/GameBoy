@@ -24,7 +24,7 @@ using namespace std;
 class Render
 {
     public:
-	    Render(Memory& mem_in, u8 (&pix_in)[width*height]);
+	    Render(Memory& mem_in, ColourValue (&pix_in)[DISP_W*DISP_H]);
         void render_line(u8 y);
         void refresh_sprites();
         virtual ~Render();
@@ -34,9 +34,9 @@ class Render
         void draw_sprites_line(u8 line_y);
 
         Memory& mem;
-        u8 (&pixels)[width*height];
+        ColourValue (&pixels)[DISP_W*DISP_H];
         SpriteAttrib spr_att[SPRITE_TILES_MAX];
 
-        u8 get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm);
-        u8 get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x);
+        ColourValue get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm);
+        ColourValue get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x);
 };

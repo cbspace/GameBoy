@@ -177,8 +177,8 @@ void Display::update_stat_reg(u8 mode_val)
 
 void Display::draw_frame()
 {
-    scale();
     colour();
+    scale();
 
     SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(u32));
     SDL_RenderClear(sdlRenderer);
@@ -192,27 +192,27 @@ void Display::colour()
 {
 	u32 current_pixel_ref;
 
-    for (u16 j = 0; j < height; j++)
+    for (u16 y = 0; y < DISP_H; y++)
     {
-        for (u16 i = 0; i < width; i++)
+        for (u16 x = 0; x < DISP_W; x++)
         {
-        	current_pixel_ref = j*width + i;
-        	switch(display_buffer[current_pixel_ref])
+        	current_pixel_ref = y*DISP_W + x;
+        	switch(pixels[current_pixel_ref])
         	{
-        	case 0x00:
-        		display_buffer[current_pixel_ref] = COLOUR_BG_ARGB;
+        	case ColourValue::C0:
+        		pixels_coloured[current_pixel_ref] = COLOUR_BG_ARGB;
         		break;
-        	case 0x01:
-        		display_buffer[current_pixel_ref] = COLOUR_C1_ARGB;
+        	case ColourValue::C1:
+        		pixels_coloured[current_pixel_ref] = COLOUR_C1_ARGB;
         		break;
-        	case 0x02:
-        		display_buffer[current_pixel_ref] = COLOUR_C2_ARGB;
+        	case ColourValue::C2:
+        		pixels_coloured[current_pixel_ref] = COLOUR_C2_ARGB;
         		break;
-        	case 0x03:
-        		display_buffer[current_pixel_ref] = COLOUR_C3_ARGB;
+        	case ColourValue::C3:
+        		pixels_coloured[current_pixel_ref] = COLOUR_C3_ARGB;
         		break;
         	default:
-        		display_buffer[current_pixel_ref] = 0xffffffff;
+        		pixels_coloured[current_pixel_ref] = 0xffffffff;
         		break;
         	}
 
@@ -230,7 +230,7 @@ void Display::scale()
             {
                 for (u16 x1 = 0; x1 < SCALING_FACTOR; x1++)
                 {
-                	display_buffer[(y * SCALING_FACTOR + y1) * width + x * SCALING_FACTOR + x1] = pixels[y * DISP_W + x];
+                	display_buffer[(y * SCALING_FACTOR + y1) * width + x * SCALING_FACTOR + x1] = pixels_coloured[y * DISP_W + x];
                 }
             }
         }
@@ -243,7 +243,7 @@ void Display::clear_pixels()
     {
         for (u16 x = 0; x < DISP_W; x++)
         {
-            pixels[y * DISP_W + x] = 0;
+            pixels[y * DISP_W + x] = ColourValue::C0;
         }
     }
 }
