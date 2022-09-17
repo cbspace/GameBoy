@@ -2,7 +2,7 @@
 
 #include "lib/Types.h"
 
-#define CLK_FRAME_DELAY          500          // Clock period for frame clock (in ms), results in ~60 Hz Clock
+#define CLK_FRAME_DELAY          100          // Clock period for frame clock (in ms), results in ~60 Hz Clock
 #define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
 #define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
 

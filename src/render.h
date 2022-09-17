@@ -25,7 +25,7 @@ class Render
 {
     public:
 	    Render(Memory& mem_in, ColourValue (&pix_in)[DISP_W*DISP_H]);
-        void render_line(u8 y);
+        void render_line(u8 line_y);
         void refresh_sprites();
         virtual ~Render();
 
