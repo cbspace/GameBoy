@@ -155,7 +155,7 @@ void Display::update_stat_reg(u8 mode_val)
 
     if (ly_val == lyc_val)
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, true);
     	if (lyc_sel_val)
     	{
             ir.if_update(I_LCDSTAT, true);
@@ -163,13 +163,13 @@ void Display::update_stat_reg(u8 mode_val)
     }
     else
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_LYC_FLAG, false);
     }
 
     if (mode_val == 0x00)
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, false);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, false);
     	if (mode_00_sel_val)
     	{
             ir.if_update(I_LCDSTAT, true);
@@ -177,8 +177,8 @@ void Display::update_stat_reg(u8 mode_val)
     }
     else if (mode_val == 0x01)
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 0);
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, false);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, true);
     	if (mode_01_sel_val)
     	{
             ir.if_update(I_LCDSTAT, true);
@@ -186,8 +186,8 @@ void Display::update_stat_reg(u8 mode_val)
     }
     else if (mode_val == 0x02)
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 0);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, true);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, false);
     	if (mode_10_sel_val)
     	{
             ir.if_update(I_LCDSTAT, true);
@@ -195,8 +195,8 @@ void Display::update_stat_reg(u8 mode_val)
     }
     else if (mode_val == 0x03)
     {
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, 1);
-    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, 1);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B1, true);
+    	mem.write_bit(R_LCDSTAT, R_STAT_MODE_B0, true);
     }
 
 }

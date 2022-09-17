@@ -44,8 +44,7 @@ void Memory::flag_update(u8 flag_id, u8 flg_val)
 // Return flag value
 u8 Memory::flag_get(u8 flag_id)
 {
-    u8 flag_val;
-    flag_val = (reg[RF] & flag_id);
+    u8 flag_val = (reg[RF] & flag_id);
     return !(flag_val==0);
 }
 
@@ -134,11 +133,8 @@ void Memory::reg_set(u8 reg_id, u8 reg_value)
 // Set value in 16 bit register
 void Memory::reg_set(Register16Bit reg_id, u16 reg_value)
 {
-    u8 high_byte;
-    u8 low_byte;
-
-    high_byte = reg_value >> 8;
-    low_byte = reg_value & 0xff;
+    u8 high_byte = reg_value >> 8;
+    u8 low_byte = reg_value & 0xff;
     
     switch(reg_id)
     {
@@ -167,7 +163,6 @@ void Memory::reg_copy(u8 to_reg_id, u8 from_reg_id)
     // Check if registers are valid
     if ((from_reg_id < REG_ARRAY_SIZE) && (to_reg_id < REG_ARRAY_SIZE))
     {
-        // use reg_get and reg_set to copy data
         reg_set(to_reg_id, reg_get(from_reg_id));
     }
 }
@@ -178,16 +173,9 @@ void Memory::reg_inc(u8 reg_id)
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // Update H flag
         flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] + 1) & 0xf0));
-
-        // Clear N flag
         flag_update(NF,0);
-
-        // Update 8 bit register
         reg[reg_id]++;
-
-        // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
 }
@@ -195,9 +183,7 @@ void Memory::reg_inc(u8 reg_id)
 // Increment 16-bit register, flags not updated
 void Memory::reg_inc16(Register16Bit reg_id)
 {
-    u16 reg_val;
-
-    reg_val = reg_get16(reg_id);
+    u16 reg_val = reg_get16(reg_id);
     reg_val++;
     reg_set(reg_id,reg_val);
 }
@@ -205,9 +191,7 @@ void Memory::reg_inc16(Register16Bit reg_id)
 // Decrement 16-bit register, flags not updated
 void Memory::reg_dec16(Register16Bit reg_id)
 {
-    u16 reg_val;
-
-    reg_val = reg_get16(reg_id);
+    u16 reg_val = reg_get16(reg_id);
     reg_val--;
     reg_set(reg_id,reg_val);
 }
@@ -215,26 +199,13 @@ void Memory::reg_dec16(Register16Bit reg_id)
 // Decrement register, flags updated
 void Memory::reg_dec(u8 reg_id)
 {
-    // 16 bit register value
-    //u16 reg_val;
-
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // Update H flag
         flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] - 1) & 0xf0));
-
-        // Clear N flag
         flag_update(NF,0);
-
-        // Update 8 bit register
         reg[reg_id]--;
-
-        // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
-
-        ///temp
-        //printf("reg %i now equals %i ", reg_id, reg[reg_id]);
     }
 }
 
@@ -246,31 +217,19 @@ void Memory::reg_add(u8 reg_id, u8 add_value, bool carry)
     // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        u16 add_w_carry, total;
-
         // Carry is added to accomodate ADDC operations
-        add_w_carry = add_value;
+        u16 add_w_carry = add_value;
         if (carry)
         {
             add_w_carry += flag_get(CF);
         }
 
-        // The total sum
-        total = reg[reg_id] + add_w_carry;
+        u16 total = reg[reg_id] + add_w_carry;
 
-        // Update H flag
         flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
-
-        // Update C flag
         flag_update(CF,(total > 0xff));
-
-        // Clear N flag
         flag_update(NF,0);
-
-        // Update 8 bit register
         reg[reg_id] += add_value + carry;
-
-        // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
 }
@@ -290,39 +249,21 @@ void Memory::reg_sub(u8 reg_id, u8 sub_value, bool borrow)
             sub_w_borrow -= flag_get(CF);
         }
 
-        // The total result
         total = sub_value - sub_w_borrow;
-
-        // Update H flag
         flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
-
-        // Update C flag
         flag_update(CF,!(total < 0));
-
-        // Set N flag
         flag_update(NF,1);
-
-        // Update 8 bit register
         reg[reg_id] -= sub_value - borrow;
-
-        // Update Z flag
         flag_update(ZF,(reg[reg_id]==0));
     }
 }
 
 void Memory::reg_add16(Register16Bit reg_id, u16 reg_n_val)
 {
-    u32 total;
+    u32 total = reg_get16(reg_id) + reg_n_val;
 
-    total = reg_get16(reg_id) + reg_n_val;
-
-    // Update H flag (half carry from bit 11)
     flag_update(HF,(reg_get16(reg_id) & 0xf000) == (total & 0xf000));
-
-    // Update C flag (carry from bit 15)
     flag_update(CF,(total > 0xffff));
-
-    // Clear N flag
     flag_update(NF,0);
 
     reg_set(reg_id,(u16)total);
@@ -342,13 +283,10 @@ void Memory::reg_daa()
     {
         reg[RA] += 0x60;
 
-        // Update C flag
         flag_update(CF,1);
     }
-    // Update H flag
-    flag_update(HF,0);
 
-    // Update Z flag
+    flag_update(HF,0);
     flag_update(ZF,(reg[RA]==0));
 }
 
@@ -358,13 +296,8 @@ void Memory::reg_daa()
 // Flags 0 0 0 C
 void Memory::reg_rla(bool carry)
 {
-    u8 a_value, bit7;
-
-    // Get value of bit 7
-    bit7 = (reg[RA] & 0x80) >> 7;
-
-    // Shift register A left by 1
-    a_value = reg[RA] << 1;
+    u8 bit7 = (reg[RA] & 0x80) >> 7;
+    u8 a_value = reg[RA] << 1;
 
     if (carry)
     {
@@ -377,16 +310,9 @@ void Memory::reg_rla(bool carry)
         reg[RA] = a_value + flag_get(CF);
     }
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,0);
-
-    // Set CF to bit7
     flag_update(CF,(bool)bit7);
 }
 
@@ -396,13 +322,8 @@ void Memory::reg_rla(bool carry)
 // Flags Z 0 0 C
 void Memory::reg_rl(u8 reg_id, bool carry)
 {
-    u8 a_value, bit7;
-
-    // Get value of bit 7
-    bit7 = (reg[reg_id] & 0x80) >> 7;
-
-    // Shift register A left by 1
-    a_value = reg[reg_id] << 1;
+    u8 bit7 = (reg[reg_id] & 0x80) >> 7;
+    u8 a_value = reg[reg_id] << 1;
 
     if (carry)
     {
@@ -415,16 +336,9 @@ void Memory::reg_rl(u8 reg_id, bool carry)
         reg[reg_id] = a_value + flag_get(CF);
     }
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Set CF to bit7
     flag_update(CF,(bool)bit7);
 }
 
@@ -434,13 +348,8 @@ void Memory::reg_rl(u8 reg_id, bool carry)
 // Flags 0 0 0 C
 void Memory::reg_rra(bool carry)
 {
-    u8 a_value, bit0;
-
-    // Get value of bit 0
-    bit0 = reg[RA] & 0x01;
-
-    // Shift register A right by 1
-    a_value = reg[RA] >> 1;
+    u8 bit0 = reg[RA] & 0x01;
+    u8 a_value = reg[RA] >> 1;
 
     if (carry)
     {
@@ -453,16 +362,9 @@ void Memory::reg_rra(bool carry)
         reg[RA] = a_value + (flag_get(CF) << 7);
     }
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,0);
-
-    // Set CF to bit0
     flag_update(CF,(bool)bit0);
 }
 
@@ -472,13 +374,8 @@ void Memory::reg_rra(bool carry)
 // Flags Z 0 0 C
 void Memory::reg_rr(u8 reg_id, bool carry)
 {
-    u8 a_value, bit0;
-
-    // Get value of bit 0
-    bit0 = reg[reg_id] & 0x01;
-
-    // Shift register A right by 1
-    a_value = reg[reg_id] >> 1;
+    u8 bit0 = reg[reg_id] & 0x01;
+    u8 a_value = reg[reg_id] >> 1;
 
     if (carry)
     {
@@ -491,16 +388,9 @@ void Memory::reg_rr(u8 reg_id, bool carry)
         reg[reg_id] = a_value + (flag_get(CF) << 7);
     }
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Set CF to bit0
     flag_update(CF,(bool)bit0);
 }
 
@@ -508,24 +398,12 @@ void Memory::reg_rr(u8 reg_id, bool carry)
 // Flags Z 0 0 C
 void Memory::reg_sla(u8 reg_id)
 {
-    u8 bit7;
-
-    // Get value of bit 7
-    bit7 = (reg[reg_id] & 0x80) >> 7;
-
-    // Shift register left by 1
+    u8 bit7 = (reg[reg_id] & 0x80) >> 7;
     reg[reg_id] = reg[reg_id] << 1;
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Set CF to bit7
     flag_update(CF,(bool)bit7);
 }
 
@@ -533,27 +411,13 @@ void Memory::reg_sla(u8 reg_id)
 // Flags Z 0 0 C
 void Memory::reg_sra(u8 reg_id)
 {
-    u8 bit0, bit7;
-
-    // Get value of bit 0
-    bit0 = reg[reg_id] & 0x01;
-
-    // Get value of bit 7
-    bit7 = reg[reg_id] & 0x80;
-
-    // Shift register right by 1 and reinstate bit 7
+    u8 bit0 = reg[reg_id] & 0x01;
+    u8 bit7 = reg[reg_id] & 0x80;
     reg[reg_id] = (reg[reg_id] >> 1) + bit7;
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Set CF to bit0
     flag_update(CF,(bool)bit0);
 }
 
@@ -561,24 +425,12 @@ void Memory::reg_sra(u8 reg_id)
 // Flags Z 0 0 C
 void Memory::reg_srl(u8 reg_id)
 {
-    u8 bit0;
-
-    // Get value of bit 0
-    bit0 = reg[reg_id] & 0x01;
-
-    // Shift register right by 1
+    u8 bit0 = reg[reg_id] & 0x01;
     reg[reg_id] = reg[reg_id] >> 1;
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update N flag
     flag_update(NF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Set CF to bit0
     flag_update(CF,(bool)bit0);
 }
 
@@ -587,97 +439,55 @@ void Memory::reg_srl(u8 reg_id)
 // Register A is ANDed with and_value, result stored in register A - flags updated
 void Memory::reg_and(u8 and_value)
 {
-    // Update register A
     reg[RA] &= and_value;
 
-    // Update H flag
     flag_update(HF,1);
-
-    // Update C flag
     flag_update(CF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[RA]==0));
-
-    // Clear N flag
     flag_update(NF,0);
 }
 
 // Register A is ORed with and_value, result stored in register A - flags updated
 void Memory::reg_or(u8 or_value)
 {
-    // Update register A
     reg[RA] |= or_value;
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update C flag
     flag_update(CF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[RA]==0));
-
-    // Clear N flag
     flag_update(NF,0);
 }
 
 // Register A is XORed with and_value, result stored in register A - flags updated
 void Memory::reg_xor(u8 xor_value)
 {
-    // Update register A
     reg[RA] ^= xor_value;
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update C flag
     flag_update(CF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[RA]==0));
-
-    // Clear N flag
     flag_update(NF,0);
 }
 
 // Register A is compared with cmp_value, result stored in register A - flags updated
 void Memory::reg_compare(u8 cmp_value)
 {
-    i16 total;
+    i16 total = reg[RA] - cmp_value;
 
-    // The total result
-    total = reg[RA] - cmp_value;
-
-    // Update H flag
     flag_update(HF,(reg[RA] & 0xf0) == (total & 0xf0));
-
-    // Update C flag
     flag_update(CF,!(total < 0));
-
-    // Update Z flag
     flag_update(ZF,(total==0));
-
-    // Set N flag
     flag_update(NF,1);
 }
 
 // Swap upper and lower nibbles of register, flags updated
 void Memory::reg_swap(u8 reg_id)
 {
-    // Update register
     reg[reg_id] = (reg[reg_id] >> 4) | ((reg[reg_id] & 0xf) << 4);
 
-    // Update H flag
     flag_update(HF,0);
-
-    // Update C flag
     flag_update(CF,0);
-
-    // Update Z flag
     flag_update(ZF,(reg[reg_id]==0));
-
-    // Clear N flag
     flag_update(NF,0);
 }
 
@@ -685,40 +495,26 @@ void Memory::reg_swap(u8 reg_id)
 // Flags Z 0 1 -
 void Memory::bit_test(u8 reg_id, u8 bit_number)
 {
-    u8 bit_val;
+    u8 bit_val = (reg[reg_id] >> bit_number) & 1;
 
-    // Get bit value
-    bit_val = (reg[reg_id] >> bit_number) & 1;
-
-    // Update Z flag
     flag_update(ZF,(bit_val==0));
-
-    // Clear N flag
     flag_update(NF,0);
-
-    // Update H flag
     flag_update(HF,1);
 }
 
 // Set bit in register, flags not affected
 void Memory::bit_set(u8 reg_id, u8 bit_number)
 {
-    u8 new_val, bit_mask;
-
-    // Set the bit
-    bit_mask = 1 << bit_number;
-    new_val = reg[reg_id] | bit_mask;
+    u8 bit_mask = 1 << bit_number;
+    u8 new_val = reg[reg_id] | bit_mask;
     reg[reg_id] = new_val;
 }
 
 // Reset bit in register, flags not affected
 void Memory::bit_res(u8 reg_id, u8 bit_number)
 {
-    u8 new_val, bit_mask;
-
-    // Set the bit
-    bit_mask = 1 << bit_number;
-    new_val = reg[reg_id] & ~bit_mask;
+    u8 bit_mask = 1 << bit_number;
+    u8 new_val = reg[reg_id] & ~bit_mask;
     reg[reg_id] = new_val;
 }
 
@@ -733,8 +529,7 @@ u8 Memory::get_byte(u16 address)
 // Read a bit from an byte in RAM/ROM
 u8 Memory::get_bit(u16 address, u8 bit_number)
 {
-	u8 bit_mask;
-	bit_mask = 1 << bit_number;
+	u8 bit_mask = 1 << bit_number;
 	return (ram[address] & bit_mask) >> bit_number;
 }
 
@@ -768,18 +563,18 @@ void Memory::write_byte(u16 address, u8 byte)
 }
 
 // Update individual bit in RAM/ROM
-void Memory::write_bit(u16 address, u8 bit_number, u8 bit_val)
+void Memory::write_bit(u16 address, u8 bit_number, bool bit_val)
 {
-	u8 current_value, new_value, bit_mask;
-	current_value = ram[address];
+	u8 new_value;
 
-	bit_mask = 1 << bit_number;
+	u8 current_value = ram[address];
+	u8 bit_mask = 1 << bit_number;
 
-	if (bit_val == 1)
+	if (bit_val)
 	{
 		new_value = current_value | bit_mask;
 	}
-	else if (bit_val == 0)
+	else
 	{
 		new_value = current_value & ~bit_mask;
 	}
@@ -790,8 +585,7 @@ void Memory::write_bit(u16 address, u8 bit_number, u8 bit_val)
 // Increment byte and update flags
 void Memory::inc_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in;
-    byte_in = get_from_pointer(reg_id);
+    u8 byte_in = get_from_pointer(reg_id);
 
     flag_update(HF,(byte_in & 0xf0) == ((byte_in + 1) & 0xf0));
     flag_update(NF,0);
@@ -805,8 +599,7 @@ void Memory::inc_from_pointer(Register16Bit reg_id)
 // Decrement byte and update flags
 void Memory::dec_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in;
-    byte_in = get_from_pointer(reg_id);
+    u8 byte_in = get_from_pointer(reg_id);
 
     flag_update(HF,(byte_in & 0xf0) == ((byte_in - 1) & 0xf0));
     flag_update(NF,0);
@@ -819,12 +612,10 @@ void Memory::dec_from_pointer(Register16Bit reg_id)
 // Swap upper and lower nibbles of register, flags updated
 void Memory::swap_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in, new_val;
-    byte_in = get_from_pointer(reg_id);
-
-    new_val = (byte_in >> 4) | ((byte_in & 0xf) << 4);
-
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 new_val = (byte_in >> 4) | ((byte_in & 0xf) << 4);
     set_from_pointer(Register16Bit::HL, new_val);
+
     flag_update(HF,0);
     flag_update(CF,0);
     flag_update(ZF,(new_val==0));
@@ -837,13 +628,9 @@ void Memory::swap_from_pointer(Register16Bit reg_id)
 // Flags Z 0 0 C
 void Memory::rl_from_pointer(Register16Bit reg_id, bool with_carry)
 {
-    u8 byte_in, new_value, bit7;
-
-    byte_in = get_from_pointer(reg_id);
-
-    bit7 = (byte_in & 0x80) >> 7;
-
-    new_value = byte_in << 1;
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 bit7 = (byte_in & 0x80) >> 7;
+    u8 new_value = byte_in << 1;
 
     if (with_carry)
     {
@@ -868,14 +655,9 @@ void Memory::rl_from_pointer(Register16Bit reg_id, bool with_carry)
 // Flags Z 0 0 C
 void Memory::rr_from_pointer(Register16Bit reg_id, bool with_carry)
 {
-    u8 byte_in, new_value, bit0;
-
-    byte_in = get_from_pointer(reg_id);
-
-    bit0 = byte_in & 0x01;
-
-    // Shift register right by 1
-    new_value = byte_in >> 1;
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 bit0 = byte_in & 0x01;
+    u8 new_value = byte_in >> 1;
 
     if (with_carry)
     {
@@ -898,13 +680,10 @@ void Memory::rr_from_pointer(Register16Bit reg_id, bool with_carry)
 // Flags Z 0 0 C
 void Memory::sla_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in, byte_val, bit7;
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 bit7 = (byte_in & 0x80) >> 7;
+    u8 byte_val = byte_in << 1;
 
-    byte_in = get_from_pointer(reg_id);
-
-    bit7 = (byte_in & 0x80) >> 7;
-
-    byte_val = byte_in << 1;
     set_from_pointer(reg_id, byte_val);
 
     flag_update(HF,0);
@@ -917,15 +696,10 @@ void Memory::sla_from_pointer(Register16Bit reg_id)
 // Flags Z 0 0 C
 void Memory::sra_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in, byte_val, bit0, bit7;
-
-    byte_in = get_from_pointer(reg_id);
-
-    bit0 = byte_in & 0x01;
-
-    bit7 = byte_in & 0x80;
-
-    byte_val = (byte_in >> 1) + bit7;
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 bit0 = byte_in & 0x01;
+    u8 bit7 = byte_in & 0x80;
+    u8 byte_val = (byte_in >> 1) + bit7;
     set_from_pointer(reg_id, byte_val);
 
     flag_update(HF,0);
@@ -938,13 +712,9 @@ void Memory::sra_from_pointer(Register16Bit reg_id)
 // Flags Z 0 0 C
 void Memory::srl_from_pointer(Register16Bit reg_id)
 {
-    u8 byte_in, byte_val, bit0;
-
-    byte_in = get_from_pointer(reg_id);
-
-    bit0 = byte_in & 0x01;
-
-    byte_val = byte_in >> 1;
+    u8 byte_in = get_from_pointer(reg_id);
+    u8 bit0 = byte_in & 0x01;
+    u8 byte_val = byte_in >> 1;
     set_from_pointer(reg_id, byte_val);
 
     flag_update(HF,0);
@@ -957,9 +727,7 @@ void Memory::srl_from_pointer(Register16Bit reg_id)
 // Flags Z 0 1 -
 void Memory::bit_test_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
-    u8 bit_val;
-
-    bit_val = get_from_pointer(reg_id) >> bit_number;
+    u8 bit_val = get_from_pointer(reg_id) >> bit_number;
 
     flag_update(ZF,(bit_val==0));
     flag_update(NF,0);
@@ -969,32 +737,26 @@ void Memory::bit_test_from_pointer(Register16Bit reg_id, u8 bit_number)
 // Set bit in in byte at (n), flags not affected
 void Memory::bit_set_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
-    u8 byte_val, new_val, bit_mask;
+    u8 byte_val = get_from_pointer(reg_id);
+    u8 bit_mask = 1 << bit_number;
+    u8 new_val = byte_val | bit_mask;
 
-    byte_val = get_from_pointer(reg_id);
-
-    bit_mask = 1 << bit_number;
-    new_val = byte_val | bit_mask;
     set_from_pointer(reg_id, new_val);
 }
 
 // Reset bit in in byte at (n), flags not affected
 void Memory::bit_res_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
-    u8 byte_val, new_val, bit_mask;
-
-    byte_val = get_from_pointer(reg_id);
-
-    bit_mask = 1 << bit_number;
-    new_val = byte_val & ~bit_mask;
+    u8 byte_val = get_from_pointer(reg_id);
+    u8 bit_mask = 1 << bit_number;
+    u8 new_val = byte_val & ~bit_mask;
     set_from_pointer(reg_id, new_val);
 }
 
 // Perform DMA transfer from ROM/RAM to OAM
 void Memory::dma_transfer()
 {
-	u16 dma_start;
-	dma_start = ram[R_DMA] << 8;
+	u16 dma_start = ram[R_DMA] << 8;
 
 	for (u8 i = 0; i < 0xA0; i++)
 	{
@@ -1031,94 +793,67 @@ u16 Memory::get_sp()
 // Increment pc by amount
 void Memory::inc_pc(u8 amount)
 {
-    // Increment the pc
     pc += amount;
 }
 
 // Decrement pc by amount
 void Memory::dec_pc(u8 amount)
 {
-    // Increment the pc
     pc -= amount;
 }
 
 // Increment sp by amount
 void Memory::inc_sp(u8 amount)
 {
-    // Increment the pc
     sp += amount;
 }
 
 // Decrement sp by amount
 void Memory::dec_sp(u8 amount)
 {
-    // Increment the pc
     sp -= amount;
 }
 
 // Add value to sp and update flags
 void Memory::sp_add(u8 amount)
 {
-    u32 total;
+    u32 total = sp + amount;
 
-    // The total sum
-    total = sp + amount;
-
-    // Update H flag (half carry from bit 11)
     flag_update(HF,(sp & 0xf000) == (total & 0xf000));
-
-    // Update C flag (carry from bit 15)
     flag_update(CF,(total > 0xffff));
-
-    // Clear N flag
     flag_update(NF,0);
-
-    // Clear Z flag
     flag_update(ZF,0);
 
-    // Update 16 bit sp register
     sp = (u16)total;
 }
 
 // Push 16-bit value to stack and decrement sp
 void Memory::stack_push(u16 push_val)
 {
-    u8 byte_val;
-
     // Push high byte on first then lower byte
-    byte_val = push_val >> 8;
+    u8 byte_val = push_val >> 8;
     ram[sp] = byte_val;
     byte_val = push_val & 0xff;
     ram[sp-1] = byte_val;
-
-    // Decrement the stack pointer
     dec_sp(2);
 }
 
 // Push PC value on to stack and decrement sp
 void Memory::pc_push()
 {
-    u8 byte_val;
-
     // Push high byte on first then lower byte
-    byte_val = pc >> 8;
+    u8 byte_val = pc >> 8;
     ram[sp] = byte_val;
     byte_val = pc & 0xff;
     ram[sp-1] = byte_val;
-
-    // Decrement the stack pointer
     dec_sp(2);
 }
 
 // Pop 16-bit value from stack and increment sp
 u16 Memory::stack_pop()
 {
-    u16 ret_val;
-
     // Pop high byte first then lower byte
-    ret_val = (ram[sp+2] << 8) + (ram[sp+1] & 0xff);
-
-    // Increment the stack pointer
+    u16 ret_val = (ram[sp+2] << 8) + (ram[sp+1] & 0xff);
     inc_sp(2);
 
     return ret_val;
@@ -1127,9 +862,6 @@ u16 Memory::stack_pop()
 // Jump to address at PC + e (e = signed 8-bit immediate)
 void Memory::jmp_n(i8 jmp_amount)
 {
-    i32 pc_val;
-
-    // Set pc to new value
-    pc_val = (i32)pc + (i32)jmp_amount;
+    i32 pc_val = (i32)pc + (i32)jmp_amount;
     pc = (u16)pc_val;
 }
