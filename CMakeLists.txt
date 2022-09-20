@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(gameboy VERSION 0.45.2)
 
-include(CTest)
-enable_testing()
+project(gameboy VERSION 0.46.0)
 
-find_package(SDL2 REQUIRED)
-include_directories(gameboy ${SDL2_INCLUDE_DIRS})
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
+include_directories(gameboy)
 file(GLOB SOURCES
     src/*.h
     src/*.cpp
@@ -13,9 +15,9 @@ file(GLOB SOURCES
     src/lib/*.cpp
 )
 
-add_executable(gameboy ${SOURCES})
-target_link_libraries(gameboy ${SDL2_LIBRARIES})
+qt_add_executable(gameboy ${SOURCES}
+    MANUAL_FINALIZATION
+)
+target_link_libraries(gameboy PRIVATE Qt::Widgets)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+qt_finalize_executable(gameboy)

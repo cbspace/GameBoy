@@ -1,11 +1,14 @@
 #include "emulator.h"
 #include <iostream>
 #include <string>
+#include <QApplication>
+#include <QWidget>
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
+    QApplication app(argc, argv);
     Emulator emuboy;
 
     cout << "EmuBoy V0.45.2" << endl;
@@ -40,5 +43,5 @@ int main(int argc, char** argv)
         return 1;
     }
 
-	return 0;
+	return app.exec();
 }

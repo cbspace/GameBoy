@@ -6,7 +6,7 @@ Currently refactoring the code to a more modern standard.
 
 ### Required packages:
 - g++, gcc or build-essential
-- SDL2 (libsdl2-dev on Linux)
+- Qt6
 - CMake
 
 #### Build using Cmake (Linux):
