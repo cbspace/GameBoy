@@ -30,3 +30,8 @@ QImage GameBoyView::render_gb_image() {
     }
     return q_image;
 }
+
+void GameBoyView::start_emulator() {
+    const QStringList args = QCoreApplication::arguments();
+    emulator.start(args.at(1).toStdString(),true,false);
+}

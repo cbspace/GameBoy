@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     //Emulator emuboy;
@@ -23,6 +23,7 @@ int main(int argc, char** argv)
     main_window.setCentralWidget(&gbview);
 
     cout << "EmuBoy V0.46.0" << endl;
+    gbview.start_emulator();
 
     // Command line: gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]
     // TODO: Not yet supported running dmg rom and game rom together

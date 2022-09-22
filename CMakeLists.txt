@@ -9,11 +9,15 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 set(SOURCES
     src/displayconst.h
+    src/Emulator.h
+    src/Emulator.cpp
     src/GameBoyView.h
     src/GameBoyView.cpp
     src/main.cpp
     src/MainWindow.h
     src/MainWindow.cpp
+    src/Memory.h
+    src/Memory.cpp
 )
 
 qt_add_executable(gameboy ${SOURCES}
