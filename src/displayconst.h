@@ -59,6 +59,9 @@
 static const int width = DISP_W * SCALING_FACTOR;    // Screen width in pixels
 static const int height = DISP_H * SCALING_FACTOR;   // Screen height in pixels
 
+#define qt_view_width   DISP_W * SCALING_FACTOR // 480
+#define qt_view_height  DISP_H * SCALING_FACTOR // 432
+
 enum class ColourValue {
     C0 = 0, // Lightest
     C1 = 1,

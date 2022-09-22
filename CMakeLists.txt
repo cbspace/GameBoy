@@ -7,12 +7,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
-include_directories(gameboy)
-file(GLOB SOURCES
-    src/*.h
-    src/*.cpp
-    src/lib/*.h
-    src/lib/*.cpp
+set(SOURCES
+    src/displayconst.h
+    src/GameBoyView.h
+    src/GameBoyView.cpp
+    src/main.cpp
+    src/MainWindow.h
+    src/MainWindow.cpp
 )
 
 qt_add_executable(gameboy ${SOURCES}
