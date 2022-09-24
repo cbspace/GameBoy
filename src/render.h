@@ -1,13 +1,13 @@
 #pragma once
 
 #include "spriteattrib.h"
-#include "memory.h"
+#include "Memory.h"
 #include "displayconst.h"
-
+#include <iostream>
 #include <string>
 #include "lib/Types.h"
 
-// Display Class looks after SDL Window
+// GBDisplay Class looks after Window
 // Render Class looks after pixel array
 
 /* logo_data is char* array read from the ROM (48 bytes long)

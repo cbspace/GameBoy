@@ -1,5 +1,5 @@
 #include "joypad.h"
-#include "memory.h"
+#include "Memory.h"
 #include "interrupt.h"
 
 #include <SDL2/SDL.h>

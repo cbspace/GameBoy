@@ -1,7 +1,7 @@
 #pragma once
 
-#include "memory.h"
-#include "clock.h"
+#include "Memory.h"
+#include "Clock.h"
 
 // Interrupt flags and interrupt enable mask values
 #define I_VBLANK    0x01

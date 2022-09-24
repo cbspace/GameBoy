@@ -3,48 +3,42 @@
 using namespace std;
 
 Emulator::Emulator() : 
-    //cp(mem, clk, ir, edb),
-    //disp(mem, ir, clk),
-    //ir(mem, clk),
-    //jp(mem, ir),
-    //edb(mem),
+    disp(memory, interrupt, clock),
+    interrupt(memory, clock),
+    //jp(memory, interrupt),
+    emudebug(memory),
+    cpu(memory, clock, interrupt, emudebug),
     quit_flag(false)
 {}
 
 void Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
-    if ( auto e = mem.load_rom(rom_path) ) { 
+    if ( auto e = memory.load_rom(rom_path) ) { 
         cout << e.value().get_error_string() << endl;;
         return; 
     }
-
-    // cout << "Loading Window" << endl;
-    // if( auto e = disp.init() ) {
-    //     cout << e.value().get_error_string() << endl;
-    //     return;
-    // }
-
+    
     if (rom_is_dmg) {
-        mem.set_pc(0x00);
-        //edb.insert_logo();
+        memory.set_pc(0x00);
+        //emudebug.insert_logo();
     } else {
-        //disp.set_window_title(mem.get_rom_title());
-        cout << "Rom Title: " << mem.get_rom_title() << endl;
-        mem.write_byte(R_LCDC, 0x91);
+        //disp.set_window_title(memory.get_rom_title());
+        cout << "Rom Title: " << memory.get_rom_title() << endl;
+        memory.write_byte(R_LCDC, 0x91);
     }
 
-    main_loop();
+    //main_loop();
 }
 
 void Emulator::main_loop()
 {
     //while (!quit_flag)
     //{ 
-    //    quit_flag = jp.key_down(); // || edb.detect_runaway();
+    //    quit_flag = jp.key_down(); // || emudebug.detect_runaway();
 
-        //cp.cycle();
-        //disp.display_cycle();
-        //ir.check_interrupts();
+        cpu.cycle();
+        disp.display_cycle();
+        //interrupt.check_interrupts();
     //}
 }
 

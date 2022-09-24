@@ -1,13 +1,13 @@
 #pragma once
 
-//#include "display.h"
-// #include "render.h"
-// #include "cpu.h"
+#include "display.h"
+#include "render.h"
+#include "cpu.h"
 #include "Memory.h"
-// #include "interrupt.h"
-// #include "emudebug.h"
-// #include "clock.h"
-// #include "joypad.h"
+#include "interrupt.h"
+#include "emudebug.h"
+#include "Clock.h"
+//#include "joypad.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -21,13 +21,13 @@ class Emulator
         void print_cl_usage_message();
         string rom_title;
 
+        GBDisplay disp;
     private:
-        //Display disp;
-        //Cpu cp;
-        Memory mem;
-        // Clock clk;
-        // Interrupt ir;
-        // Emudebug edb;
+        Cpu cpu;
+        Memory memory;
+        Clock clock;
+        Interrupt interrupt;
+        Emudebug emudebug;
         // Joypad jp;
         bool quit_flag;
 };

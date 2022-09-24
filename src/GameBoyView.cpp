@@ -1,4 +1,5 @@
 #include "GameBoyView.h"
+#include "lib/Types.h"
 
 GameBoyView::GameBoyView(int width_initial, int height_initial) :
     p_width(width_initial), 
@@ -15,16 +16,16 @@ void GameBoyView::paintEvent(QPaintEvent* event) {
     painter.drawImage(QPoint(0,0), q_image);
 }
 
-void GameBoyView::resizeEvent(QResizeEvent* event) {
-    p_width = event->size().width();
-    p_height = event->size().height();
-}
-
 QImage GameBoyView::render_gb_image() {
     QImage q_image(p_width, p_height, QImage::Format_RGB32);
-    QRgb value = qRgb(0x92,0xAD,0x26);
+    u32* buffer = emulator.disp.get_buffer();
     for (int y=0; y < p_height; y++) {
         for (int x=0; x < p_width; x++) {
+            u32 pix_value = buffer[y*p_height + x];
+            int r = pix_value >> 16;
+            int g = (pix_value >> 8) & 0xff00;
+            int b = pix_value & 0x0000ff;
+            QRgb value = qRgb(r,g,b);
             q_image.setPixel(x,y,value);
         }
     }

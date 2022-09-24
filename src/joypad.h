@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <map>
-#include "memory.h"
+#include "Memory.h"
 #include "interrupt.h"
 
 #define R_P1    0xff00      // Register for reading joy pad info

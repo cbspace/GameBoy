@@ -1,39 +1,26 @@
 #include "display.h"
-#include "displayconst.h"
-#include "memory.h"
-#include "interrupt.h"
-#include "clock.h"
-
-#include <iostream>
-#include "lib/Types.h"
-#include <string>
-#include <SDL2/SDL.h>
 
 using namespace std;
 
-Display::Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
+GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     mem(mem_in),
     ren(mem_in, pixels),
     ir(ir_in),
-    clk(clk_in),
-    window(NULL),
-    drawSurface(NULL),
-    sdlRenderer(NULL),
-    texture(NULL)
+    clk(clk_in)
 {}
 
-void Display::set_window_title(string title_add)
-{
-    if (title_add.empty()) {
-        return;
-    }
+// void GBDisplay::set_window_title(string title_add)
+// {
+//     if (title_add.empty()) {
+//         return;
+//     }
 
-    string window_title_const(WINDOW_TITLE);
-    string new_window_title = window_title_const + " - " + title_add;
-    SDL_SetWindowTitle(window, new_window_title.c_str());
-}
+//     string window_title_const(WINDOW_TITLE);
+//     string new_window_title = window_title_const + " - " + title_add;
+//     SDL_SetWindowTitle(window, new_window_title.c_str());
+// }
 
-void Display::display_cycle()
+void GBDisplay::display_cycle()
 {
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
@@ -110,7 +97,7 @@ void Display::display_cycle()
 
 }
 
-void Display::update_line()
+void GBDisplay::update_line()
 {
 	u8 ly_val;
 
@@ -141,7 +128,7 @@ void Display::update_line()
     }
 }
 
-void Display::update_stat_reg(u8 mode_val)
+void GBDisplay::update_stat_reg(u8 mode_val)
 {
 	u8 lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
     u8 ly_val = mem.get_byte(R_LY);
@@ -201,20 +188,20 @@ void Display::update_stat_reg(u8 mode_val)
 
 }
 
-void Display::draw_frame()
+void GBDisplay::draw_frame()
 {
     colour();
     scale();
 
-    SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(u32));
-    SDL_RenderClear(sdlRenderer);
-    SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
-    SDL_RenderPresent(sdlRenderer);
+    // SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(u32));
+    // SDL_RenderClear(sdlRenderer);
+    // SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
+    // SDL_RenderPresent(sdlRenderer);
 
-    clk.frame_delay();
+    //clk.frame_delay();
 }
 
-void Display::colour()
+void GBDisplay::colour()
 {
 	u32 current_pixel_ref;
 
@@ -226,19 +213,19 @@ void Display::colour()
         	switch(pixels[current_pixel_ref])
         	{
         	case ColourValue::C0:
-        		pixels_coloured[current_pixel_ref] = COLOUR_BG_ARGB;
+        		pixels_coloured[current_pixel_ref] = COLOUR_BG_RGB;
         		break;
         	case ColourValue::C1:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C1_ARGB;
+        		pixels_coloured[current_pixel_ref] = COLOUR_C1_RGB;
         		break;
         	case ColourValue::C2:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C2_ARGB;
+        		pixels_coloured[current_pixel_ref] = COLOUR_C2_RGB;
         		break;
         	case ColourValue::C3:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C3_ARGB;
+        		pixels_coloured[current_pixel_ref] = COLOUR_C3_RGB;
         		break;
         	default:
-        		pixels_coloured[current_pixel_ref] = 0xffffffff;
+        		pixels_coloured[current_pixel_ref] = 0xffffff;
         		break;
         	}
 
@@ -246,7 +233,7 @@ void Display::colour()
     }
 }
 
-void Display::scale()
+void GBDisplay::scale()
 {
     for (u16 y = 0; y < DISP_H; y++)
     {
@@ -263,7 +250,7 @@ void Display::scale()
     }
 }
 
-void Display::clear_pixels()
+void GBDisplay::clear_pixels()
 {
     for (u16 y = 0; y < DISP_H; y++)
     {
@@ -274,32 +261,16 @@ void Display::clear_pixels()
     }
 }
 
-optional<Error> Display::init()
+optional<Error> GBDisplay::init()
 {
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) { return Error("SDL unable to initialise! SDL_Error", SDL_GetError()); }
-
-    window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
-    if (window == NULL) { return Error("Unable to create SDL Window! SDL_Error", SDL_GetError()); }
-
-    sdlRenderer = SDL_CreateRenderer(window, -1, 0);
-    if ( sdlRenderer == NULL ) { return Error("Unable to create SDL Renderer! SDL_Error", SDL_GetError()); };
-
-    texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
-
     clear_pixels();
 
     return nullopt;
 }
 
-Display::~Display()
-{
-	SDL_DestroyTexture(texture);
-	SDL_DestroyRenderer(sdlRenderer);
-    SDL_DestroyWindow(window);
-
-	texture = NULL;
-	sdlRenderer = NULL;
-	window = NULL;
-
-	SDL_Quit();
+u32* GBDisplay::get_buffer() {
+    return display_buffer;
 }
+
+GBDisplay::~GBDisplay()
+{}

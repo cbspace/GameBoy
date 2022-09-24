@@ -1,11 +1,4 @@
 #include "render.h"
-#include "spriteattrib.h"
-#include "displayconst.h"
-#include "memory.h"
-
-#include <iostream>
-#include "lib/Types.h"
-#include <string>
 
 using namespace std;
 

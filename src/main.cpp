@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
     cout << "EmuBoy V0.46.0" << endl;
     gbview.start_emulator();
 
+
     // Command line: gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]
     // TODO: Not yet supported running dmg rom and game rom together
     // if (argc == 1) {

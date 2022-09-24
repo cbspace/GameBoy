@@ -3,10 +3,10 @@
 #define SCALING_FACTOR      3               // Scale display size by this amount
 #define WINDOW_TITLE        "EmuBoy"        // Title to display on SDL Wind
 
-#define COLOUR_BG_ARGB      0xFF92AD26      // Background colour
-#define COLOUR_C1_ARGB      0xFF6D811C      // Colour 1
-#define COLOUR_C2_ARGB      0xFF485612      // Colour 2
-#define COLOUR_C3_ARGB      0xFF242B09      // Colour 3
+#define COLOUR_BG_RGB       0x92AD26        // Background colour
+#define COLOUR_C1_RGB       0x6D811C        // Colour 1
+#define COLOUR_C2_RGB       0x485612        // Colour 2
+#define COLOUR_C3_RGB       0x242B09        // Colour 3
 
 #define DISP_W              160             // Gameboy display width (Usually 160 pixels)
 #define DISP_H              144             // Gameboy display height (Usually 144 pixels)

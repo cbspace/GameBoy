@@ -1,6 +1,4 @@
 #include "spriteattrib.h"
-#include "lib/Types.h"
-
 
 SpriteAttrib::SpriteAttrib()
 {

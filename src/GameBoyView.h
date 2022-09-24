@@ -13,10 +13,7 @@ class GameBoyView : public QAbstractScrollArea {
     public:
         GameBoyView(int width_initial, int height_initial);
         virtual ~GameBoyView() override;
-
         virtual void paintEvent(QPaintEvent* event) override;
-        virtual void resizeEvent(QResizeEvent* event) override;
-
         void start_emulator();
     
     private:

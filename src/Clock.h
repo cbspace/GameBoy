@@ -22,7 +22,7 @@ class Clock
 {
     public:
         Clock();
-        void frame_delay();
+        //void frame_delay();
         void add_cycles(u8 amount);
         bool max_cycles_reached();
         bool cycles_reached(DisplayMode display_mode);

@@ -1,31 +1,33 @@
 #pragma once
 
 #include "displayconst.h"
-#include "memory.h"
+#include "Memory.h"
 #include "render.h"
 #include "interrupt.h"
-#include "clock.h"
+#include "Clock.h"
 #include "lib/Error.h"
 
 #include <string>
+#include <iostream>
 #include "lib/Types.h"
-#include <SDL2/SDL.h>
+//#include <SDL2/SDL.h>
 #include <optional>
 
-// Display Class looks after SDL Window
+// GBDisplay Class looks after Window
 // Render Class looks after pixel array
 
-class Display
+class GBDisplay
 {
     public:
-        Display(Memory& mem_in, Interrupt& ir_in, Clock& clk_in);  
+        GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in);  
 
         optional<Error> init();
-        void set_window_title(string title_add);
+        //void set_window_title(string title_add);
         void display_cycle();
         void update_line();
         void draw_frame();
-        virtual ~Display();
+        u32* get_buffer();
+        virtual ~GBDisplay();
 
     private:
         void update_stat_reg(u8 mode_val);
@@ -41,10 +43,5 @@ class Display
         u32 display_buffer[width*height];
         ColourValue pixels[DISP_W*DISP_H];
         u32 pixels_coloured[DISP_W*DISP_H];
-
-        SDL_Window* window;
-        SDL_Surface* drawSurface;
-        SDL_Renderer* sdlRenderer;
-        SDL_Texture* texture;
 
 };
