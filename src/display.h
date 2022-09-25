@@ -40,7 +40,7 @@ class GBDisplay
         Interrupt& ir;
         Clock& clk;
 
-        u32 display_buffer[width*height];
+        u32* display_buffer;
         ColourValue pixels[DISP_W*DISP_H];
         u32 pixels_coloured[DISP_W*DISP_H];
 

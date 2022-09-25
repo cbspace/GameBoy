@@ -6,7 +6,8 @@ GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     mem(mem_in),
     ren(mem_in, pixels),
     ir(ir_in),
-    clk(clk_in)
+    clk(clk_in),
+    display_buffer(NULL)
 {}
 
 // void GBDisplay::set_window_title(string title_add)
@@ -263,6 +264,8 @@ void GBDisplay::clear_pixels()
 
 optional<Error> GBDisplay::init()
 {
+    display_buffer = new u32[width*height];
+
     clear_pixels();
 
     return nullopt;

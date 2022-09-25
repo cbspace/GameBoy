@@ -20,13 +20,15 @@ void Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
     
     if (rom_is_dmg) {
         memory.set_pc(0x00);
-        //emudebug.insert_logo();
+        emudebug.insert_logo();
+        cout << "DMG ROM Loaded" << endl;
     } else {
         //disp.set_window_title(memory.get_rom_title());
         cout << "Rom Title: " << memory.get_rom_title() << endl;
         memory.write_byte(R_LCDC, 0x91);
     }
 
+    disp.init();
     //main_loop();
 }
 
@@ -35,10 +37,9 @@ void Emulator::main_loop()
     //while (!quit_flag)
     //{ 
     //    quit_flag = jp.key_down(); // || emudebug.detect_runaway();
-
         cpu.cycle();
         disp.display_cycle();
-        //interrupt.check_interrupts();
+        interrupt.check_interrupts();
     //}
 }
 
