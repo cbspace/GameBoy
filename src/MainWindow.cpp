@@ -1,29 +1,18 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() :
-    gbview(GameBoyView(qt_view_width, qt_view_height))
+    gbview(GameBoyView(this, qt_view_width, qt_view_height))
 {
-    // auto* file_menu = menuBar()->addMenu("File");
-    // auto* view_menu = menuBar()->addMenu("View");
-    // auto* about_menu = menuBar()->addMenu("About");
-
+    setWindowTitle("EmuBoy");
     setCentralWidget(&gbview);
 
-    //cout << "EmuBoy V0.46.0" << endl;
+    auto* file_menu = menuBar()->addMenu("File");
+    auto* view_menu = menuBar()->addMenu("View");
+    auto* about_menu = menuBar()->addMenu("About");
+
     gbview.start_emulator();
 
-
     timer = new QTimer(this);
-    QObject::connect(timer, &QTimer::timeout, [this] {
-        gbview.emulator.main_loop();
-    });
-    timer->setInterval(1);
-    timer->start();
-
-    timer2 = new QTimer(this);
-    QObject::connect(timer2, &QTimer::timeout, [this] {
-        gbview.repaint();
-    });
-    timer2->setInterval(50);
-    timer2->start();
+    connect(timer, &QTimer::timeout, &gbview, &GameBoyView::animate);
+    timer->start(50);
 }

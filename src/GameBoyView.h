@@ -3,23 +3,29 @@
 #include "displayconst.h"
 #include "Emulator.h"
 #include <QCoreApplication>
-#include <QAbstractScrollArea>
+#include <QWidget>
 #include <QPaintEvent>
 #include <QPainter>
 
-class GameBoyView : public QAbstractScrollArea {
+class GameBoyView : public QWidget {
     Q_OBJECT
 
     public:
-        GameBoyView(int width_initial, int height_initial);
-        virtual ~GameBoyView() override;
-        virtual void paintEvent(QPaintEvent* event) override;
+        GameBoyView(QWidget* parent, int width_initial, int height_initial);
+        ~GameBoyView();
         void start_emulator();
 
         Emulator emulator;
+
+    public slots:
+        void animate();
+
+    protected:
+        void paintEvent(QPaintEvent* event) override;
     
     private:
         QImage render_gb_image();
+        QBrush background;
         int p_width;
         int p_height;
 

@@ -15,10 +15,7 @@ int main(int argc, char* argv[])
     }
 
     QApplication app(argc, argv);
-
     MainWindow main_window;
-    main_window.setWindowTitle("EmuBoy");
-    main_window.resize(qt_view_width, qt_view_height);
     main_window.show();
 
 	return app.exec();

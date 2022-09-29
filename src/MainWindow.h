@@ -2,7 +2,9 @@
 
 #include "GameBoyView.h"
 #include <QMainWindow>
+#include <QWidget>
 #include <QMenuBar>
+#include <QGridLayout>
 #include <QTimer>
 
 
