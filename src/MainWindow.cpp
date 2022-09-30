@@ -14,5 +14,5 @@ MainWindow::MainWindow() :
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, &gbview, &GameBoyView::animate);
-    timer->start(50);
+    timer->start(16);
 }

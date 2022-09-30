@@ -7,8 +7,13 @@ GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     ren(mem_in, pixels),
     ir(ir_in),
     clk(clk_in),
-    display_buffer(NULL)
+    display_buffer(NULL),
+    new_frame_drawn(false)
 {}
+
+bool GBDisplay::new_frame_is_drawn() {
+    return new_frame_drawn;
+}
 
 // void GBDisplay::set_window_title(string title_add)
 // {
@@ -23,6 +28,8 @@ GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
 
 void GBDisplay::display_cycle()
 {
+    new_frame_drawn = false;
+
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B0);
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, R_STAT_MODE_B1);
     DisplayMode current_mode = static_cast<DisplayMode>((current_modeB1 << 1) + current_modeB0);
@@ -103,7 +110,7 @@ void GBDisplay::update_line()
 	u8 ly_val;
 
     ly_val = mem.get_byte(R_LY);
-
+    
     if (ly_val < DISP_H)
     {
         ren.render_line(ly_val);
@@ -194,10 +201,7 @@ void GBDisplay::draw_frame()
     colour();
     scale();
 
-    // SDL_UpdateTexture(texture, NULL, display_buffer, width * sizeof(u32));
-    // SDL_RenderClear(sdlRenderer);
-    // SDL_RenderCopy(sdlRenderer, texture, NULL, NULL);
-    // SDL_RenderPresent(sdlRenderer);
+    new_frame_drawn = true;
 
     //clk.frame_delay();
 }

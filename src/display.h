@@ -26,6 +26,7 @@ class GBDisplay
         void display_cycle();
         void update_line();
         void draw_frame();
+        bool new_frame_is_drawn();
         u32* get_buffer();
         virtual ~GBDisplay();
 
@@ -43,5 +44,5 @@ class GBDisplay
         u32* display_buffer;
         ColourValue pixels[DISP_W*DISP_H];
         u32 pixels_coloured[DISP_W*DISP_H];
-
+        bool new_frame_drawn;
 };

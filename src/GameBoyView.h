@@ -15,8 +15,6 @@ class GameBoyView : public QWidget {
         ~GameBoyView();
         void start_emulator();
 
-        Emulator emulator;
-
     public slots:
         void animate();
 
@@ -24,6 +22,7 @@ class GameBoyView : public QWidget {
         void paintEvent(QPaintEvent* event) override;
     
     private:
+        Emulator emulator;
         QImage render_gb_image();
         QBrush background;
         int p_width;

@@ -19,7 +19,6 @@ class MainWindow : public QMainWindow {
     private:
         GameBoyView gbview;
         QTimer* timer;
-        QTimer* timer2;
 };
 
 }
