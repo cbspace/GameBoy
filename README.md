@@ -1,8 +1,6 @@
 # EmuBoy Gameboy emulator in C++ #
 
-A Gameboy emulator written in C++ using SDL2 rendering. The emulator will be platform portable and is being developed on Linux (G++). Initially ROM ONLY cartridges will be supported with future releases to include Memory Bank Controllers etc.
-
-Currently refactoring the code to a more modern standard.
+A Gameboy emulator written in C++ using the Qt6 framework. The emulator will be platform portable and is being developed on Linux (G++). Initially ROM ONLY cartridges will be supported with future releases to include Memory Bank Controllers etc.
 
 ### Required packages:
 - g++, gcc or build-essential
@@ -12,7 +10,7 @@ Currently refactoring the code to a more modern standard.
 #### Build using Cmake (Linux):
 1. Install dependencies:
 
-   `sudo apt install git cmake g++ libsdl2-dev`
+   `sudo apt install git cmake g++ qt6-base-dev`
 
 2. Clone the repo:
 
@@ -28,7 +26,7 @@ Currently refactoring the code to a more modern standard.
 
 6. Build and run the source (when in GameBoy base directory)
 
-   `./build.sh -build` or to build and run `./build.sh -run`
+   `./build.sh -build` or to build and run `./build.sh -run [params]`
 
 ### Command line usage:
 `./build/gameboy /path/to/rom.gb [-debug]`
