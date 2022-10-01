@@ -8,8 +8,6 @@ GameBoyView::GameBoyView(QWidget* parent) :
         width = DISP_W * scaling_factor;
         height = DISP_H * scaling_factor;
         setFixedSize(width, height);
-
-        background = QBrush(QColor(0x92, 0xad, 0x26));
     }
 
 GameBoyView::~GameBoyView() {}

@@ -8,7 +8,9 @@ MainWindow::MainWindow() :
 
     create_actions();
     create_menus();
-    //statusBar->showMessage("hello");
+
+    m_statusbar = statusBar();
+    //m_statusbar->showMessage(tr("hello"));
 
     gbview.start_emulator();
 

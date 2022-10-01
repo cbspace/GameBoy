@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QMenuBar>
+#include <QStatusBar>
 #include <QGridLayout>
 #include <QTimer>
 
@@ -29,6 +30,8 @@ class MainWindow : public QMainWindow {
     private:
         void create_actions();
         void create_menus();
+
+        QStatusBar* m_statusbar;
 
         QMenu* file_menu;
         QAction* open_act;

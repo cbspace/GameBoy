@@ -24,11 +24,10 @@ class GameBoyView : public QWidget {
         void paintEvent(QPaintEvent* event) override;
     
     private:
+        QWidget* m_parent { NULL };
         Emulator emulator;
         QImage render_gb_image();
-        QBrush background;
         i32 width;
         i32 height;
         u8 scaling_factor = 3;
-        QWidget* m_parent { NULL };
 };
