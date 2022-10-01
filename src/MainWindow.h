@@ -30,12 +30,16 @@ class MainWindow : public QMainWindow {
         void create_menus();
 
         QMenu* file_menu;
-        QMenu* view_menu;
-        QMenu* about_menu;
         QAction* open_act;
+
+        QMenu* view_menu;
         QAction* scale1x_act;
         QAction* scale2x_act;
 
+        QMenu* about_menu;
+        QAction* about_emuboy_act;
+        QWidget* about_widget;
+        
         GameBoyView gbview;
         QTimer* timer;
 

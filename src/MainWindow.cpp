@@ -26,6 +26,7 @@ void MainWindow::create_menus() {
     view_menu->addAction(scale2x_act);
 
     about_menu = menuBar()->addMenu("About");
+    about_menu->addAction(about_emuboy_act);
 }
 
 void MainWindow::create_actions() {
@@ -43,33 +44,32 @@ void MainWindow::create_actions() {
     //scale2x_act->setShortcuts();
     scale2x_act->setStatusTip(tr("Scale view 2x"));
     connect(scale2x_act, &QAction::triggered, this, &MainWindow::scale2x);
+
+    about_emuboy_act = new QAction(tr("&Emuboy"), this);
+    about_emuboy_act->setStatusTip(tr("About Emuboy"));
+    connect(about_emuboy_act, &QAction::triggered, this, &MainWindow::about);
 }
 
-void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
+void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 
-}
+void MainWindow::file() {}
 
-void MainWindow::file() {
+void MainWindow::open() {}
 
+void MainWindow::view() {}
 
-}
-void MainWindow::open() {
+void MainWindow::scale1x() {}
 
+void MainWindow::scale2x() {}
 
-}
-void MainWindow::view() {
-
-
-}
-void MainWindow::scale1x() {
-
-
-}
-void MainWindow::scale2x() {
-
-
-}
 void MainWindow::about() {
-
-
+    if (!about_widget) {
+        about_widget = new QWidget(this);
+        about_widget->setWindowTitle("About Emuboy");
+        about_widget->setFixedSize(400,200);
+        about_widget->setWindowFlags(Qt::Window);
+    }
+    about_widget->show();
+    about_widget->raise();
+    about_widget->activateWindow();
 }
