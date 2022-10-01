@@ -8,15 +8,18 @@
 #include "emudebug.h"
 #include "Clock.h"
 //#include "joypad.h"
+#include "lib/Error.h"
 #include <iostream>
 #include <string>
+#include <optional>
+
 using namespace std;
 
 class Emulator
 {
     public:
         Emulator();
-        void start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled);
+        optional<Error> start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled);
         void main_loop();
         void print_cl_usage_message();
         string rom_title;

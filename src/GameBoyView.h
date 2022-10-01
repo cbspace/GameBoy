@@ -3,18 +3,24 @@
 #include "displayconst.h"
 #include "Emulator.h"
 #include "lib/Types.h"
+#include "lib/Error.h"
+#include "MainWindow.h"
+#include <optional>
 #include <QCoreApplication>
 #include <QWidget>
 #include <QPaintEvent>
 #include <QPainter>
 
+class MainWindow;
+
 class GameBoyView : public QWidget {
     Q_OBJECT
 
     public:
-        GameBoyView(QWidget* parent);
+        GameBoyView(MainWindow* parent);
         ~GameBoyView();
-        void start_emulator();
+        void parse_command_line();
+        void start_emulator(string rom_path, bool boot_rom, bool debug);
         void set_scaling_factor(u8 sf);
 
     public slots:
@@ -24,10 +30,10 @@ class GameBoyView : public QWidget {
         void paintEvent(QPaintEvent* event) override;
     
     private:
-        QWidget* m_parent { NULL };
+        MainWindow* m_parent { NULL };
         Emulator emulator;
         QImage render_gb_image();
         i32 width;
         i32 height;
-        u8 scaling_factor = 3;
+        u8 scaling_factor = 2;
 };

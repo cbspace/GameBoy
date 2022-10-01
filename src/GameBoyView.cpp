@@ -1,7 +1,7 @@
 #include "GameBoyView.h"
 #include "lib/Types.h"
 
-GameBoyView::GameBoyView(QWidget* parent) :
+GameBoyView::GameBoyView(MainWindow* parent) :
     QWidget(parent),
     m_parent(parent)
     {
@@ -45,9 +45,24 @@ QImage GameBoyView::render_gb_image() {
     return q_image;
 }
 
-void GameBoyView::start_emulator() {
+void GameBoyView::parse_command_line() {
     const QStringList args = QCoreApplication::arguments();
-    emulator.start(args.at(1).toStdString(),true,false);
+    optional<Error> error = Error("No ROM file loaded!");
+    if (args.length() == 2) {
+        start_emulator(args.at(1).toStdString(), false, false);
+    } else if (args.length() == 3 && args.at(1) == "-dmg") {
+        start_emulator(args.at(2).toStdString(), true, false);
+    }
+}
+
+void GameBoyView::start_emulator(string rom_path, bool boot_rom, bool debug) {
+    optional<Error> error = emulator.start(rom_path, boot_rom, debug);
+
+    if (!error) {
+        m_parent->start_timer();
+    } else {
+        cout << error->get_error_string() << endl;
+    }
 }
 
 void GameBoyView::animate() {

@@ -1,10 +1,10 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() :
-    gbview(GameBoyView(this))
+    gbview(new GameBoyView(this))
 {
     setWindowTitle("EmuBoy");
-    setCentralWidget(&gbview);
+    setCentralWidget(gbview);
 
     create_actions();
     create_menus();
@@ -12,11 +12,18 @@ MainWindow::MainWindow() :
     m_statusbar = statusBar();
     //m_statusbar->showMessage(tr("hello"));
 
-    gbview.start_emulator();
-
     timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, &gbview, &GameBoyView::animate);
+    connect(timer, &QTimer::timeout, gbview, &GameBoyView::animate);
+
+    gbview->parse_command_line();
+}
+
+void MainWindow::start_timer() {
     timer->start(16);
+}
+
+void MainWindow::stop_timer() {
+    timer->stop();
 }
 
 void MainWindow::create_menus() {
@@ -33,9 +40,9 @@ void MainWindow::create_menus() {
 }
 
 void MainWindow::create_actions() {
-    open_act = new QAction(tr("&Open"), this);
+    open_act = new QAction(tr("&Open ROM File"), this);
     open_act->setShortcuts(QKeySequence::Open);
-    open_act->setStatusTip(tr("Open a file"));
+    open_act->setStatusTip(tr("Open a ROM file"));
     connect(open_act, &QAction::triggered, this, &MainWindow::open);
 
     scale1x_act = new QAction(tr("&Scale 1x"), this);
@@ -62,20 +69,23 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 
 void MainWindow::file() {}
 
-void MainWindow::open() {}
+void MainWindow::open() {
+    QString file_name = QFileDialog::getOpenFileName(this,tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
+    gbview->start_emulator(file_name.toStdString(), false, false);
+}
 
 void MainWindow::view() {}
 
 void MainWindow::scale1x() {
-    gbview.set_scaling_factor(1);
+    gbview->set_scaling_factor(1);
 }
 
 void MainWindow::scale2x() {
-    gbview.set_scaling_factor(2);
+    gbview->set_scaling_factor(2);
 }
 
 void MainWindow::scale3x() {
-    gbview.set_scaling_factor(3);
+    gbview->set_scaling_factor(3);
 }
 
 void MainWindow::about() {

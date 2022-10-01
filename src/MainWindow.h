@@ -7,13 +7,17 @@
 #include <QStatusBar>
 #include <QGridLayout>
 #include <QTimer>
+#include <QFileDialog>
 
+class GameBoyView;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
     public:
         MainWindow();
+        void start_timer();
+        void stop_timer();
 
     protected:
         void contextMenuEvent(QContextMenuEvent* event) override;
@@ -45,7 +49,7 @@ class MainWindow : public QMainWindow {
         QAction* about_emuboy_act;
         QWidget* about_widget;
         
-        GameBoyView gbview;
+        GameBoyView* gbview;
         QTimer* timer;
 
 };

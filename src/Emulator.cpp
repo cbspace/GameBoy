@@ -11,12 +11,12 @@ Emulator::Emulator() :
     quit_flag(false)
 {}
 
-void Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
+optional<Error> Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
-    if ( auto e = memory.load_rom(rom_path) ) { 
-        cout << e.value().get_error_string() << endl;;
-        return; 
-    }
+    memory.init();
+
+    if ( auto e = memory.load_rom(rom_path) )
+        return e; 
     
     if (rom_is_dmg) {
         memory.set_pc(0x00);
@@ -27,6 +27,8 @@ void Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
         cout << "Rom Title: " << memory.get_rom_title() << endl;
         memory.write_byte(R_LCDC, 0x91);
     }
+
+    return nullopt;
 }
 
 void Emulator::main_loop()
