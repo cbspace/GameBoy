@@ -1,12 +1,13 @@
 #include "GameBoyView.h"
 #include "lib/Types.h"
 
-GameBoyView::GameBoyView(QWidget* parent, int width_initial, int height_initial) :
+GameBoyView::GameBoyView(QWidget* parent) :
     QWidget(parent),
-    p_width(width_initial), 
-    p_height(height_initial)
+    m_parent(parent)
     {
-        setFixedSize(width_initial, height_initial);
+        width = DISP_W * scaling_factor;
+        height = DISP_H * scaling_factor;
+        setFixedSize(width, height);
 
         background = QBrush(QColor(0x92, 0xad, 0x26));
     }
@@ -24,16 +25,23 @@ void GameBoyView::paintEvent(QPaintEvent* event) {
 }
 
 QImage GameBoyView::render_gb_image() {
-    QImage q_image(p_width, p_height, QImage::Format_RGB32);
+    QImage q_image(width, height, QImage::Format_RGB32);
     u32* buffer = emulator.disp.get_buffer();
-    for (int y=0; y < p_height; y++) {
-        for (int x=0; x < p_width; x++) {
-            u32 pix_value = buffer[y*p_width + x];
+    for (int y=0; y < DISP_H; y++) {
+        for (int x=0; x < DISP_W; x++) {
+            u32 pix_value = buffer[y*DISP_W + x];
             int r = pix_value >> 16;
             int g = (pix_value >> 8) & 0xff;
             int b = pix_value & 0x0000ff;
             QRgb value = qRgb(r,g,b);
-            q_image.setPixel(x,y,value);
+
+            for (u16 y1 = 0; y1 < scaling_factor; y1++)
+            {
+                for (u16 x1 = 0; x1 < scaling_factor; x1++)
+                {
+                    q_image.setPixel(x * scaling_factor + x1, y * scaling_factor + y1, value);
+                }
+            }
         }
     }
     return q_image;
@@ -51,4 +59,12 @@ void GameBoyView::animate() {
         new_frame_drawn = emulator.disp.new_frame_is_drawn();
         update();
     }
+}
+
+void GameBoyView::set_scaling_factor(u8 sf) {
+    scaling_factor = sf;
+    width = DISP_W * scaling_factor;
+    height = DISP_H * scaling_factor;
+    setFixedSize(width, height);
+    m_parent->adjustSize();
 }

@@ -28,7 +28,6 @@ void Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
         memory.write_byte(R_LCDC, 0x91);
     }
 
-    disp.init();
     //main_loop();
 }
 

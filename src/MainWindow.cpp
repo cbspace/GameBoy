@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() :
-    gbview(GameBoyView(this, qt_view_width, qt_view_height))
+    gbview(GameBoyView(this))
 {
     setWindowTitle("EmuBoy");
     setCentralWidget(&gbview);
@@ -24,6 +24,7 @@ void MainWindow::create_menus() {
     view_menu = menuBar()->addMenu("View");
     view_menu->addAction(scale1x_act);
     view_menu->addAction(scale2x_act);
+    view_menu->addAction(scale3x_act);
 
     about_menu = menuBar()->addMenu("About");
     about_menu->addAction(about_emuboy_act);
@@ -45,6 +46,11 @@ void MainWindow::create_actions() {
     scale2x_act->setStatusTip(tr("Scale view 2x"));
     connect(scale2x_act, &QAction::triggered, this, &MainWindow::scale2x);
 
+    scale3x_act = new QAction(tr("&Scale 3x"), this);
+    //scale3x_act->setShortcuts();
+    scale3x_act->setStatusTip(tr("Scale view 3x"));
+    connect(scale3x_act, &QAction::triggered, this, &MainWindow::scale3x);
+
     about_emuboy_act = new QAction(tr("&Emuboy"), this);
     about_emuboy_act->setStatusTip(tr("About Emuboy"));
     connect(about_emuboy_act, &QAction::triggered, this, &MainWindow::about);
@@ -58,9 +64,17 @@ void MainWindow::open() {}
 
 void MainWindow::view() {}
 
-void MainWindow::scale1x() {}
+void MainWindow::scale1x() {
+    gbview.set_scaling_factor(1);
+}
 
-void MainWindow::scale2x() {}
+void MainWindow::scale2x() {
+    gbview.set_scaling_factor(2);
+}
+
+void MainWindow::scale3x() {
+    gbview.set_scaling_factor(3);
+}
 
 void MainWindow::about() {
     if (!about_widget) {

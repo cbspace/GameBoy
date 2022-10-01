@@ -2,6 +2,7 @@
 
 #include "displayconst.h"
 #include "Emulator.h"
+#include "lib/Types.h"
 #include <QCoreApplication>
 #include <QWidget>
 #include <QPaintEvent>
@@ -11,9 +12,10 @@ class GameBoyView : public QWidget {
     Q_OBJECT
 
     public:
-        GameBoyView(QWidget* parent, int width_initial, int height_initial);
+        GameBoyView(QWidget* parent);
         ~GameBoyView();
         void start_emulator();
+        void set_scaling_factor(u8 sf);
 
     public slots:
         void animate();
@@ -25,7 +27,8 @@ class GameBoyView : public QWidget {
         Emulator emulator;
         QImage render_gb_image();
         QBrush background;
-        int p_width;
-        int p_height;
-
+        i32 width;
+        i32 height;
+        u8 scaling_factor = 3;
+        QWidget* m_parent { NULL };
 };

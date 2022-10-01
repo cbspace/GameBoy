@@ -1,6 +1,5 @@
 #pragma once
 
-#define SCALING_FACTOR      3               // Scale display size by this amount
 #define WINDOW_TITLE        "EmuBoy"        // Title to display on SDL Wind
 
 #define COLOUR_BG_RGB       0x92AD26        // Background colour
@@ -8,8 +7,8 @@
 #define COLOUR_C2_RGB       0x485612        // Colour 2
 #define COLOUR_C3_RGB       0x242B09        // Colour 3
 
-#define DISP_W              160             // Gameboy display width (Usually 160 pixels)
-#define DISP_H              144             // Gameboy display height (Usually 144 pixels)
+const int DISP_W =          160;            // Gameboy display width
+const int DISP_H =          144;            // Gameboy display height
 
 #define BG_TILES_MAX        32	            // BG is 32 x 32 tiles
 #define SPRITE_TILES_MAX    40              // Sprite OAM memory for 40 sprites
@@ -55,12 +54,6 @@
 #define R_STAT_LYC_FLAG					2	// LYC=LY Coincidence Flag
 #define R_STAT_MODE_B1					1	// Mode flag bit 1
 #define R_STAT_MODE_B0					0	// Mode flag bit 0
-
-static const int width = DISP_W * SCALING_FACTOR;    // Screen width in pixels
-static const int height = DISP_H * SCALING_FACTOR;   // Screen height in pixels
-
-#define qt_view_width   DISP_W * SCALING_FACTOR // 480
-#define qt_view_height  DISP_H * SCALING_FACTOR // 432
 
 enum class ColourValue {
     C0 = 0, // Lightest

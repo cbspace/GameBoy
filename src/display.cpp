@@ -7,9 +7,11 @@ GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     ren(mem_in, pixels),
     ir(ir_in),
     clk(clk_in),
-    display_buffer(NULL),
     new_frame_drawn(false)
-{}
+{
+    pixels_coloured = new u32[DISP_W*DISP_H];
+    clear_pixels();
+}
 
 bool GBDisplay::new_frame_is_drawn() {
     return new_frame_drawn;
@@ -199,8 +201,6 @@ void GBDisplay::update_stat_reg(u8 mode_val)
 void GBDisplay::draw_frame()
 {
     colour();
-    scale();
-
     new_frame_drawn = true;
 
     //clk.frame_delay();
@@ -238,23 +238,6 @@ void GBDisplay::colour()
     }
 }
 
-void GBDisplay::scale()
-{
-    for (u16 y = 0; y < DISP_H; y++)
-    {
-        for (u16 x = 0; x < DISP_W; x++)
-        {
-            for (u16 y1 = 0; y1 < SCALING_FACTOR; y1++)
-            {
-                for (u16 x1 = 0; x1 < SCALING_FACTOR; x1++)
-                {
-                	display_buffer[(y * SCALING_FACTOR + y1) * width + x * SCALING_FACTOR + x1] = pixels_coloured[y * DISP_W + x];
-                }
-            }
-        }
-    }
-}
-
 void GBDisplay::clear_pixels()
 {
     for (u16 y = 0; y < DISP_H; y++)
@@ -266,17 +249,8 @@ void GBDisplay::clear_pixels()
     }
 }
 
-optional<Error> GBDisplay::init()
-{
-    display_buffer = new u32[width*height];
-
-    clear_pixels();
-
-    return nullopt;
-}
-
 u32* GBDisplay::get_buffer() {
-    return display_buffer;
+    return pixels_coloured;
 }
 
 GBDisplay::~GBDisplay()

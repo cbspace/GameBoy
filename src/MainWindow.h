@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow {
         void view();
         void scale1x();
         void scale2x();
+        void scale3x();
         void about();
 
     private:
@@ -35,6 +36,7 @@ class MainWindow : public QMainWindow {
         QMenu* view_menu;
         QAction* scale1x_act;
         QAction* scale2x_act;
+        QAction* scale3x_act;
 
         QMenu* about_menu;
         QAction* about_emuboy_act;
