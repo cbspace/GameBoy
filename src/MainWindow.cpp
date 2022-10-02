@@ -48,7 +48,7 @@ void MainWindow::create_actions() {
     open_file_act->setStatusTip(tr("Open a ROM file"));
     connect(open_file_act, &QAction::triggered, this, &MainWindow::open_file);
 
-    open_debug_act = new QAction(tr("&Show Debug Window"), this);
+    open_debug_act = new QAction(tr("Show &Debug Window"), this);
     //open_debug_act->setShortcuts(QKeySequence::);
     open_debug_act->setStatusTip(tr("Show Debug Window"));
     connect(open_debug_act, &QAction::triggered, this, &MainWindow::open_debug);
@@ -63,17 +63,17 @@ void MainWindow::create_actions() {
     quit_act->setStatusTip(tr("Quit"));
     connect(quit_act, &QAction::triggered, this, &MainWindow::quit);
 
-    scale1x_act = new QAction(tr("&Scale 1x"), this);
+    scale1x_act = new QAction(tr("Scale &1x"), this);
     //scale1x_act->setShortcuts();
     scale1x_act->setStatusTip(tr("Scale view 1x"));
     connect(scale1x_act, &QAction::triggered, this, &MainWindow::scale1x);
 
-    scale2x_act = new QAction(tr("&Scale 2x"), this);
+    scale2x_act = new QAction(tr("Scale &2x"), this);
     //scale2x_act->setShortcuts();
     scale2x_act->setStatusTip(tr("Scale view 2x"));
     connect(scale2x_act, &QAction::triggered, this, &MainWindow::scale2x);
 
-    scale3x_act = new QAction(tr("&Scale 3x"), this);
+    scale3x_act = new QAction(tr("Scale &3x"), this);
     //scale3x_act->setShortcuts();
     scale3x_act->setStatusTip(tr("Scale view 3x"));
     connect(scale3x_act, &QAction::triggered, this, &MainWindow::scale3x);
