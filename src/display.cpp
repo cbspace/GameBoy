@@ -109,7 +109,7 @@ void GBDisplay::display_cycle()
 
 void GBDisplay::update_line()
 {
-	u8 ly_val;
+    u8 ly_val;
 
     ly_val = mem.get_byte(R_LY);
     
@@ -120,7 +120,7 @@ void GBDisplay::update_line()
     }
     else if (ly_val == DISP_H)
     {
-    	draw_frame();
+        draw_frame();
         ir.if_update(I_VBLANK, true);
         mem.write_byte(R_LY, ly_val + 1);
     }
@@ -140,7 +140,7 @@ void GBDisplay::update_line()
 
 void GBDisplay::update_stat_reg(u8 mode_val)
 {
-	u8 lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
+    u8 lyc_val, lyc_sel_val, mode_10_sel_val, mode_01_sel_val, mode_00_sel_val;
     u8 ly_val = mem.get_byte(R_LY);
 
     lyc_val = mem.get_byte(R_LYC);
@@ -152,48 +152,48 @@ void GBDisplay::update_stat_reg(u8 mode_val)
 
     if (ly_val == lyc_val)
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::LYC_FLAG), true);
-    	if (lyc_sel_val)
-    	{
+        mem.write_bit(R_LCDSTAT, u8(StatReg::LYC_FLAG), true);
+        if (lyc_sel_val)
+        {
             ir.if_update(I_LCDSTAT, true);
-    	}
+        }
     }
     else
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::LYC_FLAG), false);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::LYC_FLAG), false);
     }
 
     if (mode_val == 0x00)
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), false);
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), false);
-    	if (mode_00_sel_val)
-    	{
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), false);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), false);
+        if (mode_00_sel_val)
+        {
             ir.if_update(I_LCDSTAT, true);
-    	}
+        }
     }
     else if (mode_val == 0x01)
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), false);
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), true);
-    	if (mode_01_sel_val)
-    	{
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), false);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), true);
+        if (mode_01_sel_val)
+        {
             ir.if_update(I_LCDSTAT, true);
-    	}
+        }
     }
     else if (mode_val == 0x02)
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), true);
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), false);
-    	if (mode_10_sel_val)
-    	{
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), true);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), false);
+        if (mode_10_sel_val)
+        {
             ir.if_update(I_LCDSTAT, true);
-    	}
+        }
     }
     else if (mode_val == 0x03)
     {
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), true);
-    	mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), true);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), true);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), true);
     }
 
 }
@@ -208,31 +208,31 @@ void GBDisplay::draw_frame()
 
 void GBDisplay::colour()
 {
-	u32 current_pixel_ref;
+    u32 current_pixel_ref;
 
     for (u16 y = 0; y < DISP_H; y++)
     {
         for (u16 x = 0; x < DISP_W; x++)
         {
-        	current_pixel_ref = y*DISP_W + x;
-        	switch(pixels[current_pixel_ref])
-        	{
-        	case ColourValue::C0:
-        		pixels_coloured[current_pixel_ref] = COLOUR_BG_RGB;
-        		break;
-        	case ColourValue::C1:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C1_RGB;
-        		break;
-        	case ColourValue::C2:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C2_RGB;
-        		break;
-        	case ColourValue::C3:
-        		pixels_coloured[current_pixel_ref] = COLOUR_C3_RGB;
-        		break;
-        	default:
-        		pixels_coloured[current_pixel_ref] = 0xffffff;
-        		break;
-        	}
+            current_pixel_ref = y*DISP_W + x;
+            switch(pixels[current_pixel_ref])
+            {
+            case ColourValue::C0:
+                pixels_coloured[current_pixel_ref] = COLOUR_BG_RGB;
+                break;
+            case ColourValue::C1:
+                pixels_coloured[current_pixel_ref] = COLOUR_C1_RGB;
+                break;
+            case ColourValue::C2:
+                pixels_coloured[current_pixel_ref] = COLOUR_C2_RGB;
+                break;
+            case ColourValue::C3:
+                pixels_coloured[current_pixel_ref] = COLOUR_C3_RGB;
+                break;
+            default:
+                pixels_coloured[current_pixel_ref] = 0xffffff;
+                break;
+            }
 
         }
     }

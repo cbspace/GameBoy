@@ -10,5 +10,5 @@ int main(int argc, char* argv[])
     MainWindow main_window;
     main_window.show();
 
-	return app.exec();
+    return app.exec();
 }

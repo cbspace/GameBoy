@@ -40,7 +40,7 @@ void Interrupt::check_interrupts()
             }
             else if (I_LCDSTAT & i_current)
             {
-            	cout << "LCDStat Interrupt" << endl;
+                cout << "LCDStat Interrupt" << endl;
 
                 if_update(I_LCDSTAT, false);
 
@@ -48,7 +48,7 @@ void Interrupt::check_interrupts()
             }
             else if (I_JOYPAD & i_current)
             {
-            	cout << "Joypad Interrupt" << endl;
+                cout << "Joypad Interrupt" << endl;
 
                 if_update(I_JOYPAD, false);
 
@@ -95,7 +95,7 @@ void Interrupt::disable_interrupts()
 
 void Interrupt::enable_interrupts()
 {
-	ei_count = 1;
+    ei_count = 1;
 }
 
 //------------------------- Private ----------------------------------------

@@ -95,7 +95,7 @@ class Memory
         void bit_test_from_pointer(Register16Bit reg_id, u8 bit_number);  // Test bit b in byte at (n) and set flags accordingly
         void bit_set_from_pointer(Register16Bit reg_id, u8 bit_number);   // Set bit in in byte at (n), flags not affected
         void bit_res_from_pointer(Register16Bit reg_id, u8 bit_number);   // Reset bit in in byte at (n), flags not affected
-        void dma_transfer();										      // Perform DMA transfer from ROM/RAM to OAM
+        void dma_transfer();                                              // Perform DMA transfer from ROM/RAM to OAM
         // Stack pointer and Program Counter
         void set_pc(u16 pc_value);                             // Set pc value
         u16 get_pc();                                          // Get pc value

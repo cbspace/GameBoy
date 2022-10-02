@@ -1179,7 +1179,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xc0:  // Pop 2 bytes from the stack and return if ZF is reset (RET nz)
-        	unsigned_16bit_immediate = mem.stack_pop();
+            unsigned_16bit_immediate = mem.stack_pop();
             if (!mem.flag_get(ZF))
             {
                 mem.set_pc(unsigned_16bit_immediate);
@@ -1187,7 +1187,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xc8:  // Pop 2 bytes from the stack and return if ZF is set (RET z)
-        	unsigned_16bit_immediate = mem.stack_pop();
+            unsigned_16bit_immediate = mem.stack_pop();
             if (mem.flag_get(ZF))
             {
                 mem.set_pc(unsigned_16bit_immediate);
@@ -1195,7 +1195,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xd0:  // Pop 2 bytes from the stack and return if CF is reset (RET nc)
-        	unsigned_16bit_immediate = mem.stack_pop();
+            unsigned_16bit_immediate = mem.stack_pop();
             if (!mem.flag_get(CF))
             {
                 mem.set_pc(unsigned_16bit_immediate);
@@ -1203,7 +1203,7 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xd8:  // Pop 2 bytes from the stack and return if CF is set (RET c)
-        	unsigned_16bit_immediate = mem.stack_pop();
+            unsigned_16bit_immediate = mem.stack_pop();
             if (mem.flag_get(CF))
             {
                 mem.set_pc(unsigned_16bit_immediate);

@@ -524,8 +524,8 @@ u8 Memory::get_byte(u16 address)
 // Read a bit from an byte in RAM/ROM
 u8 Memory::get_bit(u16 address, u8 bit_number)
 {
-	u8 bit_mask = 1 << bit_number;
-	return (ram[address] & bit_mask) >> bit_number;
+    u8 bit_mask = 1 << bit_number;
+    return (ram[address] & bit_mask) >> bit_number;
 }
 
 // Read byte from ROM and increment PC
@@ -553,28 +553,28 @@ void Memory::write_byte(u16 address, u8 byte)
 
     if (address == R_DMA)
     {
-    	dma_transfer();
+        dma_transfer();
     }
 }
 
 // Update individual bit in RAM/ROM
 void Memory::write_bit(u16 address, u8 bit_number, bool bit_val)
 {
-	u8 new_value;
+    u8 new_value;
 
-	u8 current_value = ram[address];
-	u8 bit_mask = 1 << bit_number;
+    u8 current_value = ram[address];
+    u8 bit_mask = 1 << bit_number;
 
-	if (bit_val)
-	{
-		new_value = current_value | bit_mask;
-	}
-	else
-	{
-		new_value = current_value & ~bit_mask;
-	}
+    if (bit_val)
+    {
+        new_value = current_value | bit_mask;
+    }
+    else
+    {
+        new_value = current_value & ~bit_mask;
+    }
 
-	ram[address] = new_value;
+    ram[address] = new_value;
 }
 
 // Increment byte and update flags
@@ -751,12 +751,12 @@ void Memory::bit_res_from_pointer(Register16Bit reg_id, u8 bit_number)
 // Perform DMA transfer from ROM/RAM to OAM
 void Memory::dma_transfer()
 {
-	u16 dma_start = ram[R_DMA] << 8;
+    u16 dma_start = ram[R_DMA] << 8;
 
-	for (u8 i = 0; i < 0xA0; i++)
-	{
-		ram[A_OAM + i] = ram[dma_start + i];
-	}
+    for (u8 i = 0; i < 0xA0; i++)
+    {
+        ram[A_OAM + i] = ram[dma_start + i];
+    }
 }
 
 /// Stack pointer and Program Counter

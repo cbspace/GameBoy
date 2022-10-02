@@ -10,11 +10,11 @@ const u32 COLOUR_C3_RGB =   0x242B09;       // Colour 3
 const u32 DISP_W =          160;            // Gameboy display width
 const u32 DISP_H =          144;            // Gameboy display height
 
-const u32 BG_TILES_MAX =        32;	        // BG is 32 x 32 tiles
+const u32 BG_TILES_MAX =        32;            // BG is 32 x 32 tiles
 const u32 SPRITE_TILES_MAX =    40;         // Sprite OAM memory for 40 sprites
-const u32 OAM_DATA_LENGTH =		4;          // OAM memory data is 4 bytes long
+const u32 OAM_DATA_LENGTH =        4;          // OAM memory data is 4 bytes long
 
-const u32 LCD_Y_MAX =			153;        // Max Value of LY register
+const u32 LCD_Y_MAX =            153;        // Max Value of LY register
 
 // Memory Locations - Video
 const u32 A_TDT1 =              0x8000;     // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)

@@ -4,7 +4,7 @@
 using namespace std;
 
 Emudebug::Emudebug(Memory& mem_in) :
-	mem(mem_in)
+    mem(mem_in)
 {
     cpu_count = 0;
     prev_pc = 0;
@@ -12,27 +12,27 @@ Emudebug::Emudebug(Memory& mem_in) :
 
 bool Emudebug::detect_runaway()
 {
-	u16 pc_val;
+    u16 pc_val;
 
-	pc_val = mem.get_pc();
+    pc_val = mem.get_pc();
 
-	if (pc_val == (prev_pc + 1))
-	{
-		cpu_count += 1;
-		if (cpu_count >= 100)
-		{
-			cout << "CPU Runaway detected!\n";
-			return true;
-		}
-	}
-	else
-	{
-		cpu_count = 0;
-	}
+    if (pc_val == (prev_pc + 1))
+    {
+        cpu_count += 1;
+        if (cpu_count >= 100)
+        {
+            cout << "CPU Runaway detected!\n";
+            return true;
+        }
+    }
+    else
+    {
+        cpu_count = 0;
+    }
 
-	prev_pc = pc_val;
+    prev_pc = pc_val;
 
-	return false;
+    return false;
 }
 
 void Emudebug::dump_reg()
@@ -82,13 +82,13 @@ void Emudebug::insert_logo()
 void Emudebug::sprite_test()
 {
     u8 sprite_data[] = {0x7c, 0x7c, 0x00, 0xc6, 0xc6, 0x00, 0x00, 0xfe,
-    						 0xc6, 0xc6, 0x00, 0xc6, 0xc7, 0x01, 0x7c, 0x7c};
+                             0xc6, 0xc6, 0x00, 0xc6, 0xc7, 0x01, 0x7c, 0x7c};
 //    u8 sprite_data[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-//    		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+//            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
     for (u16 i = 0; i < 16; i++)
     {
-		mem.write_byte(i + A_TDT1 + 0x230, sprite_data[i]);
+        mem.write_byte(i + A_TDT1 + 0x230, sprite_data[i]);
     }
 
     u8 oam_data[] = {8, 8, 35, 0x00};
@@ -102,6 +102,6 @@ void Emudebug::sprite_test()
 
     for (u16 i = 0; i < 4; i++)
     {
-		mem.write_byte(i + A_OAM + 4, oam_data2[i]);
+        mem.write_byte(i + A_OAM + 4, oam_data2[i]);
     }
 }

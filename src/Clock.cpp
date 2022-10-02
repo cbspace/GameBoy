@@ -3,7 +3,7 @@
 Clock::Clock() :
     line_clock_cycles(0)
 {
-	//frame_start_ticks = SDL_GetTicks();
+    //frame_start_ticks = SDL_GetTicks();
 }
 
 // void Clock::frame_delay()
