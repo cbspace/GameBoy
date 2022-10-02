@@ -1,63 +1,68 @@
 #pragma once
 
-#define WINDOW_TITLE        "EmuBoy"        // Title to display on SDL Wind
+#include "lib/Types.h"
 
-#define COLOUR_BG_RGB       0x92AD26        // Background colour
-#define COLOUR_C1_RGB       0x6D811C        // Colour 1
-#define COLOUR_C2_RGB       0x485612        // Colour 2
-#define COLOUR_C3_RGB       0x242B09        // Colour 3
+const u32 COLOUR_BG_RGB =   0x92AD26;       // Background colour
+const u32 COLOUR_C1_RGB =   0x6D811C;       // Colour 1
+const u32 COLOUR_C2_RGB =   0x485612;       // Colour 2
+const u32 COLOUR_C3_RGB =   0x242B09;       // Colour 3
 
-const int DISP_W =          160;            // Gameboy display width
-const int DISP_H =          144;            // Gameboy display height
+const u32 DISP_W =          160;            // Gameboy display width
+const u32 DISP_H =          144;            // Gameboy display height
 
-#define BG_TILES_MAX        32	            // BG is 32 x 32 tiles
-#define SPRITE_TILES_MAX    40              // Sprite OAM memory for 40 sprites
-#define OAM_DATA_LENGTH		4               // OAM memory data is 4 bytes long
+const u32 BG_TILES_MAX =        32;	        // BG is 32 x 32 tiles
+const u32 SPRITE_TILES_MAX =    40;         // Sprite OAM memory for 40 sprites
+const u32 OAM_DATA_LENGTH =		4;          // OAM memory data is 4 bytes long
 
-#define LCD_Y_MAX			153             // Max Value of LY register
+const u32 LCD_Y_MAX =			153;        // Max Value of LY register
 
 // Memory Locations - Video
-#define A_TDT1              0x8000          // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)
-#define A_TDT2              0x8800          // Tile Data Table 2 start address (BG, Window: -128->127)
-#define A_BGTM1             0x9800          // Background Tile Map 1 start address
-#define A_BGTM2             0x9C00          // Background Tile Map 2 start address
+const u32 A_TDT1 =              0x8000;     // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)
+const u32 A_TDT2 =              0x8800;     // Tile Data Table 2 start address (BG, Window: -128->127)
+const u32 A_BGTM1 =             0x9800;     // Background Tile Map 1 start address
+const u32 A_BGTM2 =             0x9C00;     // Background Tile Map 2 start address
 
-#define A_OAM               0xfe00          // Start address of OAM memory (Sprite Atrribute Table)
+const u32 A_OAM =               0xfe00;     // Start address of OAM memory (Sprite Atrribute Table)
 
 // Special Registers - Video
-#define R_LCDC              0xff40          // LCD Control
-#define R_LCDSTAT           0xff41          // LCD Status
-#define R_SCY               0xff42          // Scroll Y
-#define R_SCX               0xff43          // Scroll X
-#define R_LY                0xff44          // LCD Y coordinate
-#define R_LYC               0xff45          // LY Compare
-#define R_DMA               0xff46          // Direct Memory Access
-#define R_BGP               0xff47          // Background Palette
-#define R_OBP0              0xff48          // Object Palette 0
-#define R_OBP1              0xff49          // Object Palette 1
-#define R_WY                0xff4a          // Window Y Position
-#define R_WX                0xff4b          // Window X Position
+const u32 R_LCDC =              0xff40;     // LCD Control
+const u32 R_LCDSTAT =           0xff41;     // LCD Status
+const u32 R_SCY =               0xff42;     // Scroll Y
+const u32 R_SCX =               0xff43;     // Scroll X
+const u32 R_LY =                0xff44;     // LCD Y coordinate
+const u32 R_LYC =               0xff45;     // LY Compare
+const u32 R_DMA =               0xff46;     // Direct Memory Access
+const u32 R_BGP =               0xff47;     // Background Palette
+const u32 R_OBP0 =              0xff48;     // Object Palette 0
+const u32 R_OBP1 =              0xff49;     // Object Palette 1
+const u32 R_WY =                0xff4a;     // Window Y Position
+const u32 R_WX =                0xff4b;     // Window X Position
 
-#define R_LCDC_LCD_CONTROL				7	// LCD Control
-#define R_LCDC_WIN_MAP_SEL				6	// Window tile map select
-#define R_LCDC_WIN_DISPLAY				5	// Window display on or off
-#define R_LCDC_BG_WIN_TILE_DATA_SEL		4	// BG & Window tile data select
-#define R_LCDC_BG_TILE_MAP_SEL			3	// BG tile map select
-#define R_LCDC_SPRITE_SIZE				2	// Sprite size (8x8 or 8x16)
-#define R_LCDC_SPRITE_DISPLAY			1	// Sprite display on or off
-#define R_LCDC_BG_WIN_DISPLAY			0	// BG and Window display on or off
+enum class LcdcReg {
+    BG_WIN_DISPLAY,
+    SPRITE_DISPLAY,
+    SPRITE_SIZE,
+    BG_TILE_MAP_SEL,
+    BG_WIN_TILE_DATA_SEL,
+    WIN_DISPLAY,
+    WIN_MAP_SEL,
+    LCD_CONTROL
+};
 
-#define R_STAT_LYC_IR					6	// Interrupt Sel: LYC=LY Coincidence
-#define R_STAT_MODE_10_IR				5	// Interrupt Sel: Mode 10
-#define R_STAT_MODE_01_IR				4	// Interrupt Sel: Mode 01
-#define R_STAT_MODE_00_IR				3	// Interrupt Sel: Mode 00
-#define R_STAT_LYC_FLAG					2	// LYC=LY Coincidence Flag
-#define R_STAT_MODE_B1					1	// Mode flag bit 1
-#define R_STAT_MODE_B0					0	// Mode flag bit 0
+enum class StatReg {
+    MODE_B0,
+    MODE_B1,
+    LYC_FLAG,
+    MODE_00_IR,
+    MODE_01_IR,
+    MODE_10_IR,
+    LYC_IR
+};
+
 
 enum class ColourValue {
-    C0 = 0, // Lightest
-    C1 = 1,
-    C2 = 2,
-    C3 = 3 // Darkest
+    C0, // Lightest
+    C1,
+    C2,
+    C3  // Darkest
 };

@@ -20,12 +20,12 @@ Render::Render(Memory& mem_in, ColourValue (&pix_in)[DISP_W*DISP_H]) :
 
 void Render::render_line(u8 line_y)
 {
-//	if (mem.get_bit(R_LCDC, R_LCDC_BG_WIN_DISPLAY))
+//	if (mem.get_bit(R_LCDC, u8(LcdcReg::BG_WIN_DISPLAY)))
 //	{
 		draw_bg_line(line_y);
 //	}
 
-//	if (mem.get_bit(R_LCDC, R_LCDC_SPRITE_DISPLAY))
+//	if (mem.get_bit(R_LCDC, u8(LcdcReg::SPRITE_DISPLAY)))
 //	{
 		//draw_sprites_line(y);
 //	}
@@ -58,7 +58,7 @@ void Render::draw_sprites_line(u8 line_y)
 	u8 y_val, x_len;
 	ColourValue pix_val;
 
-//	sprite_size = mem.get_bit(R_LCDC, R_LCDC_SPRITE_SIZE);
+//	sprite_size = mem.get_bit(R_LCDC, u8(LcdcReg::SPRITE_SIZE));
 
     // Loop through sprites in OAM memory (Assuming 8x8 mode)
     for (u8 s = 0; s < SPRITE_TILES_MAX; s++)
