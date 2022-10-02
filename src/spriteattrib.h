@@ -2,10 +2,10 @@
 
 #include "lib/Types.h"
 
-#define SPRITE_ATTRIB_FLAG_PRIORITY		7
-#define SPRITE_ATTRIB_FLAG_Y_FLIP		6
-#define SPRITE_ATTRIB_FLAG_X_FLIP		5
-#define SPRITE_ATTRIB_FLAG_PALETTE		4
+const u8 SPRITE_ATTRIB_FLAG_PRIORITY = 7;
+const u8 SPRITE_ATTRIB_FLAG_Y_FLIP   = 6;
+const u8 SPRITE_ATTRIB_FLAG_X_FLIP   = 5;
+const u8 SPRITE_ATTRIB_FLAG_PALETTE  = 4;
 
 /*
 Class to define sprite atrributes

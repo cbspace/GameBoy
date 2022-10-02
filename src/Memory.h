@@ -6,28 +6,28 @@
 #include <string>
 #include <optional>
 
-#define MEM_SIZE            0x10000     // Memory size for Gameboy
-#define REG_ARRAY_SIZE      8           // Number of 8 bit registers
-#define BYTE_ARRAY_SIZE     16          // Used in read_rom_title and write_array
+const u32 MEM_SIZE = 0x10000;           // Memory size for Gameboy
+const u32 REG_ARRAY_SIZE = 8;           // Number of 8 bit registers
+const u32 BYTE_ARRAY_SIZE = 16;         // Used in read_rom_title and write_array
 
-#define ROM_START_ADDRESS   0x100       // ROM program starts at this address (DMG Rom Start is 0)
-#define ROM_TITLE_ADDRESS   0x134       // Address of title
+const u32 ROM_START_ADDRESS = 0x100;    // ROM program starts at this address (DMG Rom Start is 0)
+const u32 ROM_TITLE_ADDRESS = 0x134;    // Address of title
 
-#define SP_INITIAL_VALUE    0xfffe      // Initial value of the stack pointer
+const u32 SP_INITIAL_VALUE = 0xfffe;    // Initial value of the stack pointer
 
-#define RA     0                        // A register - These register IDs are mapped to the reg array
-#define RF     1                        // F register
-#define RB     2                        // B register
-#define RC     3                        // C register
-#define RD     4                        // D register
-#define RE     5                        // E register
-#define RH     6                        // H register
-#define RL     7                        // L register
+const u8 RA = 0;                        // A register - These register IDs are mapped to the reg array
+const u8 RF = 1;                        // F register
+const u8 RB = 2;                        // B register
+const u8 RC = 3;                        // C register
+const u8 RD = 4;                        // D register
+const u8 RE = 5;                        // E register
+const u8 RH = 6;                        // H register
+const u8 RL = 7;                        // L register
 
-#define ZF     0x80                     // Zero flag mask
-#define NF     0x40                     // Negative flag mask
-#define HF     0x20                     // Half carry flag mask
-#define CF     0x10                     // Full carry flag mask
+const u32 ZF = 0x80;                    // Zero flag mask
+const u32 NF = 0x40;                    // Negative flag mask
+const u32 HF = 0x20;                    // Half carry flag mask
+const u32 CF = 0x10;                    // Full carry flag mask
 
 using namespace std;
 

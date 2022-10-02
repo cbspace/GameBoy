@@ -2,24 +2,25 @@
 
 #include "Memory.h"
 #include "Clock.h"
+#include "lib/Types.h"
 
 // Interrupt flags and interrupt enable mask values
-#define I_VBLANK    0x01
-#define I_LCDSTAT   0x02
-#define I_TIMER     0x04
-#define I_SERIAL    0x08
-#define I_JOYPAD    0x10
+const u32 I_VBLANK   =   0x01;
+const u32 I_LCDSTAT  =   0x02;
+const u32 I_TIMER    =   0x04;
+const u32 I_SERIAL   =   0x08;
+const u32 I_JOYPAD   =   0x10;
 
 // Interrupt Vectors
-#define IV_VBLANK    0x040
-#define IV_LCDSTAT   0x048
-#define IV_TIMER     0x050
-#define IV_SERIAL    0x058
-#define IV_JOYPAD    0x060
+const u32 IV_VBLANK  =   0x040;
+const u32 IV_LCDSTAT =   0x048;
+const u32 IV_TIMER   =   0x050;
+const u32 IV_SERIAL  =   0x058;
+const u32 IV_JOYPAD  =   0x060;
 
 // Special Memory Locations
-#define A_IFLAGS    0xff0f
-#define A_IENABLE   0xffff
+const u32 A_IFLAGS   =   0xff0f;
+const u32 A_IENABLE  =   0xffff;
 
 class Interrupt
 {

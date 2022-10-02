@@ -4,8 +4,9 @@
 #include <map>
 #include "Memory.h"
 #include "interrupt.h"
+#include "lib/Types.h"
 
-#define R_P1    0xff00      // Register for reading joy pad info
+const u32 R_P1 = 0xff00;      // Register for reading joy pad info
 
 enum class JoypadButton {
     Start,

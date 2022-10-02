@@ -2,14 +2,14 @@
 
 #include "lib/Types.h"
 
-#define CLK_FRAME_DELAY          100          // Clock period for frame clock (in ms), results in ~60 Hz Clock
-#define CLK_CYCLES_MAX           70224       // Maximum clock cycles per frame
-#define CLK_CYCLES_LINE          456//252         // Clock cycles for a single line BG + Sprites
+const u32 CLK_FRAME_DELAY =          100;         // Clock period for frame clock (in ms), results in ~60 Hz Clock
+const u32 CLK_CYCLES_MAX =           70224;       // Maximum clock cycles per frame
+const u32 CLK_CYCLES_LINE =          456;//252    // Clock cycles for a single line BG + Sprites
 
-#define CLK_CYCLES_MODE0         204         // Clock cycles for a single line HBLANK period (Mode 0)
-#define CLK_CYCLES_MODE1         4560        // Clock cycles for a single line VBLANK period (Mode 1)
-#define CLK_CYCLES_MODE2         80          // Clock cycles for Mode 2 - OAM being accessed
-#define CLK_CYCLES_MODE3         172         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
+const u32 CLK_CYCLES_MODE0 =         204;         // Clock cycles for a single line HBLANK period (Mode 0)
+const u32 CLK_CYCLES_MODE1 =         4560;        // Clock cycles for a single line VBLANK period (Mode 1)
+const u32 CLK_CYCLES_MODE2 =         80;          // Clock cycles for Mode 2 - OAM being accessed
+const u32 CLK_CYCLES_MODE3 =         172;         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
 
 enum class DisplayMode {
   Mode0,
