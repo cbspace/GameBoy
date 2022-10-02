@@ -82,6 +82,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 void MainWindow::file() {}
 
 void MainWindow::open() {
+    stop();
     QString file_name = QFileDialog::getOpenFileName(this,tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
     gbview->start_emulator(file_name.toStdString(), false, false);
 }
