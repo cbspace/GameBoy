@@ -7,7 +7,7 @@
 #include "interrupt.h"
 #include "emudebug.h"
 #include "Clock.h"
-//#include "joypad.h"
+#include "joypad.h"
 #include "lib/Error.h"
 #include <iostream>
 #include <string>

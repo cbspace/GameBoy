@@ -1,11 +1,11 @@
 #pragma once
 
-#include "spriteattrib.h"
-#include "Memory.h"
 #include "displayconst.h"
+#include "spriteattrib.h"
+#include "lib/Types.h"
+#include "Memory.h"
 #include <iostream>
 #include <string>
-#include "lib/Types.h"
 
 // GBDisplay Class looks after Window
 // Render Class looks after pixel array

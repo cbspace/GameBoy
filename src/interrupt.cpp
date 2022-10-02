@@ -2,8 +2,6 @@
 #include "Memory.h"
 #include "Clock.h"
 
-#include <iostream>
-
 Interrupt::Interrupt(Memory& mem_in, Clock& clk_in) :
     mem(mem_in),
     clk(clk_in)

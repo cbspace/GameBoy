@@ -23,6 +23,8 @@ set(SOURCES
     src/GameBoyView.cpp
     src/interrupt.h
     src/interrupt.cpp
+    src/joypad.h
+    src/joypad.cpp
     src/main.cpp
     src/MainWindow.h
     src/MainWindow.cpp

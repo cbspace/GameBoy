@@ -1,7 +1,6 @@
 #include "MainWindow.h"
 #include "GameBoyView.h"
 #include <QApplication>
-#include <QWidget>
 
 using namespace std;
 

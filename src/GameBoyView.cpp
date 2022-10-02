@@ -1,5 +1,4 @@
 #include "GameBoyView.h"
-#include "lib/Types.h"
 
 GameBoyView::GameBoyView(MainWindow* parent) :
     QWidget(parent),

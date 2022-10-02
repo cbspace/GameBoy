@@ -9,6 +9,8 @@
 #include <QGridLayout>
 #include <QTimer>
 #include <QFileDialog>
+#include <fstream>
+#include <iostream>
 
 class GameBoyView;
 

@@ -1,6 +1,4 @@
 #include "Clock.h"
-#include "lib/Types.h"
-//#include <SDL2/SDL.h>
 
 Clock::Clock() :
     line_clock_cycles(0)

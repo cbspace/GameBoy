@@ -5,6 +5,8 @@
 #include "lib/Types.h"
 #include <string>
 #include <optional>
+#include <fstream>
+#include <iostream>
 
 const u32 MEM_SIZE = 0x10000;           // Memory size for Gameboy
 const u32 REG_ARRAY_SIZE = 8;           // Number of 8 bit registers

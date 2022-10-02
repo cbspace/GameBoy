@@ -3,6 +3,7 @@
 #include "Memory.h"
 #include "Clock.h"
 #include "lib/Types.h"
+#include <iostream>
 
 // Interrupt flags and interrupt enable mask values
 const u32 I_VBLANK   =   0x01;

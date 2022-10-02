@@ -1,9 +1,4 @@
 #include "Memory.h"
-#include "lib/Types.h"
-#include <fstream>
-#include <iostream>
-#include <string>
-using namespace std;
 
 Memory::Memory()
 {
