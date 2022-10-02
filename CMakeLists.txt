@@ -15,6 +15,8 @@ set(SOURCES
     src/cpu.cpp
     src/display.h
     src/display.cpp
+    src/DebugWindow.h
+    src/DebugWindow.cpp
     src/emudebug.h
     src/emudebug.cpp
     src/Emulator.h

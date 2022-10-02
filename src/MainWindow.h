@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameBoyView.h"
+#include "DebugWindow.h"
 #include <QCoreApplication>
 #include <QMainWindow>
 #include <QWidget>
@@ -13,6 +14,7 @@
 #include <iostream>
 
 class GameBoyView;
+class DebugWindow;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -27,7 +29,8 @@ class MainWindow : public QMainWindow {
 
     private slots:
         void file();
-        void open();
+        void open_file();
+        void open_debug();
         void stop();
         void quit();
         void view();
@@ -43,7 +46,8 @@ class MainWindow : public QMainWindow {
         QStatusBar* m_statusbar;
 
         QMenu* emulator_menu;
-        QAction* open_act;
+        QAction* open_file_act;
+        QAction* open_debug_act;
         QAction* stop_act;
         QAction* quit_act;
 
@@ -58,5 +62,7 @@ class MainWindow : public QMainWindow {
         
         GameBoyView* gbview;
         QTimer* timer;
+
+        DebugWindow* debug_window { NULL };
 
 };
