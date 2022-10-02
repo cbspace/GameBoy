@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameBoyView.h"
+#include <QCoreApplication>
 #include <QMainWindow>
 #include <QWidget>
 #include <QMenuBar>
@@ -25,6 +26,8 @@ class MainWindow : public QMainWindow {
     private slots:
         void file();
         void open();
+        void stop();
+        void quit();
         void view();
         void scale1x();
         void scale2x();
@@ -37,8 +40,10 @@ class MainWindow : public QMainWindow {
 
         QStatusBar* m_statusbar;
 
-        QMenu* file_menu;
+        QMenu* emulator_menu;
         QAction* open_act;
+        QAction* stop_act;
+        QAction* quit_act;
 
         QMenu* view_menu;
         QAction* scale1x_act;

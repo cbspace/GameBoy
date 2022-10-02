@@ -27,15 +27,17 @@ void MainWindow::stop_timer() {
 }
 
 void MainWindow::create_menus() {
-    file_menu = menuBar()->addMenu("File");
-    file_menu->addAction(open_act);
+    emulator_menu = menuBar()->addMenu(tr("Emulator"));
+    emulator_menu->addAction(open_act);
+    emulator_menu->addAction(stop_act);
+    emulator_menu->addAction(quit_act);
 
-    view_menu = menuBar()->addMenu("View");
+    view_menu = menuBar()->addMenu(tr("View"));
     view_menu->addAction(scale1x_act);
     view_menu->addAction(scale2x_act);
     view_menu->addAction(scale3x_act);
 
-    about_menu = menuBar()->addMenu("About");
+    about_menu = menuBar()->addMenu(tr("About"));
     about_menu->addAction(about_emuboy_act);
 }
 
@@ -44,6 +46,16 @@ void MainWindow::create_actions() {
     open_act->setShortcuts(QKeySequence::Open);
     open_act->setStatusTip(tr("Open a ROM file"));
     connect(open_act, &QAction::triggered, this, &MainWindow::open);
+
+    stop_act = new QAction(tr("&Stop Emulation"), this);
+    //stop_act->setShortcuts(QKeySequence::);
+    stop_act->setStatusTip(tr("Stop Emulation"));
+    connect(stop_act, &QAction::triggered, this, &MainWindow::stop);
+
+    quit_act = new QAction(tr("&Quit"), this);
+    quit_act->setShortcuts(QKeySequence::Quit);
+    quit_act->setStatusTip(tr("Quit"));
+    connect(quit_act, &QAction::triggered, this, &MainWindow::quit);
 
     scale1x_act = new QAction(tr("&Scale 1x"), this);
     //scale1x_act->setShortcuts();
@@ -72,6 +84,14 @@ void MainWindow::file() {}
 void MainWindow::open() {
     QString file_name = QFileDialog::getOpenFileName(this,tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
     gbview->start_emulator(file_name.toStdString(), false, false);
+}
+
+void MainWindow::stop() {
+    stop_timer();
+}
+
+void MainWindow::quit() {
+    QCoreApplication::quit();
 }
 
 void MainWindow::view() {}
