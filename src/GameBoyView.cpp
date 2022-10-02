@@ -47,7 +47,6 @@ QImage GameBoyView::render_gb_image() {
 
 void GameBoyView::parse_command_line() {
     const QStringList args = QCoreApplication::arguments();
-    optional<Error> error = Error("No ROM file loaded!");
     if (args.length() == 2) {
         start_emulator(args.at(1).toStdString(), false, false);
     } else if (args.length() == 3 && args.at(1) == "-dmg") {

@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow {
 
         QMenu* about_menu;
         QAction* about_emuboy_act;
-        QWidget* about_widget;
+        QWidget* about_widget { NULL };
         
         GameBoyView* gbview;
         QTimer* timer;

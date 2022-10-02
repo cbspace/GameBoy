@@ -7,9 +7,9 @@ GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
     ren(mem_in, pixels),
     ir(ir_in),
     clk(clk_in),
-    new_frame_drawn(false)
+    new_frame_drawn(false),
+    pixels_coloured(new u32[DISP_W*DISP_H])
 {
-    pixels_coloured = new u32[DISP_W*DISP_H];
     clear_pixels();
 }
 
@@ -245,6 +245,7 @@ void GBDisplay::clear_pixels()
         for (u16 x = 0; x < DISP_W; x++)
         {
             pixels[y * DISP_W + x] = ColourValue::C0;
+            pixels_coloured[y * DISP_W + x] = 0x00;
         }
     }
 }
