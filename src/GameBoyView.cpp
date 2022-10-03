@@ -44,23 +44,35 @@ QImage GameBoyView::render_gb_image() {
     return q_image;
 }
 
+// gameboy [-debug] /path/to/rom.gb
+// gameboy [-debug] /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin
 void GameBoyView::parse_command_line() {
     const QStringList args = QCoreApplication::arguments();
     if (args.length() == 2) {
         start_emulator(args.at(1).toStdString(), false, false);
-    } else if (args.length() == 3 && args.at(1) == "-dmg") {
-        start_emulator(args.at(2).toStdString(), true, false);
+    } else if (args.length() == 3 && args.at(1) == "-debug") {
+        start_emulator(args.at(2).toStdString(), false, true);
+    } else if (args.length() == 4 && args.at(2) == "-dmg") {
+        //FIXME: Implement game ROM to start after DMG boot rom
+        start_emulator(args.at(3).toStdString(), true, false);
+    } else if (args.length() == 5 && args.at(1) == "-debug" && args.at(3) == "-dmg") {
+        //FIXME: Implement game ROM to start after DMG boot rom
+        start_emulator(args.at(4).toStdString(), true, true);
     }
 }
 
 void GameBoyView::start_emulator(string rom_path, bool boot_rom, bool debug) {
     optional<Error> error = emulator.start(rom_path, boot_rom, debug);
-
-    if (!error) {
-        m_parent->start_timer();
-    } else {
-        cout << error->get_error_string() << endl;
+    if (error) {
+        cout << "ERROR: " << error->get_error_string() << endl;
+        return;
     }
+
+    if (debug) {
+        m_parent->open_debug();
+    }
+
+    m_parent->start_timer();
 }
 
 void GameBoyView::animate() {

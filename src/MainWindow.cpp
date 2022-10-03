@@ -15,6 +15,10 @@ MainWindow::MainWindow() :
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, gbview, &GameBoyView::animate);
 
+    QTimer::singleShot(0, this, SLOT(on_load()));
+}
+
+void MainWindow::on_load() {
     gbview->parse_command_line();
 }
 

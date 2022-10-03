@@ -24,13 +24,16 @@ class MainWindow : public QMainWindow {
         void start_timer();
         void stop_timer();
 
+    public slots:
+        void open_debug();
+
     protected:
         void contextMenuEvent(QContextMenuEvent* event) override;
 
     private slots:
+        void on_load();
         void file();
         void open_file();
-        void open_debug();
         void stop();
         void quit();
         void view();

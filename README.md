@@ -29,11 +29,11 @@ A Gameboy emulator written in C++ using the Qt6 framework. The emulator will be 
    `./build.sh -build` or to build and run `./build.sh -run [params]`
 
 ### Command line usage:
-`./build/gameboy /path/to/rom.gb [-debug]`
+`./build/gameboy [-debug] /path/to/rom.gb`
 
 Or if you wish to run with the DMG Boot ROM
 
-`./build/gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]`
+`./build/gameboy [-debug] /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin`
 
 `[-dmg]` Option used to run the DMG Boot Rom. This ROM is now working
 `[-debug]` Option will run with the Debugger window enabled
