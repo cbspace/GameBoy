@@ -30,7 +30,7 @@ class GameBoyView : public QWidget {
         void paintEvent(QPaintEvent* event) override;
     
     private:
-        MainWindow* m_parent { NULL };
+        MainWindow* m_parent { nullptr };
         Emulator emulator;
         QImage render_gb_image();
         i32 width;

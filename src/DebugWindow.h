@@ -15,8 +15,8 @@ class DebugWindow : public QWidget {
         void setup_ui();
         void update_ui();
     private:
-        MainWindow* m_parent { NULL };
+        MainWindow* m_parent { nullptr };
 
-        QLabel* label_pc { NULL };
-        QLabel* value_pc { NULL };
+        QLabel* label_pc { nullptr };
+        QLabel* value_pc { nullptr };
 };

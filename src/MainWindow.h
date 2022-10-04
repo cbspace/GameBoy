@@ -61,11 +61,11 @@ class MainWindow : public QMainWindow {
 
         QMenu* about_menu;
         QAction* about_emuboy_act;
-        QWidget* about_widget { NULL };
+        QWidget* about_widget { nullptr };
         
         GameBoyView* gbview;
         QTimer* timer;
 
-        DebugWindow* debug_window { NULL };
+        DebugWindow* debug_window { nullptr };
 
 };
