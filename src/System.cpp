@@ -1,8 +1,8 @@
-#include "Emulator.h"
+#include "System.h"
 
 using namespace std;
 
-Emulator::Emulator() : 
+System::System() : 
     disp(memory, interrupt, clock),
     interrupt(memory, clock),
     //jp(memory, interrupt),
@@ -11,7 +11,7 @@ Emulator::Emulator() :
     quit_flag(false)
 {}
 
-optional<Error> Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
+optional<Error> System::start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled)
 {
     memory.init();
 
@@ -31,14 +31,14 @@ optional<Error> Emulator::start(string rom_path, bool rom_is_dmg, bool debug_mod
     return nullopt;
 }
 
-void Emulator::main_loop()
+void System::main_loop()
 {
     cpu.cycle();
     disp.display_cycle();
     interrupt.check_interrupts();
 }
 
-void Emulator::print_cl_usage_message() {
+void System::print_cl_usage_message() {
     cout << "Command line usage:" << endl;
     cout << "(1)  gameboy /path/to/rom.gb [-debug]" << endl;
     cout << "(2)  gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]" << endl;

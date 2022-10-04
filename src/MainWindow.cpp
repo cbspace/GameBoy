@@ -55,7 +55,7 @@ void MainWindow::create_actions() {
     open_debug_act = new QAction(tr("Show &Debug Window"), this);
     //open_debug_act->setShortcuts(QKeySequence::);
     open_debug_act->setStatusTip(tr("Show Debug Window"));
-    connect(open_debug_act, &QAction::triggered, this, &MainWindow::open_debug);
+    connect(open_debug_act, &QAction::triggered, this, &MainWindow::open_debug_window);
 
     stop_act = new QAction(tr("&Stop Emulation"), this);
     //stop_act->setShortcuts(QKeySequence::);
@@ -97,7 +97,7 @@ void MainWindow::open_file() {
     gbview->start_emulator(file_name.toStdString(), false, false);
 }
 
-void MainWindow::open_debug() {
+void MainWindow::open_debug_window() {
     if (!debug_window) {
         debug_window = new DebugWindow(this);
     }

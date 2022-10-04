@@ -17,8 +17,9 @@ class Emudebug
         void insert_logo();
         void sprite_test();
 
-    private:
         Memory& mem;
+        
+    private:
         u8 prev_pc, cpu_count;
         char rdb[1000];                                             // 1000 bytes of debug ram
         char rdb2[1000];                                            // 1000 bytes of debug ram

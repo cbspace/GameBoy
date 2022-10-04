@@ -1,7 +1,7 @@
 #pragma once
 
 #include "displayconst.h"
-#include "Emulator.h"
+#include "System.h"
 #include "lib/Types.h"
 #include "lib/Error.h"
 #include "MainWindow.h"
@@ -23,6 +23,8 @@ class GameBoyView : public QWidget {
         void start_emulator(string rom_path, bool boot_rom, bool debug);
         void set_scaling_factor(u8 sf);
 
+        System system;
+
     public slots:
         void animate();
 
@@ -31,9 +33,9 @@ class GameBoyView : public QWidget {
     
     private:
         MainWindow* m_parent { nullptr };
-        Emulator emulator;
         QImage render_gb_image();
         i32 width;
         i32 height;
         u8 scaling_factor = 2;
+
 };

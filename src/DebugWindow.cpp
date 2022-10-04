@@ -21,5 +21,6 @@ void DebugWindow::setup_ui() {
 }
 
 void DebugWindow::update_ui() {
-    value_pc->setText(QString("0x00"));
+    //u16 pc = m_parent->gbview->system.emudebug.mem.get_pc();
+    //value_pc->setText("0x" + QString::number(pc, 16));
 }

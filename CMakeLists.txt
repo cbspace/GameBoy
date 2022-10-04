@@ -19,14 +19,10 @@ set(SOURCES
     src/DebugWindow.cpp
     src/emudebug.h
     src/emudebug.cpp
-    src/Emulator.h
-    src/Emulator.cpp
     src/GameBoyView.h
     src/GameBoyView.cpp
     src/interrupt.h
     src/interrupt.cpp
-    src/joypad.h
-    src/joypad.cpp
     src/main.cpp
     src/MainWindow.h
     src/MainWindow.cpp
@@ -36,6 +32,8 @@ set(SOURCES
     src/render.cpp
     src/spriteattrib.h
     src/spriteattrib.cpp
+    src/System.h
+    src/System.cpp
 )
 
 qt_add_executable(gameboy ${SOURCES}

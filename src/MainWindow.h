@@ -24,8 +24,10 @@ class MainWindow : public QMainWindow {
         void start_timer();
         void stop_timer();
 
+        GameBoyView* gbview;
+
     public slots:
-        void open_debug();
+        void open_debug_window();
 
     protected:
         void contextMenuEvent(QContextMenuEvent* event) override;
@@ -63,7 +65,7 @@ class MainWindow : public QMainWindow {
         QAction* about_emuboy_act;
         QWidget* about_widget { nullptr };
         
-        GameBoyView* gbview;
+        //GameBoyView* gbview;
         QTimer* timer;
 
         DebugWindow* debug_window { nullptr };

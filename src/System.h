@@ -15,10 +15,10 @@
 
 using namespace std;
 
-class Emulator
+class System
 {
     public:
-        Emulator();
+        System();
         optional<Error> start(string rom_path, bool rom_is_dmg, bool debug_mode_enabled);
         void main_loop();
         void print_cl_usage_message();
@@ -26,11 +26,10 @@ class Emulator
 
         GBDisplay disp;
     private:
+        Emudebug emudebug;
         Cpu cpu;
         Memory memory;
         Clock clock;
         Interrupt interrupt;
-        Emudebug emudebug;
-        // Joypad jp;
         bool quit_flag;
 };

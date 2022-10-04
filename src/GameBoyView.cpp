@@ -23,7 +23,7 @@ void GameBoyView::paintEvent(QPaintEvent* event) {
 
 QImage GameBoyView::render_gb_image() {
     QImage q_image(width, height, QImage::Format_RGB32);
-    u32* buffer = emulator.disp.get_buffer();
+    u32* buffer = system.disp.get_buffer();
     for (int y=0; y < DISP_H; y++) {
         for (int x=0; x < DISP_W; x++) {
             u32 pix_value = buffer[y*DISP_W + x];
@@ -62,14 +62,14 @@ void GameBoyView::parse_command_line() {
 }
 
 void GameBoyView::start_emulator(string rom_path, bool boot_rom, bool debug) {
-    optional<Error> error = emulator.start(rom_path, boot_rom, debug);
+    optional<Error> error = system.start(rom_path, boot_rom, debug);
     if (error) {
         cout << "ERROR: " << error->get_error_string() << endl;
         return;
     }
 
     if (debug) {
-        m_parent->open_debug();
+        m_parent->open_debug_window();
     }
 
     m_parent->start_timer();
@@ -78,8 +78,8 @@ void GameBoyView::start_emulator(string rom_path, bool boot_rom, bool debug) {
 void GameBoyView::animate() {
     bool new_frame_drawn = false;
     while (!new_frame_drawn) {
-        emulator.main_loop();
-        new_frame_drawn = emulator.disp.new_frame_is_drawn();
+        system.main_loop();
+        new_frame_drawn = system.disp.new_frame_is_drawn();
         update();
     }
 }
