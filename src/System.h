@@ -23,10 +23,12 @@ class System
         void main_loop();
         void print_cl_usage_message();
         string rom_title;
+        u32* get_display_buffer();
+        bool new_frame_is_drawn();
 
-        GBDisplay disp;
         Emudebug emudebug;
     private:
+        GBDisplay disp;
         Cpu cpu;
         Memory memory;
         Clock clock;

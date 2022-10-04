@@ -23,7 +23,7 @@ void GameBoyView::paintEvent(QPaintEvent* event) {
 
 QImage GameBoyView::render_gb_image() {
     QImage q_image(width, height, QImage::Format_RGB32);
-    u32* buffer = system.disp.get_buffer();
+    u32* buffer = system.get_display_buffer();
     for (int y=0; y < DISP_H; y++) {
         for (int x=0; x < DISP_W; x++) {
             u32 pix_value = buffer[y*DISP_W + x];
@@ -79,7 +79,7 @@ void GameBoyView::animate() {
     bool new_frame_drawn = false;
     while (!new_frame_drawn) {
         system.main_loop();
-        new_frame_drawn = system.disp.new_frame_is_drawn();
+        new_frame_drawn = system.new_frame_is_drawn();
         update();
     }
 }

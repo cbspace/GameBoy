@@ -43,3 +43,11 @@ void System::print_cl_usage_message() {
     cout << "(1)  gameboy /path/to/rom.gb [-debug]" << endl;
     cout << "(2)  gameboy /path/to/rom.gb [-dmg] /path/to/dmg_rom.bin [-debug]" << endl;
 }
+
+u32* System::get_display_buffer() {
+    return disp.get_buffer();
+}
+
+bool System::new_frame_is_drawn() {
+    return disp.new_frame_is_drawn();
+}
