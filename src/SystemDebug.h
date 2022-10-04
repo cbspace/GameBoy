@@ -5,10 +5,10 @@
 #include <iostream>
 #include <iomanip>
 
-class Emudebug
+class SystemDebug
 {
     public:
-        Emudebug(Memory& mem_in);
+        SystemDebug(Memory& mem_in);
         void dump_reg();
         bool detect_runaway();
 

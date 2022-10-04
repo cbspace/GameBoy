@@ -1,16 +1,16 @@
-#include "emudebug.h"
+#include "SystemDebug.h"
 #include "lib/Types.h"
 
 using namespace std;
 
-Emudebug::Emudebug(Memory& mem_in) :
+SystemDebug::SystemDebug(Memory& mem_in) :
     mem(mem_in)
 {
     cpu_count = 0;
     prev_pc = 0;
 }
 
-bool Emudebug::detect_runaway()
+bool SystemDebug::detect_runaway()
 {
     u16 pc_val;
 
@@ -35,7 +35,7 @@ bool Emudebug::detect_runaway()
     return false;
 }
 
-void Emudebug::dump_reg()
+void SystemDebug::dump_reg()
 {
     cout << endl;
     cout << " --- REG DUMP ---" << uppercase << endl;
@@ -47,7 +47,7 @@ void Emudebug::dump_reg()
     cout << endl;
 }
 
-void Emudebug::ram_debug(u16 start_addr)
+void SystemDebug::ram_debug(u16 start_addr)
 {
     for (u16 i = 0; i < 1000; i++)
     {
@@ -55,7 +55,7 @@ void Emudebug::ram_debug(u16 start_addr)
     }
 }
 
-void Emudebug::ram_debug(u16 start_addr1, u16 start_addr2)
+void SystemDebug::ram_debug(u16 start_addr1, u16 start_addr2)
 {
     for (u16 i = 0; i < 1000; i++)
     {
@@ -65,7 +65,7 @@ void Emudebug::ram_debug(u16 start_addr1, u16 start_addr2)
 
 }
 
-void Emudebug::insert_logo()
+void SystemDebug::insert_logo()
 {
     u8 logo_data[] = {0xce, 0xed, 0x66, 0x66, 0xcc, 0x0d, 0x00, 0x0b,
     0x03, 0x73, 0x00, 0x83, 0x00, 0x0c, 0x00, 0x0d, 0x00, 0x08, 0x11, 0x1f,
@@ -79,7 +79,7 @@ void Emudebug::insert_logo()
     }
 }
 
-void Emudebug::sprite_test()
+void SystemDebug::sprite_test()
 {
     u8 sprite_data[] = {0x7c, 0x7c, 0x00, 0xc6, 0xc6, 0x00, 0x00, 0xfe,
                              0xc6, 0xc6, 0x00, 0xc6, 0xc7, 0x01, 0x7c, 0x7c};

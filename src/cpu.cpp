@@ -1,10 +1,9 @@
 #include "cpu.h"
 
-Cpu::Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in, Emudebug& edb_in) :
+Cpu::Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in) :
     mem(mem_in),
     clk(clk_in),
     ir(ir_in),
-    edb(edb_in),
     byte_in(0x00)
 {}
 

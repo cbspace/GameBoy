@@ -5,9 +5,8 @@
 #include "cpu.h"
 #include "Memory.h"
 #include "interrupt.h"
-#include "emudebug.h"
+#include "SystemDebug.h"
 #include "Clock.h"
-#include "joypad.h"
 #include "lib/Error.h"
 #include <iostream>
 #include <string>
@@ -26,7 +25,7 @@ class System
         u32* get_display_buffer();
         bool new_frame_is_drawn();
 
-        Emudebug emudebug;
+        SystemDebug debug;
     private:
         GBDisplay disp;
         Cpu cpu;

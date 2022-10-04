@@ -5,9 +5,8 @@ using namespace std;
 System::System() : 
     disp(memory, interrupt, clock),
     interrupt(memory, clock),
-    //jp(memory, interrupt),
-    emudebug(memory),
-    cpu(memory, clock, interrupt, emudebug),
+    debug(memory),
+    cpu(memory, clock, interrupt),
     quit_flag(false)
 {}
 
@@ -20,7 +19,7 @@ optional<Error> System::start(string rom_path, bool rom_is_dmg, bool debug_mode_
     
     if (rom_is_dmg) {
         memory.set_pc(0x00);
-        emudebug.insert_logo();
+        debug.insert_logo();
         cout << "DMG ROM Loaded" << endl;
     } else {
         //disp.set_window_title(memory.get_rom_title());
