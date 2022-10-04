@@ -91,3 +91,12 @@ void GameBoyView::set_scaling_factor(u8 sf) {
     setFixedSize(width, height);
     m_parent->adjustSize();
 }
+
+void GameBoyView::show_debug_window() {
+    if (!debug_window) {
+        debug_window = new DebugWindow(&system);
+    }
+    debug_window->show();
+    debug_window->raise();
+    debug_window->activateWindow();
+}

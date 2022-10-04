@@ -5,6 +5,7 @@
 #include "lib/Types.h"
 #include "lib/Error.h"
 #include "MainWindow.h"
+#include "DebugWindow.h"
 #include <optional>
 #include <QCoreApplication>
 #include <QWidget>
@@ -23,7 +24,7 @@ class GameBoyView : public QWidget {
         void start_emulator(string rom_path, bool boot_rom, bool debug);
         void set_scaling_factor(u8 sf);
 
-        System system;
+        void show_debug_window();
 
     public slots:
         void animate();
@@ -33,9 +34,12 @@ class GameBoyView : public QWidget {
     
     private:
         MainWindow* m_parent { nullptr };
+        DebugWindow* debug_window { nullptr };
+
         QImage render_gb_image();
         i32 width;
         i32 height;
         u8 scaling_factor = 2;
 
+        System system;
 };

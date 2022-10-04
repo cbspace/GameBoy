@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MainWindow.h"
+#include "System.h"
 #include <QWidget>
 #include <QLabel>
 
@@ -10,12 +10,12 @@ class DebugWindow : public QWidget {
     Q_OBJECT
 
     public:
-        DebugWindow(MainWindow* parent);
+        DebugWindow(System* system_in);
         ~DebugWindow();
         void setup_ui();
         void update_ui();
     private:
-        MainWindow* m_parent { nullptr };
+        System* system { nullptr };
 
         QLabel* label_pc { nullptr };
         QLabel* value_pc { nullptr };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameBoyView.h"
-#include "DebugWindow.h"
 #include <QCoreApplication>
 #include <QMainWindow>
 #include <QWidget>
@@ -23,8 +22,6 @@ class MainWindow : public QMainWindow {
         MainWindow();
         void start_timer();
         void stop_timer();
-
-        GameBoyView* gbview;
 
     public slots:
         void open_debug_window();
@@ -65,9 +62,7 @@ class MainWindow : public QMainWindow {
         QAction* about_emuboy_act;
         QWidget* about_widget { nullptr };
         
-        //GameBoyView* gbview;
+        GameBoyView* gbview;
         QTimer* timer;
-
-        DebugWindow* debug_window { nullptr };
 
 };

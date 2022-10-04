@@ -1,7 +1,7 @@
 #include "DebugWindow.h"
 
-DebugWindow::DebugWindow(MainWindow* parent) :
-    m_parent(parent)
+DebugWindow::DebugWindow(System* system_in) :
+    system(system_in)
 {
     setWindowTitle("EmuBoy Debugger");
     setFixedSize(800, 600);
@@ -21,6 +21,6 @@ void DebugWindow::setup_ui() {
 }
 
 void DebugWindow::update_ui() {
-    //u16 pc = m_parent->gbview->system.emudebug.mem.get_pc();
-    //value_pc->setText("0x" + QString::number(pc, 16));
+    u16 pc = system->emudebug.mem.get_pc();
+    value_pc->setText("0x" + QString::number(pc, 16));
 }

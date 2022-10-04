@@ -25,8 +25,8 @@ class System
         string rom_title;
 
         GBDisplay disp;
-    private:
         Emudebug emudebug;
+    private:
         Cpu cpu;
         Memory memory;
         Clock clock;

@@ -98,12 +98,7 @@ void MainWindow::open_file() {
 }
 
 void MainWindow::open_debug_window() {
-    if (!debug_window) {
-        debug_window = new DebugWindow(this);
-    }
-    debug_window->show();
-    debug_window->raise();
-    debug_window->activateWindow();
+    gbview->show_debug_window();
 }
 
 void MainWindow::stop() {
