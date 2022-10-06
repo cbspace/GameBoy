@@ -31,6 +31,8 @@ const u32 NF = 0x40;                    // Negative flag mask
 const u32 HF = 0x20;                    // Half carry flag mask
 const u32 CF = 0x10;                    // Full carry flag mask
 
+const u32 A_OAM =               0xfe00;     // Start address of OAM memory (Sprite Atrribute Table)
+
 using namespace std;
 
 enum class Register16Bit {

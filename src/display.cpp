@@ -125,7 +125,7 @@ void GBDisplay::update_line()
         mem.write_byte(R_LY, ly_val + 1);
     }
     // During V-Blank
-    else if (ly_val < LCD_Y_MAX)
+    else if (ly_val < 153)
     {
         mem.write_byte(R_LY, ly_val + 1);
     }

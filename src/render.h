@@ -19,6 +19,14 @@
                         00011000
 */
 
+const u32 COLOUR_BG_RGB =   0x92AD26;       // Background colour
+const u32 COLOUR_C1_RGB =   0x6D811C;       // Colour 1
+const u32 COLOUR_C2_RGB =   0x485612;       // Colour 2
+const u32 COLOUR_C3_RGB =   0x242B09;       // Colour 3
+
+const u32 BG_TILES_MAX =         32;         // BG is 32 x 32 tiles
+const u32 SPRITE_TILES_MAX =     40;         // Sprite OAM memory for 40 sprites
+
 using namespace std;
 
 class Render

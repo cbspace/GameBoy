@@ -2,27 +2,14 @@
 
 #include "lib/Types.h"
 
-const u32 COLOUR_BG_RGB =   0x92AD26;       // Background colour
-const u32 COLOUR_C1_RGB =   0x6D811C;       // Colour 1
-const u32 COLOUR_C2_RGB =   0x485612;       // Colour 2
-const u32 COLOUR_C3_RGB =   0x242B09;       // Colour 3
-
-const u32 DISP_W =          160;            // Gameboy display width
-const u32 DISP_H =          144;            // Gameboy display height
-
-const u32 BG_TILES_MAX =        32;            // BG is 32 x 32 tiles
-const u32 SPRITE_TILES_MAX =    40;         // Sprite OAM memory for 40 sprites
-const u32 OAM_DATA_LENGTH =        4;          // OAM memory data is 4 bytes long
-
-const u32 LCD_Y_MAX =            153;        // Max Value of LY register
+const u32 DISP_W =              160;        // Gameboy display width
+const u32 DISP_H =              144;        // Gameboy display height
 
 // Memory Locations - Video
 const u32 A_TDT1 =              0x8000;     // Tile Data Table 1 start address (Sprite, BG, Window: 0->255)
 const u32 A_TDT2 =              0x8800;     // Tile Data Table 2 start address (BG, Window: -128->127)
 const u32 A_BGTM1 =             0x9800;     // Background Tile Map 1 start address
 const u32 A_BGTM2 =             0x9C00;     // Background Tile Map 2 start address
-
-const u32 A_OAM =               0xfe00;     // Start address of OAM memory (Sprite Atrribute Table)
 
 // Special Registers - Video
 const u32 R_LCDC =              0xff40;     // LCD Control
@@ -58,7 +45,6 @@ enum class StatReg {
     MODE_10_IR,
     LYC_IR
 };
-
 
 enum class ColourValue {
     C0, // Lightest

@@ -37,7 +37,7 @@ void Render::refresh_sprites()
 
     for (u8 i = 0; i < SPRITE_TILES_MAX; i++)
     {
-        oam_data_addr = A_OAM + i * OAM_DATA_LENGTH;
+        oam_data_addr = A_OAM + i * 4;
         // Set y
         spr_att[i].set_sprite_y(mem.get_byte(oam_data_addr));
         // Set x
