@@ -2,22 +2,7 @@
 
 Clock::Clock() :
     line_clock_cycles(0)
-{
-    //frame_start_ticks = SDL_GetTicks();
-}
-
-// void Clock::frame_delay()
-// {
-//     u32 frame_elap_ticks;
-//     frame_elap_ticks = SDL_GetTicks() - frame_start_ticks ;
-
-//     if (frame_elap_ticks < CLK_FRAME_DELAY)
-//     {
-//         SDL_Delay(CLK_FRAME_DELAY - frame_elap_ticks);
-//     }
-
-//     frame_start_ticks = SDL_GetTicks();
-// }
+{}
 
 void Clock::add_cycles(u8 amount)
 {

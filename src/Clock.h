@@ -22,13 +22,10 @@ class Clock
 {
     public:
         Clock();
-        //void frame_delay();
         void add_cycles(u8 amount);
-        bool max_cycles_reached();
         bool cycles_reached(DisplayMode display_mode);
         void reset_cycles();
     private:
-        u32 frame_start_ticks;
         u32 line_clock_cycles;
 };
 
