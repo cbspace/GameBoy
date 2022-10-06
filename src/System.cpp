@@ -4,7 +4,7 @@ using namespace std;
 
 System::System() : 
     disp(memory, interrupt, clock),
-    interrupt(memory, clock),
+    interrupt(memory),
     debug(memory),
     cpu(memory, clock, interrupt),
     quit_flag(false)

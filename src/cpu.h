@@ -15,9 +15,15 @@ class Cpu
     private:
         void process_instruction(u8 rom_byte);
         void process_cb_instruction(u8 rom_byte);
+        void halt();
+        void stop();
+        void cancel_stop();
 
         Memory& mem;
         Clock& clk;
         Interrupt& ir;
         u8 byte_in;
+
+        bool halt_flag;
+        bool stop_flag;
 };

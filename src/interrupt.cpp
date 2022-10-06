@@ -2,13 +2,10 @@
 #include "Memory.h"
 #include "Clock.h"
 
-Interrupt::Interrupt(Memory& mem_in, Clock& clk_in) :
-    mem(mem_in),
-    clk(clk_in)
+Interrupt::Interrupt(Memory& mem_in) :
+    mem(mem_in)
 {
     ime = true;             // Turn on interrupt master enable
-    halt_flag = false;      // Default is not halted
-    stop_flag = false;      // Default is not stopped
     ei_count = 0;           // 0 = Normal State, 1 = Flag Set, 2 = Delayed 1 cycle ready to reset
     i_flags = 0;
     i_enable = 0;
@@ -63,29 +60,9 @@ void Interrupt::check_interrupts()
     }
 }
 
-// Halt the CPU until an interrupt occurs (HALT)
-void Interrupt::cpu_halt()
+bool Interrupt::get_ime()
 {
-    if (ime)
-    {
-        halt_flag = true;
-    }
-}
-
-// Stop the CPU and LCD until a button is pressed (STOP)
-void Interrupt::cpu_stop()
-{
-    stop_flag = true;
-}
-
-bool Interrupt::get_halt()
-{
-    return halt_flag;
-}
-
-bool Interrupt::get_stop()
-{
-    return stop_flag;
+    return ime;
 }
 
 void Interrupt::disable_interrupts()
@@ -99,13 +76,6 @@ void Interrupt::enable_interrupts()
 }
 
 //------------------------- Private ----------------------------------------
-
-// Exit stopped status
-void Interrupt::cancel_stop()
-{
-    stop_flag = false;
-    clk.add_cycles(217);
-}
 
 // Process ei_count
 void Interrupt::process_ei_count()

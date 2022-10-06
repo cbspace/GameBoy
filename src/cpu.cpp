@@ -4,19 +4,21 @@ Cpu::Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in) :
     mem(mem_in),
     clk(clk_in),
     ir(ir_in),
-    byte_in(0x00)
+    byte_in(0x00),
+    halt_flag(false),
+    stop_flag(false)
 {}
 
 void Cpu::cycle()
 {
     u8 byte_in;
 
-    if (!ir.get_halt() && !ir.get_stop())
+    if (!halt_flag && !stop_flag)
     {
         byte_in = mem.fetch_byte();
         process_instruction(byte_in);
     }
-    else if (ir.get_halt())
+    else if (halt_flag)
     {
         clk.add_cycles(4);
     }
@@ -898,12 +900,12 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(4);
             break;
         case 0x76:  // Halt the CPU until an interrupt occurs (HALT)
-            ir.cpu_halt();
+            halt();
             clk.add_cycles(4);
             break;
         case 0x10:  // Stop the CPU and LCD until a button is pressed (STOP)
             mem.fetch_byte(); // Byte should be 0x00
-            ir.cpu_stop();
+            stop();
             clk.add_cycles(4);
             break;
         case 0xf3:  // Disable interrupts (DI)
@@ -2247,4 +2249,26 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(16);
             break;
     }
+}
+
+// Halt the CPU until an interrupt occurs (HALT)
+void Cpu::halt()
+{
+    if (ir.get_ime())
+    {
+        halt_flag = true;
+    }
+}
+
+// Stop the CPU and LCD until a button is pressed (STOP)
+void Cpu::stop()
+{
+    stop_flag = true;
+}
+
+// Exit stopped status
+void Cpu::cancel_stop()
+{
+    stop_flag = false;
+    clk.add_cycles(217);
 }

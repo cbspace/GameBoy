@@ -26,12 +26,9 @@ const u32 A_IENABLE  =   0xffff;
 class Interrupt
 {
     public:
-        Interrupt(Memory& mem_in, Clock& clk_in);        
+        Interrupt(Memory& mem_in);        
         void check_interrupts();
-        void cpu_halt();
-        void cpu_stop();
-        bool get_halt();
-        bool get_stop();
+        bool get_ime();
         void disable_interrupts();
         void enable_interrupts();
         void if_update(u8 int_flag, bool flg_val);
@@ -39,15 +36,13 @@ class Interrupt
         u8 ei_count;
 
     private:
-        void cancel_stop();
         void process_ei_count();
         bool if_get(u8 int_flag);
 
         Memory& mem;
-        Clock& clk;
         bool ime;
-        bool halt_flag;
-        bool stop_flag;
+        // bool halt_flag;
+        // bool stop_flag;
         u8 i_flags;        
         u8 i_enable;
 };
