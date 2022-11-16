@@ -9,7 +9,7 @@ void Clock::add_cycles(u8 amount)
     line_clock_cycles += amount;
 }
 
-bool Clock::cycles_reached(DisplayMode display_mode)
+bool Clock::cycles_reached(DisplayMode display_mode) const
 {
         // OAM and Display RAM being used
         if ((display_mode == DisplayMode::Mode3) &&

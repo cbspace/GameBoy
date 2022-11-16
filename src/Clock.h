@@ -23,7 +23,7 @@ class Clock
     public:
         Clock();
         void add_cycles(u8 amount);
-        bool cycles_reached(DisplayMode display_mode);
+        bool cycles_reached(DisplayMode display_mode) const;
         void reset_cycles();
     private:
         u32 line_clock_cycles;
