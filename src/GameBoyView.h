@@ -2,8 +2,8 @@
 
 #include "displayconst.h"
 #include "System.h"
-#include "lib/Types.h"
-#include "lib/Error.h"
+#include "LibCB/Types.h"
+#include "LibCB/Error.h"
 #include "MainWindow.h"
 #include "DebugWindow.h"
 #include <optional>

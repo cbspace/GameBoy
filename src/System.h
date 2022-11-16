@@ -7,7 +7,7 @@
 #include "interrupt.h"
 #include "SystemDebug.h"
 #include "Clock.h"
-#include "lib/Error.h"
+#include "LibCB/Error.h"
 #include <iostream>
 #include <string>
 #include <optional>

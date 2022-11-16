@@ -2,7 +2,7 @@
 
 #include "displayconst.h"
 #include "spriteattrib.h"
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 #include "Memory.h"
 #include <iostream>
 #include <string>

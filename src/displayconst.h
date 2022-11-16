@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 
 const u32 DISP_W =              160;        // Gameboy display width
 const u32 DISP_H =              144;        // Gameboy display height

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Memory.h"
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 #include <iostream>
 #include <iomanip>
 

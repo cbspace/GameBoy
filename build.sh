@@ -8,6 +8,9 @@ then
 else
   if [ $1 == '-configure' ]
   then
+    git submodule init
+    git submodule update
+
     cmake --no-warn-unused-cli \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \

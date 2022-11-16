@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 
 const u32 CLK_FRAME_DELAY =          100;         // Clock period for frame clock (in ms), results in ~60 Hz Clock
 const u32 CLK_CYCLES_MAX =           70224;       // Maximum clock cycles per frame

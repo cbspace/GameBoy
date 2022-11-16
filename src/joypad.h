@@ -2,7 +2,7 @@
 
 #include "Memory.h"
 #include "interrupt.h"
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 #include <map>
 
 const u32 R_P1 = 0xff00;      // Register for reading joy pad info

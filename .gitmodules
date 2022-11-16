@@ -1,0 +1,3 @@
+[submodule "src/LibCB"]
+	path = src/LibCB
+	url = https://github.com/cbspace/LibCB

@@ -5,11 +5,11 @@
 #include "render.h"
 #include "interrupt.h"
 #include "Clock.h"
-#include "lib/Error.h"
+#include "LibCB/Error.h"
 
 #include <string>
 #include <iostream>
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 
 class GBDisplay
 {

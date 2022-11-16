@@ -3,7 +3,7 @@
 #include "Memory.h"
 #include "Clock.h"
 #include "interrupt.h"
-#include "lib/Types.h"
+#include "LibCB/Types.h"
 
 class Cpu
 {
