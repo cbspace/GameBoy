@@ -41,6 +41,7 @@ void MainWindow::create_menus() {
     view_menu->addAction(scale1x_act);
     view_menu->addAction(scale2x_act);
     view_menu->addAction(scale3x_act);
+    view_menu->addAction(scale4x_act);
 
     about_menu = menuBar()->addMenu(tr("About"));
     about_menu->addAction(about_emuboy_act);
@@ -81,6 +82,11 @@ void MainWindow::create_actions() {
     //scale3x_act->setShortcuts();
     scale3x_act->setStatusTip(tr("Scale view 3x"));
     connect(scale3x_act, &QAction::triggered, this, &MainWindow::scale3x);
+    
+    scale4x_act = new QAction(tr("Scale &4x"), this);
+    //scale4x_act->setShortcuts();
+    scale4x_act->setStatusTip(tr("Scale view 4x"));
+    connect(scale4x_act, &QAction::triggered, this, &MainWindow::scale4x);
 
     about_emuboy_act = new QAction(tr("&Emuboy"), this);
     about_emuboy_act->setStatusTip(tr("About Emuboy"));
@@ -121,6 +127,10 @@ void MainWindow::scale2x() {
 
 void MainWindow::scale3x() {
     gbview->set_scaling_factor(3);
+}
+
+void MainWindow::scale4x() {
+    gbview->set_scaling_factor(4);
 }
 
 void MainWindow::about() {
