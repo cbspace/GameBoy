@@ -30,16 +30,8 @@ class MainWindow : public QMainWindow {
         void contextMenuEvent(QContextMenuEvent* event) override;
 
     private slots:
-        void on_load();
-        void file();
         void open_file();
         void stop();
-        void quit();
-        void view();
-        void scale1x();
-        void scale2x();
-        void scale3x();
-        void scale4x();
         void about();
 
     private:

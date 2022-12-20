@@ -15,11 +15,7 @@ MainWindow::MainWindow() :
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, gbview, &GameBoyView::animate);
 
-    QTimer::singleShot(0, this, SLOT(on_load()));
-}
-
-void MainWindow::on_load() {
-    gbview->parse_command_line();
+    QTimer::singleShot(0, this, [&](){ gbview->parse_command_line(); });
 }
 
 void MainWindow::start_timer() {
@@ -66,27 +62,27 @@ void MainWindow::create_actions() {
     quit_act = new QAction(tr("&Quit"), this);
     quit_act->setShortcuts(QKeySequence::Quit);
     quit_act->setStatusTip(tr("Quit"));
-    connect(quit_act, &QAction::triggered, this, &MainWindow::quit);
+    connect(quit_act, &QAction::triggered, this, [](){ QCoreApplication::quit(); });
 
     scale1x_act = new QAction(tr("Scale &1x"), this);
     //scale1x_act->setShortcuts();
     scale1x_act->setStatusTip(tr("Scale view 1x"));
-    connect(scale1x_act, &QAction::triggered, this, &MainWindow::scale1x);
+    connect(scale1x_act, &QAction::triggered, this, [&](){gbview->set_scaling_factor(1);});
 
     scale2x_act = new QAction(tr("Scale &2x"), this);
     //scale2x_act->setShortcuts();
     scale2x_act->setStatusTip(tr("Scale view 2x"));
-    connect(scale2x_act, &QAction::triggered, this, &MainWindow::scale2x);
+    connect(scale2x_act, &QAction::triggered, this, [&](){gbview->set_scaling_factor(2);});
 
     scale3x_act = new QAction(tr("Scale &3x"), this);
     //scale3x_act->setShortcuts();
     scale3x_act->setStatusTip(tr("Scale view 3x"));
-    connect(scale3x_act, &QAction::triggered, this, &MainWindow::scale3x);
+    connect(scale3x_act, &QAction::triggered, this, [&](){gbview->set_scaling_factor(3);});
     
     scale4x_act = new QAction(tr("Scale &4x"), this);
     //scale4x_act->setShortcuts();
     scale4x_act->setStatusTip(tr("Scale view 4x"));
-    connect(scale4x_act, &QAction::triggered, this, &MainWindow::scale4x);
+    connect(scale4x_act, &QAction::triggered, this, [&](){gbview->set_scaling_factor(4);});
 
     about_emuboy_act = new QAction(tr("&Emuboy"), this);
     about_emuboy_act->setStatusTip(tr("About Emuboy"));
@@ -94,8 +90,6 @@ void MainWindow::create_actions() {
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
-
-void MainWindow::file() {}
 
 void MainWindow::open_file() {
     stop();
@@ -109,28 +103,6 @@ void MainWindow::open_debug_window() {
 
 void MainWindow::stop() {
     stop_timer();
-}
-
-void MainWindow::quit() {
-    QCoreApplication::quit();
-}
-
-void MainWindow::view() {}
-
-void MainWindow::scale1x() {
-    gbview->set_scaling_factor(1);
-}
-
-void MainWindow::scale2x() {
-    gbview->set_scaling_factor(2);
-}
-
-void MainWindow::scale3x() {
-    gbview->set_scaling_factor(3);
-}
-
-void MainWindow::scale4x() {
-    gbview->set_scaling_factor(4);
 }
 
 void MainWindow::about() {
