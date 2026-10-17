@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QTimer>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <fstream>
 #include <iostream>
 

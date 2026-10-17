@@ -93,8 +93,15 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 
 void MainWindow::open_file() {
     stop();
-    QString file_name = QFileDialog::getOpenFileName(this,tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
-    gbview->start_emulator(file_name.toStdString(), false, false);
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
+    
+    if (file_name.isEmpty()) {
+        return;
+    }
+
+    bool is_boot_rom = (QFileInfo(file_name).fileName().compare("DMG_ROM.bin", Qt::CaseInsensitive) == 0);
+
+    gbview->start_emulator(file_name.toStdString(), is_boot_rom, false);
 }
 
 void MainWindow::open_debug_window() {

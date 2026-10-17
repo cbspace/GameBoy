@@ -85,6 +85,7 @@ class Memory
         u8 get_from_pointer(Register16Bit reg_id);              // Read byte from RAM/ROM pointed to by 16-bit register
         void set_from_pointer(Register16Bit reg_id, u8 byte_value);       // Set byte at RAM address pointed to by 16-bit register to byte value
         void write_byte(u16 address, u8 byte);                            // Write byte to RAM/ROM
+        void write_raw(u16 address, u8 byte);                             // Write a byte without anout bounds checks
         void write_bit(u16 address, u8 bit_number, bool bit_val);         // Update individual bit in RAM/ROM
         void inc_from_pointer(Register16Bit reg_id);                      // Increment byte at (n) and update flags
         void dec_from_pointer(Register16Bit reg_id);                      // Decrement byte at (n) and update flags

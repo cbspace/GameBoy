@@ -165,13 +165,12 @@ void Memory::reg_copy(u8 to_reg_id, u8 from_reg_id)
 // Increment 8-bit register, flags updated
 void Memory::reg_inc(u8 reg_id)
 {
-    // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] + 1) & 0xf0));
-        flag_update(NF,0);
+        flag_update(HF, (reg[reg_id] & 0x0F) == 0x0F);
+        flag_update(NF, 0);
         reg[reg_id]++;
-        flag_update(ZF,(reg[reg_id]==0));
+        flag_update(ZF, reg[reg_id] == 0);
     }
 }
 
@@ -194,13 +193,12 @@ void Memory::reg_dec16(Register16Bit reg_id)
 // Decrement register, flags updated
 void Memory::reg_dec(u8 reg_id)
 {
-    // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        flag_update(HF,(reg[reg_id] & 0xf0) == ((reg[reg_id] - 1) & 0xf0));
-        flag_update(NF,0);
+        flag_update(HF, (reg[reg_id] & 0x0F) == 0x00);
+        flag_update(NF, 1);
         reg[reg_id]--;
-        flag_update(ZF,(reg[reg_id]==0));
+        flag_update(ZF, reg[reg_id] == 0);
     }
 }
 
@@ -209,47 +207,32 @@ void Memory::reg_dec(u8 reg_id)
 // Add value to 8-bit register and update flags, bool parameter is add with carry
 void Memory::reg_add(u8 reg_id, u8 add_value, bool carry)
 {
-    // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        // Carry is added to accomodate ADDC operations
-        u16 add_w_carry = add_value;
-        if (carry)
-        {
-            add_w_carry += flag_get(CF);
-        }
+        u8 c = carry ? flag_get(CF) : 0;
+        u16 total = reg[reg_id] + add_value + c;
 
-        u16 total = reg[reg_id] + add_w_carry;
-
-        flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
-        flag_update(CF,(total > 0xff));
-        flag_update(NF,0);
-        reg[reg_id] += add_value + carry;
-        flag_update(ZF,(reg[reg_id]==0));
+        flag_update(HF, ((reg[reg_id] & 0x0F) + (add_value & 0x0F) + c) > 0x0F);
+        flag_update(CF, total > 0xFF);
+        flag_update(NF, 0);
+        reg[reg_id] = static_cast<u8>(total);
+        flag_update(ZF, reg[reg_id] == 0);
     }
 }
 
 // Subtract value from 8-bit register and flags updated, bool brrow used for sub with borrow
 void Memory::reg_sub(u8 reg_id, u8 sub_value, bool borrow)
 {
-    // Make sure reg_id is valid
     if (reg_id < REG_ARRAY_SIZE)
     {
-        i16 sub_w_borrow, total;
+        u8 b = borrow ? flag_get(CF) : 0;
+        i16 total = reg[reg_id] - sub_value - b;
 
-        // Borrow is subtracted to accomodate SBC operations
-        sub_w_borrow = sub_value;
-        if (borrow)
-        {
-            sub_w_borrow -= flag_get(CF);
-        }
-
-        total = sub_value - sub_w_borrow;
-        flag_update(HF,(reg[reg_id] & 0xf0) == (total & 0xf0));
-        flag_update(CF,!(total < 0));
-        flag_update(NF,1);
-        reg[reg_id] -= sub_value - borrow;
-        flag_update(ZF,(reg[reg_id]==0));
+        flag_update(HF, (reg[reg_id] & 0x0F) < (sub_value & 0x0F) + b);
+        flag_update(CF, total < 0);
+        flag_update(NF, 1);
+        reg[reg_id] = static_cast<u8>(total);
+        flag_update(ZF, reg[reg_id] == 0);
     }
 }
 
@@ -468,11 +451,10 @@ void Memory::reg_xor(u8 xor_value)
 void Memory::reg_compare(u8 cmp_value)
 {
     i16 total = reg[RA] - cmp_value;
-
-    flag_update(HF,(reg[RA] & 0xf0) == (total & 0xf0));
-    flag_update(CF,!(total < 0));
-    flag_update(ZF,(total==0));
-    flag_update(NF,1);
+    flag_update(HF, (reg[RA] & 0x0F) < (cmp_value & 0x0F));
+    flag_update(CF, total < 0);
+    flag_update(ZF, (total & 0xFF) == 0);
+    flag_update(NF, 1);
 }
 
 // Swap upper and lower nibbles of register, flags updated
@@ -518,6 +500,19 @@ void Memory::bit_res(u8 reg_id, u8 bit_number)
 // Read byte from RAM/ROM
 u8 Memory::get_byte(u16 address)
 {
+
+    if (address == 0xFF00) // Joypad
+    {
+        u8 p1 = ram[0xFF00];
+        // Bit 4 selects Direction keys, Bit 5 selects Action keys (active low: 0 = select)
+        // Returning 0x0F in bits 0-3 means no buttons or directions are pressed
+        return (p1 & 0x30) | 0x0F | 0xC0;
+    }
+
+    if (address == 0xFF0F)
+    {
+        return ram[0xFF0F] | 0xE0; // Upper 3 bits always read 1 on DMG
+    }
     return ram[address];
 }
 
@@ -549,12 +544,41 @@ void Memory::set_from_pointer(Register16Bit reg_id, u8 byte_value)
 // Write byte to RAM/ROM
 void Memory::write_byte(u16 address, u8 byte)
 {
+    // Trap ROM writes (MBC commands or ignore if ROM without MBC)
+    if (address < 0x8000)
+    {
+        // Handle MBC banking here if cartridge uses MBC1;
+        // Do NOT overwrite ram[address] directly!
+        return;
+    }
+
+    // Echo RAM mirrors 0xC000 - 0xDDFF
+    if (address >= 0xE000 && address < 0xFE00)
+    {
+        ram[address] = byte;
+        ram[address - 0x2000] = byte;
+        return;
+    }
+
+    // DIV register reset on write
+    if (address == 0xFF04)
+    {
+        ram[0xFF04] = 0x00;
+        return;
+    }
+
     ram[address] = byte;
 
     if (address == R_DMA)
     {
         dma_transfer();
     }
+}
+
+// Write a raw byte
+void Memory::write_raw(u16 address, u8 byte)
+{
+    ram[address] = byte;
 }
 
 // Update individual bit in RAM/ROM
@@ -586,7 +610,7 @@ void Memory::inc_from_pointer(Register16Bit reg_id)
     flag_update(NF,0);
 
     byte_in++;
-    set_from_pointer(Register16Bit::HL,byte_in);
+    set_from_pointer(reg_id, byte_in);
 
     flag_update(ZF,(byte_in==0));
 }
@@ -755,7 +779,7 @@ void Memory::dma_transfer()
 
     for (u8 i = 0; i < 0xA0; i++)
     {
-        ram[A_OAM + i] = ram[dma_start + i];
+        ram[A_OAM + i] = get_byte(dma_start + i);
     }
 }
 
@@ -825,33 +849,26 @@ void Memory::sp_add(u8 amount)
 // Push 16-bit value to stack and decrement sp
 void Memory::stack_push(u16 push_val)
 {
-    // Push high byte on first then lower byte
-    u8 byte_val = push_val >> 8;
-    ram[sp] = byte_val;
-    byte_val = push_val & 0xff;
-    ram[sp-1] = byte_val;
-    dec_sp(2);
+    dec_sp(1);
+    ram[sp] = static_cast<u8>(push_val >> 8);
+    dec_sp(1);
+    ram[sp] = static_cast<u8>(push_val & 0xFF);
 }
 
 // Push PC value on to stack and decrement sp
 void Memory::pc_push()
 {
-    // Push high byte on first then lower byte
-    u8 byte_val = pc >> 8;
-    ram[sp] = byte_val;
-    byte_val = pc & 0xff;
-    ram[sp-1] = byte_val;
-    dec_sp(2);
+    stack_push(pc);
 }
 
 // Pop 16-bit value from stack and increment sp
 u16 Memory::stack_pop()
 {
-    // Pop high byte first then lower byte
-    u16 ret_val = (ram[sp+2] << 8) + (ram[sp+1] & 0xff);
-    inc_sp(2);
-
-    return ret_val;
+    u8 low = ram[sp];
+    inc_sp(1);
+    u8 high = ram[sp];
+    inc_sp(1);
+    return (static_cast<u16>(high) << 8) | low;
 }
 
 // Jump to address at PC + e (e = signed 8-bit immediate)

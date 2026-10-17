@@ -11,11 +11,45 @@ Cpu::Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in) :
 
 void Cpu::cycle()
 {
-    u8 byte_in;
+    // 1. Check if a pending interrupt wakes the CPU from HALT
+    if (halt_flag)
+    {
+        u8 i_flags = mem.get_byte(A_IFLAGS);
+        u8 i_enable = mem.get_byte(A_IENABLE);
 
+        if ((i_flags & i_enable & 0x1F) != 0)
+        {
+            halt_flag = false; // Wake up
+            clk.add_cycles(4);  // Hardware HALT exit penalty (1 M-cycle)
+            return;
+        }
+    }
+
+    // 2. Execute if not halted or stopped
     if (!halt_flag && !stop_flag)
     {
-        byte_in = mem.fetch_byte();
+        u16 current_pc = mem.get_pc();
+
+        if (current_pc == 0x0100)
+        {
+            std::cout << ">>> Game reset detected! PC hit 0x0100 again." << std::endl;
+        }
+        else if (current_pc == 0x0038)
+        {
+            std::cout << ">>> Crash: CPU hit RST 38h (0x0038)!" << std::endl;
+        }
+
+        u8 byte_in;
+        if (halt_bug_flag)
+        {
+            byte_in = mem.get_byte(current_pc);
+            halt_bug_flag = false;
+        }
+        else
+        {
+            byte_in = mem.fetch_byte();
+        }
+
         process_instruction(byte_in);
     }
     else if (halt_flag)
@@ -417,12 +451,21 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xf8:  // Set HL to SP + imm8 n
-            unsigned_16bit_immediate = mem.get_sp() + mem.fetch_byte();
-            mem.flag_update(ZF,0);
-            mem.flag_update(NF,0);                        // NEED TO ADD H AND C FLAG OPERATIONS
-            mem.reg_set(Register16Bit::HL,unsigned_16bit_immediate);
-            clk.add_cycles(12);
-            break;
+            {
+                int8_t signed_offset = static_cast<int8_t>(mem.fetch_byte());
+                uint16_t sp_val = mem.get_sp();
+                uint32_t result = sp_val + signed_offset;
+
+                // Flags: H and C are evaluated on the lower byte addition
+                mem.flag_update(HF, ((sp_val & 0x0F) + (static_cast<uint8_t>(signed_offset) & 0x0F)) > 0x0F);
+                mem.flag_update(CF, ((sp_val & 0xFF) + (static_cast<uint8_t>(signed_offset) & 0xFF)) > 0xFF);
+                mem.flag_update(ZF, 0);
+                mem.flag_update(NF, 0);
+
+                mem.reg_set(Register16Bit::HL, static_cast<uint16_t>(result));
+                clk.add_cycles(12);
+                break;
+            }
         case 0x08:  // Set bytes at (nn) to SP value
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
@@ -899,10 +942,35 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0x00:  // No operation (NOP)
             clk.add_cycles(4);
             break;
-        case 0x76:  // Halt the CPU until an interrupt occurs (HALT)
-            halt();
-            clk.add_cycles(4);
-            break;
+        case 0x76: // HALT
+            {
+                u8 i_flags = mem.get_byte(A_IFLAGS);
+                u8 i_enable = mem.get_byte(A_IENABLE);
+                bool interrupt_pending = (i_flags & i_enable & 0x1F) != 0;
+
+                if (!ir.get_ime())
+                {
+                    if (interrupt_pending)
+                    {
+                        // HALT Bug: IME is 0, but an interrupt is already requested.
+                        // The CPU does NOT sleep, but PC fails to advance on the next byte fetch.
+                        halt_bug_flag = true;
+                    }
+                    else
+                    {
+                        // IME is 0 and no interrupt is pending: CPU sleeps until an interrupt flag is set
+                        halt();
+                    }
+                }
+                else
+                {
+                    // IME is 1: normal halt behavior
+                    halt();
+                }
+
+                clk.add_cycles(4);
+                break;
+            }
         case 0x10:  // Stop the CPU and LCD until a button is pressed (STOP)
             mem.fetch_byte(); // Byte should be 0x00
             stop();
@@ -1066,10 +1134,9 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
 
-            mem.pc_push();
-
             if (!mem.flag_get(ZF))
             {
+                mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
                 clk.add_cycles(12);
             }
@@ -1082,10 +1149,9 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
 
-            mem.pc_push();
-
             if (mem.flag_get(ZF))
             {
+                mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
                 clk.add_cycles(12);
             }
@@ -1098,10 +1164,9 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
 
-            mem.pc_push();
-
             if (!mem.flag_get(CF))
             {
+                mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
                 clk.add_cycles(12);
             }
@@ -1114,10 +1179,9 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = mem.fetch_byte();
             unsigned_16bit_immediate += mem.fetch_byte() << 8;
 
-            mem.pc_push();
-
             if (mem.flag_get(CF))
             {
+                mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
                 clk.add_cycles(12);
             }
@@ -1180,36 +1244,36 @@ void Cpu::process_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0xc0:  // Pop 2 bytes from the stack and return if ZF is reset (RET nz)
-            unsigned_16bit_immediate = mem.stack_pop();
-            if (!mem.flag_get(ZF))
-            {
-                mem.set_pc(unsigned_16bit_immediate);
+            if (!mem.flag_get(ZF)) {
+                mem.set_pc(mem.stack_pop());
+                clk.add_cycles(20);
+            } else {
+                clk.add_cycles(8);
             }
-            clk.add_cycles(8);
             break;
         case 0xc8:  // Pop 2 bytes from the stack and return if ZF is set (RET z)
-            unsigned_16bit_immediate = mem.stack_pop();
-            if (mem.flag_get(ZF))
-            {
-                mem.set_pc(unsigned_16bit_immediate);
+            if (mem.flag_get(ZF)) {
+                mem.set_pc(mem.stack_pop());
+                clk.add_cycles(20);
+            } else {
+                clk.add_cycles(8);
             }
-            clk.add_cycles(8);
             break;
         case 0xd0:  // Pop 2 bytes from the stack and return if CF is reset (RET nc)
-            unsigned_16bit_immediate = mem.stack_pop();
-            if (!mem.flag_get(CF))
-            {
-                mem.set_pc(unsigned_16bit_immediate);
+            if (!mem.flag_get(CF)) {
+                mem.set_pc(mem.stack_pop());
+                clk.add_cycles(20);
+            } else {
+                clk.add_cycles(8);
             }
-            clk.add_cycles(8);
             break;
         case 0xd8:  // Pop 2 bytes from the stack and return if CF is set (RET c)
-            unsigned_16bit_immediate = mem.stack_pop();
-            if (mem.flag_get(CF))
-            {
-                mem.set_pc(unsigned_16bit_immediate);
+            if (mem.flag_get(CF)) {
+                mem.set_pc(mem.stack_pop());
+                clk.add_cycles(20);
+            } else {
+                clk.add_cycles(8);
             }
-            clk.add_cycles(8);
             break;
         case 0xd9:  // Pop 2 bytes from the stack, jump to that address and enable interrupts (RETI)
             unsigned_16bit_immediate = mem.stack_pop();
@@ -1589,11 +1653,11 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             clk.add_cycles(8);
             break;
         case 0x5a:  // Test bit 3 in register D and set flags accordingly
-            mem.bit_test(RE, 3);
+            mem.bit_test(RD, 3);
             clk.add_cycles(8);
             break;
         case 0x5b:  // Test bit 3 in register E and set flags accordingly
-            mem.bit_test(RD, 3);
+            mem.bit_test(RE, 3);
             clk.add_cycles(8);
             break;
         case 0x5c:  // Test bit 3 in register H and set flags accordingly
@@ -2254,10 +2318,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
 // Halt the CPU until an interrupt occurs (HALT)
 void Cpu::halt()
 {
-    if (ir.get_ime())
-    {
-        halt_flag = true;
-    }
+    halt_flag = true;
 }
 
 // Stop the CPU and LCD until a button is pressed (STOP)
