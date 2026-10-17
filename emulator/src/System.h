@@ -7,6 +7,7 @@
 #include "interrupt.h"
 #include "SystemDebug.h"
 #include "Clock.h"
+#include "joypad.h"
 #include "LibCB/Error.h"
 #include <iostream>
 #include <string>
@@ -25,6 +26,7 @@ class System
         u32* get_display_buffer();
         bool new_frame_is_drawn();
 
+        Joypad jpad;
         SystemDebug debug;
     private:
         GBDisplay disp;

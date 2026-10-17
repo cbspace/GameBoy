@@ -15,6 +15,7 @@
 
 class GameBoyView;
 class DebugWindow;
+class Joypad;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -60,4 +61,6 @@ class MainWindow : public QMainWindow {
         GameBoyView* gbview;
         QTimer* timer;
 
+        void keyPressEvent(QKeyEvent *event);
+        void keyReleaseEvent(QKeyEvent *event);
 };

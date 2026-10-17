@@ -1,6 +1,8 @@
 #include "Memory.h"
+#include "interrupt.h"
 
-Memory::Memory()
+Memory::Memory(Joypad& jpad_in) :
+    jpad(jpad_in)
 {
     init();
 }
@@ -135,7 +137,7 @@ void Memory::reg_set(Register16Bit reg_id, u16 reg_value)
     {
         case Register16Bit::AF:
             reg[RA] = high_byte;
-            reg[RF] = low_byte;
+            reg[RF] = low_byte & 0xf0; // bottom 4 bits of F are always 0
             break;
         case Register16Bit::BC:
             reg[RB] = high_byte;
@@ -251,21 +253,41 @@ void Memory::reg_add16(Register16Bit reg_id, u16 reg_n_val)
 // Decimal Adjust register A (DAA), flags updated
 void Memory::reg_daa()
 {
-    // Check if ls digit is valid BCD value
-    if ((reg[RA] & 0xf) > 9 || flag_get(HF))
-    {
-        reg[RA] += 6;
-    }
-    // Check if ms digit is valid BCD value
-    if ((reg[RA] & 0xf0) > 9 || flag_get(CF))
-    {
-        reg[RA] += 0x60;
+    u8 a = reg[RA];
+    bool n = flag_get(NF);
+    bool c = flag_get(CF);
+    bool h = flag_get(HF);
 
-        flag_update(CF,1);
-    }
+    u8 correction = 0;
+    if (!n) // After addition (ADD, ADC, INC)
+    {
+        if (h || (a & 0x0F) > 0x09) {
+            correction |= 0x06;
+        }
 
-    flag_update(HF,0);
-    flag_update(ZF,(reg[RA]==0));
+        if (c || a > 0x99) {
+            correction |= 0x60;
+            flag_update(CF, 1);
+        }
+
+        a += correction;
+    }
+    else // After subtraction (SUB, SBC, DEC, CP)
+    {
+        if (h) {
+            correction |= 0x06;
+        }
+
+        if (c) {
+            correction |= 0x60;
+            // CF remains 1
+        }
+        a -= correction;
+    }
+    reg[RA] = a;
+    flag_update(ZF, a == 0);
+    flag_update(HF, 0);
+    // NF and CF are handled above; bits 0-3 of F remain 0
 }
 
 // Rotate contents of A register left and store bit 7 in CF, flags updated
@@ -500,19 +522,23 @@ void Memory::bit_res(u8 reg_id, u8 bit_number)
 // Read byte from RAM/ROM
 u8 Memory::get_byte(u16 address)
 {
-
-    if (address == 0xFF00) // Joypad
+    // Joypad
+    if (address == R_P1) 
     {
-        u8 p1 = ram[0xFF00];
-        // Bit 4 selects Direction keys, Bit 5 selects Action keys (active low: 0 = select)
-        // Returning 0x0F in bits 0-3 means no buttons or directions are pressed
-        return (p1 & 0x30) | 0x0F | 0xC0;
+        return jpad.get_p1_value();
     }
 
-    if (address == 0xFF0F)
+    if (address == A_IFLAGS)
     {
-        return ram[0xFF0F] | 0xE0; // Upper 3 bits always read 1 on DMG
+        return ram[A_IFLAGS] | 0xE0; // Upper 3 bits always read 1 on DMG
     }
+
+    return ram[address];
+}
+
+// Read byte from RAM/ROM without bounds check
+u8 Memory::get_raw_byte(u16 address)
+{
     return ram[address];
 }
 

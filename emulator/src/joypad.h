@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Memory.h"
-#include "interrupt.h"
 #include "LibCB/Types.h"
 #include <map>
 
+class Memory;
+class Interrupt;
 const u32 R_P1 = 0xff00;      // Register for reading joy pad info
 
 enum class JoypadButton {
@@ -23,9 +23,14 @@ class Joypad
 {
     public:
         Joypad(Memory& mem_in, Interrupt& ir_in);
-        u8 key_down();
 
-        map<JoypadButton, int> joypad_button_values{
+        void button_pressed(JoypadButton button);
+        void button_released(JoypadButton button);
+
+        // Called by Memory when reading 0xFF00
+        u8 get_p1_value() const;
+
+        std::map<JoypadButton, int> joypad_button_values{
             {JoypadButton::Start, 0x80},
             {JoypadButton::Select, 0x40},
             {JoypadButton::B, 0x20},
@@ -41,4 +46,6 @@ class Joypad
         Memory& mem;
         Interrupt& ir;
 
+        // Bit set = key currently held down (1 = pressed, 0 = released)
+        u8 button_state;
 };

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "joypad.h"
 
 MainWindow::MainWindow() :
     gbview(new GameBoyView(this))
@@ -122,4 +123,40 @@ void MainWindow::about() {
     about_widget->show();
     about_widget->raise();
     about_widget->activateWindow();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->isAutoRepeat()) return;
+
+    switch (event->key())
+    {
+        case Qt::Key_Right:  gbview->get_joypad().button_pressed(JoypadButton::Right); break;
+        case Qt::Key_Left:   gbview->get_joypad().button_pressed(JoypadButton::Left);  break;
+        case Qt::Key_Up:     gbview->get_joypad().button_pressed(JoypadButton::Up);    break;
+        case Qt::Key_Down:   gbview->get_joypad().button_pressed(JoypadButton::Down);  break;
+        case Qt::Key_Z:      gbview->get_joypad().button_pressed(JoypadButton::A);     break;
+        case Qt::Key_X:      gbview->get_joypad().button_pressed(JoypadButton::B);     break;
+        case Qt::Key_Return: gbview->get_joypad().button_pressed(JoypadButton::Start); break;
+        case Qt::Key_Shift:  gbview->get_joypad().button_pressed(JoypadButton::Select);break;
+        default: QMainWindow::keyPressEvent(event);
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->isAutoRepeat()) return;
+
+    switch (event->key())
+    {
+        case Qt::Key_Right:  gbview->get_joypad().button_released(JoypadButton::Right); break;
+        case Qt::Key_Left:   gbview->get_joypad().button_released(JoypadButton::Left);  break;
+        case Qt::Key_Up:     gbview->get_joypad().button_released(JoypadButton::Up);    break;
+        case Qt::Key_Down:   gbview->get_joypad().button_released(JoypadButton::Down);  break;
+        case Qt::Key_Z:      gbview->get_joypad().button_released(JoypadButton::A);     break;
+        case Qt::Key_X:      gbview->get_joypad().button_released(JoypadButton::B);     break;
+        case Qt::Key_Return: gbview->get_joypad().button_released(JoypadButton::Start); break;
+        case Qt::Key_Shift:  gbview->get_joypad().button_released(JoypadButton::Select);break;
+        default: QMainWindow::keyReleaseEvent(event);
+    }
 }

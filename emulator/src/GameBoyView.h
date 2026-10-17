@@ -23,8 +23,8 @@ class GameBoyView : public QWidget {
         void parse_command_line();
         void start_emulator(string rom_path, bool boot_rom, bool debug);
         void set_scaling_factor(u8 sf);
-
         void show_debug_window();
+        Joypad& get_joypad();
 
     public slots:
         void animate();

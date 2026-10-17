@@ -100,3 +100,7 @@ void GameBoyView::show_debug_window() {
     debug_window->raise();
     debug_window->activateWindow();
 }
+
+Joypad& GameBoyView::get_joypad() { 
+    return system.jpad; 
+}

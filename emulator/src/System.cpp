@@ -4,9 +4,11 @@ using namespace std;
 
 System::System() : 
     disp(memory, interrupt, clock),
+    memory(jpad),
     interrupt(memory),
     debug(memory),
     cpu(memory, clock, interrupt),
+    jpad(memory, interrupt),
     quit_flag(false)
 {}
 

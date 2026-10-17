@@ -3,6 +3,7 @@
 #include "displayconst.h"
 #include "LibCB/Error.h"
 #include "LibCB/Types.h"
+#include "joypad.h"
 #include <string>
 #include <optional>
 #include <fstream>
@@ -45,7 +46,7 @@ enum class Register16Bit {
 class Memory
 {
     public:
-        Memory();
+        Memory(Joypad& jpad_in);
         void init();
         // Registers
         u8 reg_get(u8 reg_id);
@@ -80,6 +81,7 @@ class Memory
         void bit_res(u8 reg_id, u8 bit_number);                 // Reset bit in register, flags not affected
         // RAM/ROM      
         u8 get_byte(u16 address);                               // Read byte from RAM/ROM
+        u8 get_raw_byte(u16 address);                           // Read byte from memory without bounds check
         u8 get_bit(u16 address, u8 bit_number);                 // Read a bit from an byte in RAM/ROM
         u8 fetch_byte();                                        // Read byte from ROM and increment PC
         u8 get_from_pointer(Register16Bit reg_id);              // Read byte from RAM/ROM pointed to by 16-bit register
@@ -122,6 +124,7 @@ class Memory
         string get_rom_title();                                // Get the current ROM title
 
     private:
+        Joypad& jpad;
         char ram[MEM_SIZE];                                    // 64kB RAM
         u8 reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         u16 sp, pc;                                            // Stack pointer and program counter
