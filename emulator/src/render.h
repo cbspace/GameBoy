@@ -33,6 +33,7 @@ class Render
 {
     public:
         Render(Memory& mem_in, ColourValue (&pix_in)[DISP_W*DISP_H]);
+        void reset_frame();
         void render_line(u8 line_y);
         void refresh_sprites();
         virtual ~Render();
@@ -40,6 +41,7 @@ class Render
     private:
         void draw_bg_line(u8 line_y);
         void draw_sprites_line(u8 line_y);
+        void draw_win_line(u8 line_y);
 
         Memory& mem;
         ColourValue (&pixels)[DISP_W*DISP_H];
@@ -47,4 +49,7 @@ class Render
 
         ColourValue get_bg_pixel(u8 bg_y, u8 bg_x, u16 bg_tdt, u8 bg_tm);
         ColourValue get_sprite_pixel(u8 tile_no, u8 sprite_y, u8 sprite_x);
+
+        u8 win_internal_line;
+        u8 raw_bg_color_index[DISP_W];
 };

@@ -75,7 +75,7 @@ void SystemDebug::insert_logo()
 
     for (u16 i = 0; i < 48; i++)
     {
-        mem.write_byte(i + 0x104, logo_data[i]);
+        mem.write_raw(i + 0x104, logo_data[i]);
     }
 }
 

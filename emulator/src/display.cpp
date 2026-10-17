@@ -35,76 +35,70 @@ void GBDisplay::display_cycle()
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B0));
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B1));
     DisplayMode current_mode = static_cast<DisplayMode>((current_modeB1 << 1) + current_modeB0);
-
     u8 ly_val = mem.get_byte(R_LY);
 
-    // if (current_mode == DisplayMode::Mode0) {
-    //     if (clk.cycles_reached(DisplayMode::Mode0)) {
-    //         if (ly_val == DISP_H)
-    //         {
-    //             update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
-    //         } else {
-    //             update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
-    //         }
-    //     }
-    // } else if (current_mode == DisplayMode::Mode1) {
-    //     if (clk.cycles_reached(DisplayMode::Mode1)) {
-    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
-    //     }
-    // } else if (current_mode == DisplayMode::Mode2) {
-    //     if (clk.cycles_reached(DisplayMode::Mode2)) {
-    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
-    //         update_line();
-    //     }
-    // } else if (current_mode == DisplayMode::Mode3) {
-    //     if (clk.cycles_reached(DisplayMode::Mode3)) {
-    //         update_stat_reg(static_cast<u8>(DisplayMode::Mode0));
-    //         clk.reset_cycles();
-    //     }
-    // }
-
-
-
-    if (clk.cycles_reached(DisplayMode::Mode3))
+    switch (current_mode)
     {
-        if (current_mode != DisplayMode::Mode3)
+    case DisplayMode::Mode2: // OAM Search (80 cycles)
+        if (clk.cycles_reached(DisplayMode::Mode2))
         {
+            update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
+        }
+        break;
+
+    case DisplayMode::Mode3: // Pixel Transfer (172 cycles)
+        if (clk.cycles_reached(DisplayMode::Mode3))
+        {
+            // Render the line at the end of Mode 3
             if (ly_val < DISP_H)
             {
-                update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
-            } else {
-                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
+                ren.render_line(ly_val);
             }
-
-            update_line();
-            clk.reset_cycles();
+            update_stat_reg(static_cast<u8>(DisplayMode::Mode0));
         }
-    }
-    else if (clk.cycles_reached(DisplayMode::Mode2))
-    {
-        if (current_mode != DisplayMode::Mode2)
+        break;
+
+    case DisplayMode::Mode0: // H-Blank (204 cycles)
+        if (clk.cycles_reached(DisplayMode::Mode0))
         {
-            if (ly_val < DISP_H)
+            ly_val++;
+            mem.write_byte(R_LY, ly_val);
+
+            if (ly_val == DISP_H) // Reached line 144 -> Enter V-Blank (Mode 1)
+            {
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
+                ir.if_update(I_VBLANK, true);
+                draw_frame(); // Convert pixels to RGB and set new_frame_drawn = true
+            }
+            else // Next visible scanline -> Mode 2
             {
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
-            } else {
-                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
             }
+            clk.reset_cycles();
         }
-    }
-    else if (clk.cycles_reached(DisplayMode::Mode0))
-    {
-        if (current_mode != DisplayMode::Mode0)
-        {
-            if (ly_val < DISP_H)
-            {
-                update_stat_reg(static_cast<u8>(DisplayMode::Mode0));
-            } else {
-                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
-            }
-        }
-    }
+        break;
 
+    case DisplayMode::Mode1: // V-Blank (456 cycles per line across lines 144-153)
+        if (clk.cycles_reached(DisplayMode::Mode1))
+        {
+            ly_val++;
+            if (ly_val > 153)
+            {
+                // Frame complete, wrap back to scanline 0 and Mode 2
+                ly_val = 0;
+                mem.write_byte(R_LY, ly_val);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
+                ren.reset_frame();
+                ren.refresh_sprites();
+            }
+            else
+            {
+                mem.write_byte(R_LY, ly_val);
+            }
+            clk.reset_cycles();
+        }
+        break;
+    }
 }
 
 void GBDisplay::update_line()
@@ -202,8 +196,7 @@ void GBDisplay::draw_frame()
 {
     colour();
     new_frame_drawn = true;
-
-    //clk.frame_delay();
+    // Do NOT call clear_pixels() here; preserve the buffer for the Qt renderer!
 }
 
 void GBDisplay::colour()

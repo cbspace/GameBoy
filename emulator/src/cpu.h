@@ -25,5 +25,6 @@ class Cpu
         u8 byte_in;
 
         bool halt_flag;
+        bool halt_bug_flag;
         bool stop_flag;
 };
