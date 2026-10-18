@@ -8,7 +8,7 @@
 #include "SystemDebug.h"
 #include "Clock.h"
 #include "joypad.h"
-#include "LibCB/Error.h"
+#include "lib/Error.h"
 #include <iostream>
 #include <string>
 #include <optional>

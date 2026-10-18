@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LibCB/Types.h"
+#include "lib/Types.h"
 #include <map>
 
 class Memory;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LibCB/Types.h"
+#include "lib/Types.h"
 
 const u8 SPRITE_ATTRIB_FLAG_PRIORITY = 7;
 const u8 SPRITE_ATTRIB_FLAG_Y_FLIP   = 6;

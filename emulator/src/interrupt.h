@@ -2,7 +2,7 @@
 
 #include "Memory.h"
 #include "Clock.h"
-#include "LibCB/Types.h"
+#include "lib/Types.h"
 #include <iostream>
 
 // Interrupt flags and interrupt enable mask values

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "displayconst.h"
-#include "LibCB/Error.h"
-#include "LibCB/Types.h"
+#include "lib/Error.h"
+#include "lib/Types.h"
 #include "joypad.h"
 #include <string>
 #include <optional>

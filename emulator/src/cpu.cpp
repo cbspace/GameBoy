@@ -453,16 +453,16 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0xf8:  // Set HL to SP + imm8 n
             {
                 int8_t signed_offset = static_cast<int8_t>(mem.fetch_byte());
-                uint16_t sp_val = mem.get_sp();
-                uint32_t result = sp_val + signed_offset;
+                u16 sp_val = mem.get_sp();
+                u32 result = sp_val + signed_offset;
 
                 // Flags: H and C are evaluated on the lower byte addition
-                mem.flag_update(HF, ((sp_val & 0x0F) + (static_cast<uint8_t>(signed_offset) & 0x0F)) > 0x0F);
-                mem.flag_update(CF, ((sp_val & 0xFF) + (static_cast<uint8_t>(signed_offset) & 0xFF)) > 0xFF);
+                mem.flag_update(HF, ((sp_val & 0x0F) + (static_cast<u8>(signed_offset) & 0x0F)) > 0x0F);
+                mem.flag_update(CF, ((sp_val & 0xFF) + (static_cast<u8>(signed_offset) & 0xFF)) > 0xFF);
                 mem.flag_update(ZF, 0);
                 mem.flag_update(NF, 0);
 
-                mem.reg_set(Register16Bit::HL, static_cast<uint16_t>(result));
+                mem.reg_set(Register16Bit::HL, static_cast<u16>(result));
                 clk.add_cycles(12);
                 break;
             }

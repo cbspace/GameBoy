@@ -1,3 +1,0 @@
-[submodule "src/LibCB"]
-	path = emulator/src/LibCB
-	url = https://github.com/cbspace/LibCB

@@ -36,8 +36,8 @@ set(SOURCES
     src/System.cpp
     src/SystemDebug.h
     src/SystemDebug.cpp
-    src/LibCB/Error.h
-    src/LibCB/Types.h
+    src/lib/Error.h
+    src/lib/Types.h
 )
 
 qt_add_executable(gameboy ${SOURCES}
