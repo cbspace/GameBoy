@@ -21,65 +21,118 @@ u8 Timer::read_byte(u16 address) const
 
 void Timer::write_byte(u16 address, u8 value)
 {
+    auto get_edge = [this]() -> bool {
+        bool enabled = (tac & 0x04) != 0;
+        int bit_pos = 9;
+        switch (tac & 0x03)
+        {
+            case 0: bit_pos = 9; break;
+            case 1: bit_pos = 3; break;
+            case 2: bit_pos = 5; break;
+            case 3: bit_pos = 7; break;
+        }
+        return enabled && ((internal_counter & (1 << bit_pos)) != 0);
+    };
+
     switch (address)
     {
-        case 0xFF04:
-            // Writing any byte to DIV resets the entire internal counter to 0!
-            internal_counter = 0;
+        case 0xFF04: // DIV
+        {
+            bool before = get_edge();
+            internal_counter = 0; // Reset entire 16-bit counter
+            bool after = get_edge();
+
+            // Glitch: resetting counter dropped bit from 1 to 0
+            if (before && !after)
+            {
+                tima++;
+                if (tima == 0x00)
+                {
+                    tima_overflow_cycles = 4;
+                }
+            }
             break;
-        case 0xFF05:
+        }
+
+        case 0xFF05: // TIMA
+            // If software writes to TIMA during the 4-cycle overflow delay,
+            // the write cancels the TMA reload!
+            if (tima_overflow_cycles > 0)
+            {
+                tima_overflow_cycles = 0;
+            }
             tima = value;
             break;
-        case 0xFF06:
+
+        case 0xFF06: // TMA
             tma = value;
+            // If TMA is written during the overflow delay, the new value gets reloaded
+            if (tima_overflow_cycles == 1)
+            {
+                tima = value;
+            }
             break;
-        case 0xFF07:
+
+        case 0xFF07: // TAC
+        {
+            bool before = get_edge();
             tac = value & 0x07;
+            bool after = get_edge();
+
+            // Changing mode or disabling timer dropped the signal
+            if (before && !after)
+            {
+                tima++;
+                if (tima == 0x00)
+                {
+                    tima_overflow_cycles = 4;
+                }
+            }
             break;
+        }
     }
 }
 
 void Timer::tick(u32 cycles)
 {
-    // Step forward cycle by cycle (or in chunks)
     for (u32 i = 0; i < cycles; ++i)
     {
-        // Handle the 1-cycle TIMA reload delay if an overflow occurred
-        if (tima_overflow_delay)
+        // 1. Multiplexer bit check
+        bool timer_enabled = (tac & 0x04) != 0;
+        int bit_pos = 9;
+        switch (tac & 0x03)
         {
-            tima = tma; // Reload from TMA
-            ir.request_interrupt(InterruptType::Timer); // Bit 2 of 0xFF0F (IF)
-            tima_overflow_delay = false;
+            case 0: bit_pos = 9; break;
+            case 1: bit_pos = 3; break;
+            case 2: bit_pos = 5; break;
+            case 3: bit_pos = 7; break;
         }
 
-        // Determine the previous state of the selected multiplexer bit
-        bool timer_enabled = (tac & 0x04) != 0;
-        
-        auto get_multiplexer_bit = [this]() -> bool {
-            switch (tac & 0x03)
-            {
-                case 0: return (internal_counter & (1 << 9)) != 0; // 4096 Hz
-                case 1: return (internal_counter & (1 << 3)) != 0; // 262144 Hz
-                case 2: return (internal_counter & (1 << 5)) != 0; // 65536 Hz
-                case 3: return (internal_counter & (1 << 7)) != 0; // 16384 Hz
-                default: return false;
-            }
-        };
-
-        bool bit_before = timer_enabled && get_multiplexer_bit();
+        bool bit_before = timer_enabled && ((internal_counter & (1 << bit_pos)) != 0);
 
         internal_counter++;
 
-        bool bit_after = timer_enabled && get_multiplexer_bit();
+        bool bit_after = timer_enabled && ((internal_counter & (1 << bit_pos)) != 0);
 
-        // Falling edge: transitioned from 1 -> 0
+        // 2. Falling edge detection
         if (bit_before && !bit_after)
         {
             tima++;
-            if (tima == 0x00) // 8-bit overflow (was 0xFF, now 0x00)
+            if (tima == 0x00)
             {
-                // In hardware, TIMA stays 0x00 for 4 T-cycles before reloading TMA and setting IF
-                tima_overflow_delay = true;
+                // Delay reload by 4 T-cycles
+                tima_overflow_cycles = 4;
+            }
+        }
+
+        // 3. Process delay and reload
+        if (tima_overflow_cycles > 0)
+        {
+            tima_overflow_cycles--;
+            if (tima_overflow_cycles == 0)
+            {
+                tima = tma;
+                ir.request_interrupt(InterruptType::Timer);
             }
         }
     }

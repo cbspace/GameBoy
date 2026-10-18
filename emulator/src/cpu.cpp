@@ -22,7 +22,7 @@ u32 Cpu::cycle()
             halt_flag = false; // Wake up
         } else {
             add_ticks(4);  // Hardware HALT exit penalty (1 M-cycle)
-            return 4;
+            return ticks;
         }
     }
 
@@ -52,6 +52,15 @@ u32 Cpu::cycle()
         }
 
         process_instruction(byte_in);
+    }
+
+    if (!stop_flag)
+    {
+        u8 opcode = mem.fetch_byte();
+        process_instruction(opcode);
+
+        // EI delay: IME activates AFTER the instruction following EI finishes
+        ir.process_ei_count();
     }
 
     return ticks;
@@ -1142,7 +1151,7 @@ void Cpu::process_instruction(u8 rom_byte)
             {
                 mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
-                add_ticks(12);
+                add_ticks(24);
             }
             else
             {
@@ -1245,7 +1254,7 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0xc9:  // Pop 2 bytes from the stack and jump to that address (RET)
             unsigned_16bit_immediate = mem.stack_pop();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(8);
+            add_ticks(16);
             break;
         case 0xc0:  // Pop 2 bytes from the stack and return if ZF is reset (RET nz)
             if (!mem.flag_get(ZF)) {
@@ -1283,7 +1292,7 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = mem.stack_pop();
             mem.set_pc(unsigned_16bit_immediate);
             ir.enable_interrupts();
-            add_ticks(8);
+            add_ticks(16);
             break;
     }
 }

@@ -34,12 +34,17 @@ optional<Error> System::start(string rom_path, bool rom_is_dmg, bool debug_mode_
 
 void System::main_loop()
 {
-    interrupt.check_interrupts();
+    // 1. Service interrupts BEFORE fetching the next instruction
+    u32 irq_cycles = interrupt.check_interrupts();
+    if (irq_cycles > 0)
+    {
+        timer.tick(irq_cycles);
+        disp.display_cycle(irq_cycles);
+    }
 
+    // 2. Execute CPU instruction
     u32 cycles = cpu.cycle();
-
     timer.tick(cycles);
-
     disp.display_cycle(cycles);
 }
 

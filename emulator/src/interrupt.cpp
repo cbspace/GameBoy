@@ -28,7 +28,7 @@ void Interrupt::request_interrupt(InterruptType type)
     if_update(mask, true);
 }
 
-void Interrupt::check_interrupts()
+u32 Interrupt::check_interrupts()
 {
     // Always fetch fresh flags directly from memory
     i_flags = mem.get_byte(A_IFLAGS);
@@ -39,7 +39,6 @@ void Interrupt::check_interrupts()
     {
         ime = false;
         mem.pc_push();
-        // clk.add_cycles(20); // 5 M-cycles (20 T-states) interrupt dispatch delay
 
         if (i_current & I_VBLANK)
         {
@@ -66,12 +65,11 @@ void Interrupt::check_interrupts()
             if_update(I_JOYPAD, false);
             mem.set_pc(IV_JOYPAD); // 0x0060
         }
+
+        return 20; // 5 M-cycles (20 T-states) dispatch overhead
     }
 
-    if (ei_count > 0)
-    {
-        process_ei_count();
-    }
+    return 0;
 }
 
 void Interrupt::if_update(u8 int_flag, bool flg_val)
@@ -90,15 +88,13 @@ void Interrupt::if_update(u8 int_flag, bool flg_val)
 
 void Interrupt::process_ei_count()
 {
-    // EI takes effect after the instruction following EI
-    if (ei_count == 1)
+    if (ei_count > 0)
     {
-        ei_count = 2;
-    }
-    else if (ei_count == 2)
-    {
-        ei_count = 0;
-        ime = true;
+        ei_count--;
+        if (ei_count == 0)
+        {
+            ime = true;
+        }
     }
 }
 

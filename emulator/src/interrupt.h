@@ -35,11 +35,12 @@ class Interrupt
 {
 public:
     Interrupt(Memory& mem_in);        
-    void check_interrupts();
+    u32 check_interrupts();
     bool get_ime();
     void disable_interrupts();
     void enable_interrupts();
     void if_update(u8 int_flag, bool flg_val);
+    void process_ei_count();
 
     // Call from PPU, Timer, Joypad, Serial
     void request_interrupt(InterruptType type);
@@ -47,7 +48,6 @@ public:
     u8 ei_count;
 
 private:
-    void process_ei_count();
     bool if_get(u8 int_flag);
 
     Memory& mem;

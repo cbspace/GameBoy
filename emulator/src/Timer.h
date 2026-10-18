@@ -27,4 +27,5 @@ private:
 
     // Overflow / reload state
     bool tima_overflow_delay = false;
+    u8 tima_overflow_cycles = 0;
 };
