@@ -51,8 +51,7 @@ void Joypad::button_pressed(JoypadButton button)
             button_state |= mask;
 
             // Trigger Joypad Interrupt (Bit 4 of IF)
-            // ir.request_interrupt(InterruptType::Joypad);
-            mem.write_raw(A_IFLAGS, mem.get_byte(A_IFLAGS) | I_JOYPAD);
+            ir.request_interrupt(InterruptType::Joypad);
         }
     }
 }

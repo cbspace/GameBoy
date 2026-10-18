@@ -6,7 +6,7 @@
 #include "Memory.h"
 #include "interrupt.h"
 #include "SystemDebug.h"
-#include "Clock.h"
+#include "Timer.h"
 #include "joypad.h"
 #include "lib/Error.h"
 #include <iostream>
@@ -29,10 +29,10 @@ class System
         Joypad jpad;
         SystemDebug debug;
     private:
+        Interrupt interrupt;
+        Timer timer;
+        Memory memory;
         GBDisplay disp;
         Cpu cpu;
-        Memory memory;
-        Clock clock;
-        Interrupt interrupt;
         bool quit_flag;
 };

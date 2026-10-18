@@ -32,6 +32,10 @@ const u32 NF = 0x40;                    // Negative flag mask
 const u32 HF = 0x20;                    // Half carry flag mask
 const u32 CF = 0x10;                    // Full carry flag mask
 
+const u16 A_TIMA = 0xFF05;              // Timer A
+const u16 A_TMA  = 0xFF06;              // Timer MA
+const u16 A_TAC  = 0xFF07;              // Timer AC
+
 const u32 A_OAM =               0xfe00;     // Start address of OAM memory (Sprite Atrribute Table)
 
 using namespace std;
@@ -43,10 +47,12 @@ enum class Register16Bit {
     HL
 };
 
+class Timer;
+
 class Memory
 {
     public:
-        Memory(Joypad& jpad_in);
+        Memory(Joypad& jpad_in, Timer& timer_in);
         void init();
         // Registers
         u8 reg_get(u8 reg_id);
@@ -125,6 +131,7 @@ class Memory
 
     private:
         Joypad& jpad;
+        Timer& timer;
         char ram[MEM_SIZE];                                    // 64kB RAM
         u8 reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         u16 sp, pc;                                            // Stack pointer and program counter

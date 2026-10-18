@@ -10,7 +10,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 set(SOURCES
     src/displayconst.h
     src/Clock.h
-    src/Clock.cpp
     src/cpu.h
     src/cpu.cpp
     src/display.h
@@ -36,6 +35,8 @@ set(SOURCES
     src/System.cpp
     src/SystemDebug.h
     src/SystemDebug.cpp
+    src/Timer.h
+    src/Timer.cpp
     src/lib/Error.h
     src/lib/Types.h
 )

@@ -1,6 +1,5 @@
 #include "interrupt.h"
 #include "Memory.h"
-#include "Clock.h"
 #include <iostream>
 
 using namespace std;
@@ -8,10 +7,25 @@ using namespace std;
 Interrupt::Interrupt(Memory& mem_in) :
     mem(mem_in)
 {
-    ime = true;            // Hardware initializes with IME disabled
+    // Hardware initializes with IME disabled (set to false)
+    ime = false;
     ei_count = 0;
     i_flags = 0;
     i_enable = 0;
+}
+
+void Interrupt::request_interrupt(InterruptType type)
+{
+    u8 mask = 0;
+    switch (type)
+    {
+        case InterruptType::VBlank:  mask = I_VBLANK;  break;
+        case InterruptType::LCDStat: mask = I_LCDSTAT; break;
+        case InterruptType::Timer:   mask = I_TIMER;   break;
+        case InterruptType::Serial:  mask = I_SERIAL;  break;
+        case InterruptType::Joypad:  mask = I_JOYPAD;  break;
+    }
+    if_update(mask, true);
 }
 
 void Interrupt::check_interrupts()

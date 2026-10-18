@@ -94,7 +94,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 
 void MainWindow::open_file() {
     stop();
-    QString file_name = QFileDialog::getOpenFileName(this, tr("Open ROM File"), "/home/craig/", tr("GameBoy ROMS (*.gb *.bin)"));
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Open ROM File"), ".", tr("GameBoy ROMS (*.gb *.bin)"));
     
     if (file_name.isEmpty()) {
         return;

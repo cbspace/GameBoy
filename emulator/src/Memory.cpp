@@ -1,8 +1,10 @@
 #include "Memory.h"
 #include "interrupt.h"
+#include "Timer.h"
 
-Memory::Memory(Joypad& jpad_in) :
-    jpad(jpad_in)
+Memory::Memory(Joypad& jpad_in, Timer& timer_in) :
+    jpad(jpad_in),
+    timer(timer_in)
 {
     init();
 }
@@ -537,6 +539,12 @@ u8 Memory::get_byte(u16 address)
         return jpad.get_p1_value();
     }
 
+    // Timer
+    if ((address >= A_TIMA) && (address <= A_TAC))
+    {
+        return timer.read_byte(address);
+    }
+
     if (address == A_IFLAGS)
     {
         return ram[A_IFLAGS] | 0xE0; // Upper 3 bits always read 1 on DMG
@@ -600,6 +608,12 @@ void Memory::write_byte(u16 address, u8 byte)
     {
         ram[0xFF04] = 0x00;
         return;
+    }
+
+    // Timer
+    if ((address >= A_TIMA) && (address <= A_TAC))
+    {
+        return timer.write_byte(address, byte);
     }
 
     ram[address] = byte;

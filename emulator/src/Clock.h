@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lib/Types.h"
-
 const u32 CLK_FRAME_DELAY =          100;         // Clock period for frame clock (in ms), results in ~60 Hz Clock
 const u32 CLK_CYCLES_MAX =           70224;       // Maximum clock cycles per frame
 const u32 CLK_CYCLES_LINE =          456;//252    // Clock cycles for a single line BG + Sprites
@@ -11,23 +9,6 @@ const u32 CLK_CYCLES_MODE1 =         4560;        // Clock cycles for a single l
 const u32 CLK_CYCLES_MODE2 =         80;          // Clock cycles for Mode 2 - OAM being accessed
 const u32 CLK_CYCLES_MODE3 =         172;         // Clock cycles for Mode 3 - OAM and Display RAM being accessed
 
-enum class DisplayMode {
-  Mode0,
-  Mode1,
-  Mode2,
-  Mode3
-};
-
-class Clock
-{
-    public:
-        Clock();
-        void add_cycles(u8 amount);
-        bool cycles_reached(DisplayMode display_mode) const;
-        void reset_cycles();
-    private:
-        u32 line_clock_cycles;
-};
 
 /*
 The machine clock for a gameboy is 1.050 MHz and the base clock is 4.19 MHz.

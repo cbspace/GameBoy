@@ -3,12 +3,13 @@
 using namespace std;
 
 System::System() : 
-    disp(memory, interrupt, clock),
-    memory(jpad),
+    disp(memory, interrupt),
+    memory(jpad, timer),
     interrupt(memory),
     debug(memory),
-    cpu(memory, clock, interrupt),
+    cpu(memory, interrupt),
     jpad(memory, interrupt),
+    timer(memory, interrupt),
     quit_flag(false)
 {}
 
@@ -33,9 +34,13 @@ optional<Error> System::start(string rom_path, bool rom_is_dmg, bool debug_mode_
 
 void System::main_loop()
 {
-    cpu.cycle();
-    disp.display_cycle();
     interrupt.check_interrupts();
+
+    u32 cycles = cpu.cycle();
+
+    timer.tick(cycles);
+
+    disp.display_cycle(cycles);
 }
 
 void System::print_cl_usage_message() {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Memory.h"
-#include "Clock.h"
 #include "interrupt.h"
 #include "lib/Types.h"
 
@@ -9,8 +8,9 @@ class Cpu
 {
 
     public:
-        Cpu(Memory& mem_in, Clock& clk_in, Interrupt& ir_in);
-        void cycle();
+        Cpu(Memory& mem_in, Interrupt& ir_in);
+        void add_ticks(u8 extra_ticks);
+        u32 cycle();
 
     private:
         void process_instruction(u8 rom_byte);
@@ -20,9 +20,9 @@ class Cpu
         void cancel_stop();
 
         Memory& mem;
-        Clock& clk;
         Interrupt& ir;
         u8 byte_in;
+        u32 ticks;
 
         bool halt_flag;
         bool halt_bug_flag;

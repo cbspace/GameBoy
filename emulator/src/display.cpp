@@ -2,12 +2,12 @@
 
 using namespace std;
 
-GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in, Clock& clk_in) :
+GBDisplay::GBDisplay(Memory& mem_in, Interrupt& ir_in) :
     mem(mem_in),
     ren(mem_in, pixels),
     ir(ir_in),
-    clk(clk_in),
     new_frame_drawn(false),
+    line_clock_cycles(0),
     pixels_coloured(new u32[DISP_W*DISP_H])
 {
     clear_pixels();
@@ -28,9 +28,35 @@ bool GBDisplay::new_frame_is_drawn() {
 //     SDL_SetWindowTitle(window, new_window_title.c_str());
 // }
 
-void GBDisplay::display_cycle()
+bool GBDisplay::cycles_reached(DisplayMode display_mode) const
+{
+    switch (display_mode)
+    {
+    case DisplayMode::Mode2:
+        // Mode 2 ends at 80 dots
+        return line_clock_cycles >= 80;
+
+    case DisplayMode::Mode3:
+        // Mode 3 ends at 80 + 172 = 252 dots
+        return line_clock_cycles >= (80 + 172);
+
+    case DisplayMode::Mode0:
+        // Mode 0 ends at 456 dots (full scanline complete)
+        return line_clock_cycles >= 456;
+
+    case DisplayMode::Mode1:
+        // Each V-Blank line (lines 144-153) lasts a full scanline (456 dots)
+        return line_clock_cycles >= 456;
+
+    default:
+        return false;
+    }
+}
+
+void GBDisplay::display_cycle(u32 cycles)
 {
     new_frame_drawn = false;
+    line_clock_cycles += cycles;
 
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B0));
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B1));
@@ -40,14 +66,14 @@ void GBDisplay::display_cycle()
     switch (current_mode)
     {
     case DisplayMode::Mode2: // OAM Search (80 cycles)
-        if (clk.cycles_reached(DisplayMode::Mode2))
+        if (cycles_reached(DisplayMode::Mode2))
         {
             update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
         }
         break;
 
     case DisplayMode::Mode3: // Pixel Transfer (172 cycles)
-        if (clk.cycles_reached(DisplayMode::Mode3))
+        if (cycles_reached(DisplayMode::Mode3))
         {
             // Render the line at the end of Mode 3
             if (ly_val < DISP_H)
@@ -59,7 +85,7 @@ void GBDisplay::display_cycle()
         break;
 
     case DisplayMode::Mode0: // H-Blank (204 cycles)
-        if (clk.cycles_reached(DisplayMode::Mode0))
+        if (cycles_reached(DisplayMode::Mode0))
         {
             ly_val++;
             mem.write_byte(R_LY, ly_val);
@@ -67,19 +93,19 @@ void GBDisplay::display_cycle()
             if (ly_val == DISP_H) // Reached line 144 -> Enter V-Blank (Mode 1)
             {
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
-                ir.if_update(I_VBLANK, true);
+                ir.request_interrupt(InterruptType::VBlank);
                 draw_frame(); // Convert pixels to RGB and set new_frame_drawn = true
             }
             else // Next visible scanline -> Mode 2
             {
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
             }
-            clk.reset_cycles();
+            line_clock_cycles = 0;
         }
         break;
 
     case DisplayMode::Mode1: // V-Blank (456 cycles per line across lines 144-153)
-        if (clk.cycles_reached(DisplayMode::Mode1))
+        if (cycles_reached(DisplayMode::Mode1))
         {
             ly_val++;
             if (ly_val > 153)
@@ -95,7 +121,7 @@ void GBDisplay::display_cycle()
             {
                 mem.write_byte(R_LY, ly_val);
             }
-            clk.reset_cycles();
+            line_clock_cycles = 0;
         }
         break;
     }
