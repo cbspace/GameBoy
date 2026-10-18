@@ -7,7 +7,7 @@ System::System() :
     memory(jpad, timer),
     interrupt(memory),
     debug(memory),
-    cpu(memory, interrupt),
+    cpu(memory, interrupt, timer),
     jpad(memory, interrupt),
     timer(memory, interrupt),
     quit_flag(false)

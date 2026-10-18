@@ -1,11 +1,14 @@
 #include "cpu.h"
+#include "DebugLogger.h"
+#include "Timer.h"
 
-Cpu::Cpu(Memory& mem_in, Interrupt& ir_in) :
+Cpu::Cpu(Memory& mem_in, Interrupt& ir_in, Timer& timer_in) :
     mem(mem_in),
     ir(ir_in),
     byte_in(0x00),
     halt_flag(false),
-    stop_flag(false)
+    stop_flag(false),
+    timer(timer_in) //for debug
 {}
 
 u32 Cpu::cycle()
@@ -18,48 +21,66 @@ u32 Cpu::cycle()
         u8 i_flags = mem.get_byte(A_IFLAGS);
         u8 i_enable = mem.get_byte(A_IENABLE);
 
-        if ((i_flags & i_enable & 0x1F) != 0) {
+        if ((i_flags & i_enable & 0x1F) != 0) 
+        {
             halt_flag = false; // Wake up
-        } else {
-            add_ticks(4);  // Hardware HALT exit penalty (1 M-cycle)
+        } 
+        else 
+        {
+            add_ticks(4); // HALT consumes 1 M-cycle while waiting
             return ticks;
         }
     }
 
-    // 2. Execute if not halted or stopped
-    if (!halt_flag && !stop_flag)
+    // 2. Execute single instruction if not stopped
+    if (!stop_flag)
     {
         u16 current_pc = mem.get_pc();
+        u8 opcode;
 
-        if (current_pc == 0x0100)
-        {
-            std::cout << ">>> Game reset detected! PC hit 0x0100 again." << std::endl;
+        if (current_pc == 0xC09C) {
+            printf("LDH at C09C reading offset 0x%02X (address 0xFF%02X)\n", 
+            mem.get_byte(current_pc + 1), mem.get_byte(current_pc + 1));
         }
-        else if (current_pc == 0x0038)
-        {
-            std::cout << ">>> Crash: CPU hit RST 38h (0x0038)!" << std::endl;
-        }
-
-        u8 byte_in;
+        
         if (halt_bug_flag)
         {
-            byte_in = mem.get_byte(current_pc);
+            // HALT bug: PC does not increment on next byte fetch
+            opcode = mem.get_byte(current_pc);
             halt_bug_flag = false;
         }
         else
         {
-            byte_in = mem.fetch_byte();
+            opcode = mem.fetch_byte();
         }
 
-        process_instruction(byte_in);
-    }
+        // --- Critical Value Logging ---
+        // (Optional: limit logging to specific PC ranges or once test execution begins)
+        static uint32_t log_count = 0;
+        if (log_count < 100000)
+        {
+            DebugLogger::instance().log_step(
+                current_pc,
+                opcode,
+                mem.reg_get16(Register16Bit::AF),
+                mem.reg_get16(Register16Bit::BC),
+                mem.reg_get16(Register16Bit::DE),
+                mem.reg_get16(Register16Bit::HL),
+                mem.get_sp(),
+                timer.read_byte(0xFF04), // DIV
+                timer.read_byte(0xFF05), // TIMA
+                timer.read_byte(0xFF06), // TMA
+                timer.read_byte(0xFF07), // TAC
+                mem.get_byte(A_IFLAGS),
+                mem.get_byte(A_IENABLE),
+                ir.get_ime(),
+                ticks
+            );
+        }
 
-    if (!stop_flag)
-    {
-        u8 opcode = mem.fetch_byte();
         process_instruction(opcode);
 
-        // EI delay: IME activates AFTER the instruction following EI finishes
+        // Process EI delay: takes effect after the instruction following EI completes
         ir.process_ei_count();
     }
 
@@ -433,7 +454,7 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0xf0:  // Set register A to ($FF00 + imm8 n)
             unsigned_16bit_immediate = 0xff00 + mem.fetch_byte();
             mem.reg_set(RA,mem.get_byte(unsigned_16bit_immediate));
-            add_ticks(8);
+            add_ticks(12);
             break;
         case 0x01:  // Set register BC to 16 bit immediate value nn
             unsigned_16bit_immediate = mem.fetch_byte();
@@ -994,7 +1015,7 @@ void Cpu::process_instruction(u8 rom_byte)
             add_ticks(4);
             break;
         case 0xfb:  // Enable interrupts (EI) - happens after next instruction
-            ir.ei_count = 1; // Set ei counter so that ei is effective after next instruction
+            ir.ei_count = 2; // Set ei counter so that ei is effective after next instruction
             add_ticks(4);
             break;
         case 0x07:  // Rotate contents of A register left and store bit 7 in CF, flags updated
@@ -1166,7 +1187,7 @@ void Cpu::process_instruction(u8 rom_byte)
             {
                 mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
-                add_ticks(12);
+                add_ticks(24);
             }
             else
             {
@@ -1181,7 +1202,7 @@ void Cpu::process_instruction(u8 rom_byte)
             {
                 mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
-                add_ticks(12);
+                add_ticks(24);
             }
             else
             {
@@ -1196,7 +1217,7 @@ void Cpu::process_instruction(u8 rom_byte)
             {
                 mem.pc_push();
                 mem.set_pc(unsigned_16bit_immediate);
-                add_ticks(12);
+                add_ticks(24);
             }
             else
             {
@@ -1207,49 +1228,49 @@ void Cpu::process_instruction(u8 rom_byte)
             unsigned_16bit_immediate = 0x0000;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xcf:  // Push PC onto stack and jmp to address 0x0000 + 0x08 (RST)
             unsigned_16bit_immediate = 0x0008;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xd7:  // Push PC onto stack and jmp to address 0x0000 + 0x10 (RST)
             unsigned_16bit_immediate = 0x0010;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xdf:  // Push PC onto stack and jmp to address 0x0000 + 0x18 (RST)
             unsigned_16bit_immediate = 0x0018;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xe7:  // Push PC onto stack and jmp to address 0x0000 + 0x20 (RST)
             unsigned_16bit_immediate = 0x0020;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xef:  // Push PC onto stack and jmp to address 0x0000 + 0x28 (RST)
             unsigned_16bit_immediate = 0x0028;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xf7:  // Push PC onto stack and jmp to address 0x0000 + 0x30 (RST)
             unsigned_16bit_immediate = 0x0030;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xff:  // Push PC onto stack and jmp to address 0x0000 + 0x38 (RST)
             unsigned_16bit_immediate = 0x0038;
             mem.pc_push();
             mem.set_pc(unsigned_16bit_immediate);
-            add_ticks(32);
+            add_ticks(16);
             break;
         case 0xc9:  // Pop 2 bytes from the stack and jump to that address (RET)
             unsigned_16bit_immediate = mem.stack_pop();
@@ -1291,7 +1312,8 @@ void Cpu::process_instruction(u8 rom_byte)
         case 0xd9:  // Pop 2 bytes from the stack, jump to that address and enable interrupts (RETI)
             unsigned_16bit_immediate = mem.stack_pop();
             mem.set_pc(unsigned_16bit_immediate);
-            ir.enable_interrupts();
+            ir.set_ime(true);   // Must set ime = true directly, NOT enable_interrupts()!
+            ir.ei_count = 0;
             add_ticks(16);
             break;
     }
@@ -1587,7 +1609,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x46:  // Test bit 0 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 0);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x4f:  // Test bit 1 in register A and set flags accordingly
             mem.bit_test(RA, 1);
@@ -1619,7 +1641,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x4e:  // Test bit 1 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 1);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x57:  // Test bit 2 in register A and set flags accordingly
             mem.bit_test(RA, 2);
@@ -1651,7 +1673,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x56:  // Test bit 2 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 2);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x5f:  // Test bit 3 in register A and set flags accordingly
             mem.bit_test(RA, 3);
@@ -1683,7 +1705,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x5e:  // Test bit 3 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 3);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x67:  // Test bit 4 in register A and set flags accordingly
             mem.bit_test(RA, 4);
@@ -1715,7 +1737,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x66:  // Test bit 4 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 4);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x6f:  // Test bit 5 in register A and set flags accordingly
             mem.bit_test(RA, 5);
@@ -1747,7 +1769,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x6e:  // Test bit 5 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 5);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x77:  // Test bit 6 in register A and set flags accordingly
             mem.bit_test(RA, 6);
@@ -1779,7 +1801,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x76:  // Test bit 6 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 6);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0x7f:  // Test bit 7 in register A and set flags accordingly
             mem.bit_test(RA, 7);
@@ -1811,7 +1833,7 @@ void Cpu::process_cb_instruction(u8 rom_byte)
             break;
         case 0x7e:  // Test bit 7 in byte at (HL) and set flags accordingly
             mem.bit_test_from_pointer(Register16Bit::HL, 7);
-            add_ticks(16);
+            add_ticks(12);
             break;
         case 0xc7:  // Set bit 0 in register A, flags not affected
             mem.bit_set(RA, 0);

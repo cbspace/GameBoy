@@ -129,9 +129,9 @@ class Memory
         void read_rom_title();                                 // Read rom title and load into string
         string get_rom_title();                                // Get the current ROM title
 
+        Timer& timer;
     private:
         Joypad& jpad;
-        Timer& timer;
         char ram[MEM_SIZE];                                    // 64kB RAM
         u8 reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         u16 sp, pc;                                            // Stack pointer and program counter

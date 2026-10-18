@@ -617,6 +617,13 @@ void Memory::write_byte(u16 address, u8 byte)
         return timer.write_byte(address, byte);
     }
 
+    // Timer
+    if (address == A_IFLAGS)
+    {
+        ram[A_IFLAGS] = byte | 0xE0; // Top 3 bits always 1 on DMG
+        return;
+    }
+
     ram[address] = byte;
 
     if (address == R_DMA)
@@ -919,9 +926,9 @@ void Memory::sp_add(u8 amount)
 void Memory::stack_push(u16 push_val)
 {
     dec_sp(1);
-    ram[sp] = static_cast<u8>(push_val >> 8);
+    write_byte(sp, (push_val >> 8) & 0xFF); // High byte first
     dec_sp(1);
-    ram[sp] = static_cast<u8>(push_val & 0xFF);
+    write_byte(sp, push_val & 0xFF);        // Low byte second
 }
 
 // Push PC value on to stack and decrement sp
@@ -933,9 +940,9 @@ void Memory::pc_push()
 // Pop 16-bit value from stack and increment sp
 u16 Memory::stack_pop()
 {
-    u8 low = ram[sp];
+    u8 low = get_byte(sp);
     inc_sp(1);
-    u8 high = ram[sp];
+    u8 high = get_byte(sp);
     inc_sp(1);
     return (static_cast<u16>(high) << 8) | low;
 }

@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "joypad.h"
+#include "DebugLogger.h"
 
 MainWindow::MainWindow() :
     gbview(new GameBoyView(this))
@@ -94,14 +95,14 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {}
 
 void MainWindow::open_file() {
     stop();
-    QString file_name = QFileDialog::getOpenFileName(this, tr("Open ROM File"), ".", tr("GameBoy ROMS (*.gb *.bin)"));
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Open ROM File"), "./roms/test", tr("GameBoy ROMS (*.gb *.bin)"));
     
     if (file_name.isEmpty()) {
         return;
     }
 
     bool is_boot_rom = (QFileInfo(file_name).fileName().compare("DMG_ROM.bin", Qt::CaseInsensitive) == 0);
-
+    DebugLogger::instance().open("test_execution.log");
     gbview->start_emulator(file_name.toStdString(), is_boot_rom, false);
 }
 

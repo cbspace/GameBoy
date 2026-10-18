@@ -1,5 +1,6 @@
 #include "interrupt.h"
 #include "Memory.h"
+#include "DebugLogger.h"
 #include <iostream>
 
 using namespace std;
@@ -37,6 +38,21 @@ u32 Interrupt::check_interrupts()
 
     if (ime && i_current)
     {
+        // Log the exact vector event
+        DebugLogger::instance().log_step(
+            mem.get_pc(), 0x00, /* placeholder */
+            mem.reg_get16(Register16Bit::AF),
+            mem.reg_get16(Register16Bit::BC),
+            mem.reg_get16(Register16Bit::DE),
+            mem.reg_get16(Register16Bit::HL),
+            mem.get_sp(),
+            mem.get_byte(0xFF04),
+            mem.get_byte(0xFF05),
+            mem.get_byte(0xFF06),
+            mem.get_byte(0xFF07),
+            i_flags, i_enable, ime, 20
+        );
+
         ime = false;
         mem.pc_push();
 
@@ -98,6 +114,7 @@ void Interrupt::process_ei_count()
     }
 }
 
+void Interrupt::set_ime(bool ime_val) { ime=ime_val; }
 bool Interrupt::get_ime() { return ime; }
 void Interrupt::disable_interrupts() { ime = false; ei_count = 0; }
-void Interrupt::enable_interrupts() { ei_count = 1; }
+void Interrupt::enable_interrupts() { ei_count = 2; }

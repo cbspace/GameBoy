@@ -8,6 +8,7 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 set(SOURCES
+    src/DebugLogger.h
     src/displayconst.h
     src/Clock.h
     src/cpu.h

@@ -37,6 +37,7 @@ public:
     Interrupt(Memory& mem_in);        
     u32 check_interrupts();
     bool get_ime();
+    void set_ime(bool ime_val);
     void disable_interrupts();
     void enable_interrupts();
     void if_update(u8 int_flag, bool flg_val);

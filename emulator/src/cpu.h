@@ -8,7 +8,7 @@ class Cpu
 {
 
     public:
-        Cpu(Memory& mem_in, Interrupt& ir_in);
+        Cpu(Memory& mem_in, Interrupt& ir_in, Timer& timer_in);
         void add_ticks(u8 extra_ticks);
         u32 cycle();
 
@@ -21,6 +21,7 @@ class Cpu
 
         Memory& mem;
         Interrupt& ir;
+        Timer& timer; //for debug
         u8 byte_in;
         u32 ticks;
 
