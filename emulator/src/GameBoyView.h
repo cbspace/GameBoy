@@ -39,7 +39,7 @@ class GameBoyView : public QWidget {
         QImage render_gb_image();
         i32 width;
         i32 height;
-        u8 scaling_factor = 2;
+        u8 scaling_factor = 3;
 
         System system;
 };

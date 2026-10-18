@@ -12,15 +12,24 @@ void Memory::init()
     set_sp(SP_INITIAL_VALUE);    // sp initialised to fffe (gameboy default)
     set_pc(ROM_START_ADDRESS);   // pc initialised to 0x100 (start address)
 
-    for (u8 i = 0; i < REG_ARRAY_SIZE; i++)
-    {
-        reg[i] = 0;
-    }
+    // Post-boot CPU registers (DMG)
+    reg_set(Register16Bit::AF, 0x01B0);
+    reg_set(Register16Bit::BC, 0x0013);
+    reg_set(Register16Bit::DE, 0x00D8);
+    reg_set(Register16Bit::HL, 0x014D);
 
+    // Zero RAM/ROM
     for (u32 i = 0; i < MEM_SIZE; i++)
     {
         ram[i] = 0;
     }
+
+    // Hardware registers
+    write_byte(0xFF40, 0x91); // LCDC: LCD on, BG on
+    write_byte(0xFF47, 0xE4); // BGP: Normal palette (11 10 01 00)
+    write_byte(0xFF48, 0xD8); // OBP0
+    write_byte(0xFF49, 0x00); // OBP1
+    write_byte(0xFF50, 0x01); // Boot ROM unmapped
 }
 
 /// Flag Operations
