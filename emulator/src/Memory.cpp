@@ -1,10 +1,12 @@
 #include "Memory.h"
 #include "interrupt.h"
 #include "Timer.h"
+#include "display.h"
 
-Memory::Memory(Joypad& jpad_in, Timer& timer_in) :
+Memory::Memory(Joypad& jpad_in, Timer& timer_in, GBDisplay& display_in) :
     jpad(jpad_in),
-    timer(timer_in)
+    timer(timer_in),
+    display(display_in)
 {
     init();
 }
@@ -609,6 +611,12 @@ void Memory::write_byte(u16 address, u8 byte)
         ram[address] = byte;
         ram[address - 0x2000] = byte;
         return;
+    }
+
+    // Display
+    if (address == R_LCDC) // 0xFF40
+    {
+        display.notify_lcdc_write(byte);
     }
 
     // Timer

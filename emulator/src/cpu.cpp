@@ -37,11 +37,6 @@ u32 Cpu::cycle()
     {
         u16 current_pc = mem.get_pc();
         u8 opcode;
-
-        if (current_pc == 0xC09C) {
-            printf("LDH at C09C reading offset 0x%02X (address 0xFF%02X)\n", 
-            mem.get_byte(current_pc + 1), mem.get_byte(current_pc + 1));
-        }
         
         if (halt_bug_flag)
         {

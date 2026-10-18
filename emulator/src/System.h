@@ -29,10 +29,10 @@ class System
         Joypad jpad;
         SystemDebug debug;
     private:
+        GBDisplay disp;
         Interrupt interrupt;
         Timer timer;
         Memory memory;
-        GBDisplay disp;
         Cpu cpu;
         bool quit_flag;
 };

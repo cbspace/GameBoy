@@ -40,6 +40,9 @@ const u32 A_OAM =               0xfe00;     // Start address of OAM memory (Spri
 
 using namespace std;
 
+class Timer;
+class GBDisplay;
+
 enum class Register16Bit {
     AF,
     BC,
@@ -47,12 +50,10 @@ enum class Register16Bit {
     HL
 };
 
-class Timer;
-
 class Memory
 {
     public:
-        Memory(Joypad& jpad_in, Timer& timer_in);
+        Memory(Joypad& jpad_in, Timer& timer_in, GBDisplay& display_in);
         void init();
         // Registers
         u8 reg_get(u8 reg_id);
@@ -132,6 +133,7 @@ class Memory
         Timer& timer;
     private:
         Joypad& jpad;
+        GBDisplay& display;
         char ram[MEM_SIZE];                                    // 64kB RAM
         u8 reg[REG_ARRAY_SIZE];                                // Registers: A/F, B/C, D/E, H/L
         u16 sp, pc;                                            // Stack pointer and program counter

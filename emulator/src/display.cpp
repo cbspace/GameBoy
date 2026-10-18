@@ -17,46 +17,17 @@ bool GBDisplay::new_frame_is_drawn() {
     return new_frame_drawn;
 }
 
-// void GBDisplay::set_window_title(string title_add)
-// {
-//     if (title_add.empty()) {
-//         return;
-//     }
-
-//     string window_title_const(WINDOW_TITLE);
-//     string new_window_title = window_title_const + " - " + title_add;
-//     SDL_SetWindowTitle(window, new_window_title.c_str());
-// }
-
-bool GBDisplay::cycles_reached(DisplayMode display_mode) const
-{
-    switch (display_mode)
-    {
-    case DisplayMode::Mode2:
-        // Mode 2 ends at 80 dots
-        return line_clock_cycles >= 80;
-
-    case DisplayMode::Mode3:
-        // Mode 3 ends at 80 + 172 = 252 dots
-        return line_clock_cycles >= (80 + 172);
-
-    case DisplayMode::Mode0:
-        // Mode 0 ends at 456 dots (full scanline complete)
-        return line_clock_cycles >= 456;
-
-    case DisplayMode::Mode1:
-        // Each V-Blank line (lines 144-153) lasts a full scanline (456 dots)
-        return line_clock_cycles >= 456;
-
-    default:
-        return false;
-    }
-}
-
 void GBDisplay::display_cycle(u32 cycles)
 {
+    u8 lcdc_val = mem.get_byte(R_LCDC);
+    if ((lcdc_val & 0x80) == 0)
+    {
+        line_clock_cycles = 0;
+        return;
+    }
+
     new_frame_drawn = false;
-    line_clock_cycles += cycles;
+    line_clock_cycles += static_cast<i32>(cycles);
 
     u8 current_modeB0 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B0));
     u8 current_modeB1 = mem.get_bit(R_LCDSTAT, u8(StatReg::MODE_B1));
@@ -65,17 +36,20 @@ void GBDisplay::display_cycle(u32 cycles)
 
     switch (current_mode)
     {
-    case DisplayMode::Mode2: // OAM Search (80 cycles)
-        if (cycles_reached(DisplayMode::Mode2))
+    case DisplayMode::Mode2:
+    {
+        // On DMG, the first scanline after LCD enable has a slightly longer Mode 2 window (92 dots vs 80)
+        i32 mode2_limit = first_scanline_after_enable ? 92 : 80;
+        if (line_clock_cycles >= mode2_limit)
         {
             update_stat_reg(static_cast<u8>(DisplayMode::Mode3));
         }
         break;
+    }
 
-    case DisplayMode::Mode3: // Pixel Transfer (172 cycles)
-        if (cycles_reached(DisplayMode::Mode3))
+    case DisplayMode::Mode3:
+        if (line_clock_cycles >= 252)
         {
-            // Render the line at the end of Mode 3
             if (ly_val < DISP_H)
             {
                 ren.render_line(ly_val);
@@ -84,35 +58,42 @@ void GBDisplay::display_cycle(u32 cycles)
         }
         break;
 
-    case DisplayMode::Mode0: // H-Blank (204 cycles)
-        if (cycles_reached(DisplayMode::Mode0))
+    case DisplayMode::Mode0:
+    {
+        // Scanline 0 after enable finishes early (440 dots) before advancing to LY = 1
+        i32 scanline_limit = first_scanline_after_enable ? 440 : 456;
+        if (line_clock_cycles >= scanline_limit)
         {
+            line_clock_cycles -= scanline_limit;
+            first_scanline_after_enable = false;
+
             ly_val++;
             mem.write_byte(R_LY, ly_val);
 
-            if (ly_val == DISP_H) // Reached line 144 -> Enter V-Blank (Mode 1)
+            if (ly_val == DISP_H)
             {
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
                 ir.request_interrupt(InterruptType::VBlank);
-                draw_frame(); // Convert pixels to RGB and set new_frame_drawn = true
+                draw_frame();
             }
-            else // Next visible scanline -> Mode 2
+            else
             {
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
             }
-            line_clock_cycles = 0;
         }
         break;
+    }
 
-    case DisplayMode::Mode1: // V-Blank (456 cycles per line across lines 144-153)
-        if (cycles_reached(DisplayMode::Mode1))
+    case DisplayMode::Mode1: // V-Blank: Lines 144 -> 153 (456 dots each)
+        if (line_clock_cycles >= 456)
         {
+            line_clock_cycles -= 456;
             ly_val++;
+
             if (ly_val > 153)
             {
-                // Frame complete, wrap back to scanline 0 and Mode 2
                 ly_val = 0;
-                mem.write_byte(R_LY, ly_val);
+                mem.write_byte(R_LY, 0);
                 update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
                 ren.reset_frame();
                 ren.refresh_sprites();
@@ -120,10 +101,39 @@ void GBDisplay::display_cycle(u32 cycles)
             else
             {
                 mem.write_byte(R_LY, ly_val);
+                update_stat_reg(static_cast<u8>(DisplayMode::Mode1));
             }
-            line_clock_cycles = 0;
         }
         break;
+    }
+}
+
+void GBDisplay::notify_lcdc_write(u8 new_lcdc)
+{
+    bool was_on = lcd_enabled;
+    bool is_on = (new_lcdc & 0x80) != 0;
+    lcd_enabled = is_on;
+
+    if (!was_on && is_on)
+    {
+        // Cancel the 12-cycle write instruction delay from main_loop
+        line_clock_cycles = -12;
+        mem.write_byte(R_LY, 0);
+
+        first_scanline_after_enable = true;
+
+        // Force STAT to Mode 2 immediately
+        update_stat_reg(static_cast<u8>(DisplayMode::Mode2));
+    }
+    else if (was_on && !is_on)
+    {
+        line_clock_cycles = 0;
+        mem.write_byte(R_LY, 0);
+        first_scanline_after_enable = false;
+
+        // Mode 0 when LCD off on DMG
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B1), false);
+        mem.write_bit(R_LCDSTAT, u8(StatReg::MODE_B0), false);
     }
 }
 
