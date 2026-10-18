@@ -18,9 +18,9 @@ u32 Cpu::cycle()
         u8 i_flags = mem.get_byte(A_IFLAGS);
         u8 i_enable = mem.get_byte(A_IENABLE);
 
-        if ((i_flags & i_enable & 0x1F) != 0)
-        {
+        if ((i_flags & i_enable & 0x1F) != 0) {
             halt_flag = false; // Wake up
+        } else {
             add_ticks(4);  // Hardware HALT exit penalty (1 M-cycle)
             return 4;
         }
@@ -52,10 +52,6 @@ u32 Cpu::cycle()
         }
 
         process_instruction(byte_in);
-    }
-    else if (halt_flag)
-    {
-        add_ticks(4);
     }
 
     return ticks;

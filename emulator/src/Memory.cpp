@@ -251,14 +251,22 @@ void Memory::reg_sub(u8 reg_id, u8 sub_value, bool borrow)
 
 void Memory::reg_add16(Register16Bit reg_id, u16 reg_n_val)
 {
-    u32 total = reg_get16(reg_id) + reg_n_val;
+    u32 current = reg_get16(reg_id);
+    u32 operand = reg_n_val;
+    u32 total = current + operand;
 
-    flag_update(HF,(reg_get16(reg_id) & 0xf000) == (total & 0xf000));
-    flag_update(CF,(total > 0xffff));
-    flag_update(NF,0);
+    // Half Carry: carry from bit 11 to bit 12
+    bool half_carry = ((current & 0x0FFF) + (operand & 0x0FFF)) > 0x0FFF;
+    flag_update(HF, half_carry ? 1 : 0);
 
-    reg_set(reg_id,(u16)total);
+    // Carry: carry from bit 15 to bit 16
+    flag_update(CF, total > 0xFFFF ? 1 : 0);
 
+    // Subtract flag is always cleared
+    flag_update(NF, 0);
+
+    // Zero Flag (ZF) is intentionally NOT modified!
+    reg_set(reg_id, static_cast<u16>(total));
 }
 
 // Decimal Adjust register A (DAA), flags updated
@@ -603,13 +611,6 @@ void Memory::write_byte(u16 address, u8 byte)
         return;
     }
 
-    // DIV register reset on write
-    if (address == 0xFF04)
-    {
-        ram[0xFF04] = 0x00;
-        return;
-    }
-
     // Timer
     if ((address >= A_TIMA) && (address <= A_TAC))
     {
@@ -650,31 +651,36 @@ void Memory::write_bit(u16 address, u8 bit_number, bool bit_val)
     ram[address] = new_value;
 }
 
-// Increment byte and update flags
+// Increment byte at pointer and update flags (Z 0 H -)
 void Memory::inc_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in = get_from_pointer(reg_id);
 
-    flag_update(HF,(byte_in & 0xf0) == ((byte_in + 1) & 0xf0));
-    flag_update(NF,0);
+    // HF: Carry from bit 3 to bit 4 (lower nibble overflow)
+    flag_update(HF, (byte_in & 0x0F) == 0x0F);
+    flag_update(NF, 0);
 
     byte_in++;
     set_from_pointer(reg_id, byte_in);
 
-    flag_update(ZF,(byte_in==0));
+    flag_update(ZF, byte_in == 0);
+    // CF is unaffected
 }
 
-// Decrement byte and update flags
+// Decrement byte at pointer and update flags (Z 1 H -)
 void Memory::dec_from_pointer(Register16Bit reg_id)
 {
     u8 byte_in = get_from_pointer(reg_id);
 
-    flag_update(HF,(byte_in & 0xf0) == ((byte_in - 1) & 0xf0));
-    flag_update(NF,0);
+    // HF: Borrow from bit 4 (lower nibble underflow)
+    flag_update(HF, (byte_in & 0x0F) == 0x00);
+    flag_update(NF, 1);
 
     byte_in--;
-    set_from_pointer(Register16Bit::HL,byte_in);
-    flag_update(ZF,(byte_in==0));
+    set_from_pointer(reg_id, byte_in);
+
+    flag_update(ZF, byte_in == 0);
+    // CF is unaffected
 }
 
 // Swap upper and lower nibbles of register, flags updated
@@ -795,7 +801,7 @@ void Memory::srl_from_pointer(Register16Bit reg_id)
 // Flags Z 0 1 -
 void Memory::bit_test_from_pointer(Register16Bit reg_id, u8 bit_number)
 {
-    u8 bit_val = get_from_pointer(reg_id) >> bit_number;
+    u8 bit_val = (get_from_pointer(reg_id) >> bit_number) & 1;
 
     flag_update(ZF,(bit_val==0));
     flag_update(NF,0);
@@ -885,14 +891,28 @@ void Memory::dec_sp(u8 amount)
 // Add value to sp and update flags
 void Memory::sp_add(u8 amount)
 {
-    u32 total = sp + amount;
+    u16 old_sp = sp;
+    i8 signed_amount = static_cast<i8>(amount);
 
-    flag_update(HF,(sp & 0xf000) == (total & 0xf000));
-    flag_update(CF,(total > 0xffff));
-    flag_update(NF,0);
-    flag_update(ZF,0);
+    // 1. Full 16-bit register update using signed offset
+    sp = static_cast<u16>(static_cast<i32>(old_sp) + signed_amount);
 
-    sp = (u16)total;
+    // 2. Hardware flag behavior:
+    // ZF and NF are always cleared to 0
+    flag_update(ZF, 0);
+    flag_update(NF, 0);
+
+    // HF & CF are evaluated strictly as an UNSIGNED 8-bit addition 
+    // between (sp & 0xFF) and the raw byte amount:
+    u8 sp_low = static_cast<u8>(old_sp & 0xFF);
+
+    // Half Carry: carry out of bit 3 (lower nibble overflow)
+    bool half_carry = ((sp_low & 0x0F) + (amount & 0x0F)) > 0x0F;
+    flag_update(HF, half_carry ? 1 : 0);
+
+    // Carry: carry out of bit 7 (byte overflow)
+    bool carry = ((sp_low & 0xFF) + (amount & 0xFF)) > 0xFF;
+    flag_update(CF, carry ? 1 : 0);
 }
 
 // Push 16-bit value to stack and decrement sp
