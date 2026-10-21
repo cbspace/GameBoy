@@ -39,7 +39,8 @@ class MainWindow : public QMainWindow {
     private:
         void create_actions();
         void create_menus();
-
+        
+        QString m_last_rom_dir = QStringLiteral("./roms/test");
         QStatusBar* m_statusbar;
 
         QMenu* emulator_menu;
